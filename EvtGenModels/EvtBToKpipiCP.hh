@@ -22,6 +22,7 @@
 #define EVTBTOKPIPICP_HH
 
 #include "EvtGenBase/EvtDecayAmp.hh"
+#include "EvtGenBase/EvtVector4R.hh"
 
 class EvtParticle;
 

@@ -36,6 +36,7 @@
 #include "EvtGenBase/EvtReport.hh"
 #include "EvtGenModels/EvtBToKpipiCP.hh"
 #include "EvtGenBase/EvtId.hh"
+#include "EvtGenBase/EvtVector4R.hh"
 #include <string>
 
 #ifdef WIN32

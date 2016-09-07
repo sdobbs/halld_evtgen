@@ -417,8 +417,6 @@ c	--- of a K*+, K*0 or rho- resonance
 c	----------------------------------------------------------
 
 	z = 3.*evtranf()
-
-        MC2 = M_B**2
 	
 	If(z.lt.1.) Then
 c K*+ production

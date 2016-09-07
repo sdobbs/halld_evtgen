@@ -363,7 +363,7 @@ c-------------------------------------------------------------------
 c-------------------------------------------------------------------
 c     This is the pre-run mode of operation where initializations are
 c     performed.
- 
+
       factor_max= 0
 
 C Ghm : beta is not needed for this generation - put a default value
@@ -832,6 +832,7 @@ c	-------------------------------------------------------------
       Mass_Kstar0 = 0.8961 
       Gam_Kstar0  = 0.0505 
       
+      MA2         = M_B**2 + M_pip**2 + M_pi0**2 + M_pi0**2
       MB2         = M_B**2 + M_pip**2 + M_pim**2 + M_pi0**2 
       MC2         = M_B**2 + M_Kp **2 + M_pim**2 + M_pi0**2                        
 
@@ -961,7 +962,6 @@ c --- Local Variables
 
         EGammaCmsPi0 = Dsqrt(P2(5))/2.
         
-        
         cosThetaRot = evtranf()*2.D+00-1.D+00
         sinThetaRot = Dsqrt(1.D+00 - cosThetaRot**2)
         PhiRot = evtranf()*2.D+00*pi
@@ -1063,7 +1063,6 @@ c	---------------------------------------------------------
      
       		phi2=evtranf()*2.*pi
       		phi3=evtranf()*2.*pi
-      
                 c1=2.D+00*evtranf()-1.D+00
        		c2=Dcos(phi2)
       		c3=Dcos(phi3)
