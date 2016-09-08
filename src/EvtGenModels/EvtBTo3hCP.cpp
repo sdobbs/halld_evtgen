@@ -85,7 +85,7 @@ extern "C" {
 }
 */
 
-void EvtBTo3hCP::EvtSet_Constants(double balpha, double bbeta)
+void EvtBTo3hCP::setConstants(double balpha, double bbeta)
 {
   
   alphaCP  = balpha;
@@ -243,14 +243,14 @@ void EvtBTo3hCP::Evt3pi(double alpha, int iset,
     do 
     {
       firstStep(p_pi_plus, p_p2, p_pi_minus, 1);
-      ierr = EvtCompute_3pi(p_pi_plus, p_p2, p_pi_minus, Real_B0, Imag_B0, Real_B0bar,
+      ierr = compute3pi(p_pi_plus, p_p2, p_pi_minus, Real_B0, Imag_B0, Real_B0bar,
                        Imag_B0bar, iset);
     } while (ierr != 0);
   }
   else if ( iset < 0 )
   {
     p_p2 = p_gamma_1 + p_gamma_2;
-    ierr = EvtCompute_3pi(p_pi_plus, p_p2, p_pi_minus, Real_B0, Imag_B0,
+    ierr = compute3pi(p_pi_plus, p_p2, p_pi_minus, Real_B0, Imag_B0,
                             Real_B0bar, Imag_B0bar, iset);
     if (ierr != 0)
     {
@@ -263,7 +263,7 @@ void EvtBTo3hCP::Evt3pi(double alpha, int iset,
   {
     factor_max = 0;
 // Ghm : beta is not needed for this generation - put a default value
-    EvtSet_Constants(alpha, 0.362);
+    setConstants(alpha, 0.362);
 
     int endLoop = iset;
     for (int i = 0; i < endLoop; ++i)
@@ -273,7 +273,7 @@ void EvtBTo3hCP::Evt3pi(double alpha, int iset,
       p_pi_minus.set(M_pim, 0, 0, 0);
 
       firstStep(p_pi_plus, p_p2, p_pi_minus, 1);
-      ierr = EvtCompute_3pi(p_pi_plus, p_p2, p_pi_minus, Real_B0, Imag_B0, Real_B0bar,
+      ierr = compute3pi(p_pi_plus, p_p2, p_pi_minus, Real_B0, Imag_B0, Real_B0bar,
                        Imag_B0bar, iset);
       if (ierr != 0)
       {
@@ -301,11 +301,11 @@ void EvtBTo3hCP::Evt3pi(double alpha, int iset,
     return;
   }
 
-  EvtRotation(p_pi_plus, 1);
-  EvtRotation(p_p2, 0);
-  EvtRotation(p_pi_minus, 0);
+  rotation(p_pi_plus, 1);
+  rotation(p_p2, 0);
+  rotation(p_pi_minus, 0);
 
-  EvtGammaGamma(p_p2, p_gamma_1, p_gamma_2);
+  gammaGamma(p_p2, p_gamma_1, p_gamma_2);
 
 }
 
@@ -327,13 +327,13 @@ void EvtBTo3hCP::Evt3piMPP(double alpha, int iset,
     do 
     {
       firstStep(p_p1, p_p2, p_p3, 2);
-      ierr = EvtCompute_3piMPP(p_p1, p_p2, p_p3, Real_B0, Imag_B0, Real_B0bar,
+      ierr = compute3piMPP(p_p1, p_p2, p_p3, Real_B0, Imag_B0, Real_B0bar,
                        Imag_B0bar, iset);
     } while (ierr != 0);
   }
   else if ( iset < 0 )
   {
-    ierr = EvtCompute_3piMPP(p_p1, p_p2, p_p3, Real_B0, Imag_B0,
+    ierr = compute3piMPP(p_p1, p_p2, p_p3, Real_B0, Imag_B0,
                             Real_B0bar, Imag_B0bar, iset);
     if (ierr != 0)
     {
@@ -346,7 +346,7 @@ void EvtBTo3hCP::Evt3piMPP(double alpha, int iset,
   {
     factor_max = 0;
 // Ghm : beta is not needed for this generation - put a default value
-    EvtSet_Constants(alpha, 0.362);
+    setConstants(alpha, 0.362);
 
     int endLoop = iset;
     for (int i = 0; i < endLoop; ++i)
@@ -356,7 +356,7 @@ void EvtBTo3hCP::Evt3piMPP(double alpha, int iset,
       p_p3.set(M_pip, 0, 0, 0);
 
       firstStep(p_p1, p_p2, p_p3, 2);
-      ierr = EvtCompute_3piMPP(p_p1, p_p2, p_p3, Real_B0, Imag_B0, Real_B0bar,
+      ierr = compute3piMPP(p_p1, p_p2, p_p3, Real_B0, Imag_B0, Real_B0bar,
                        Imag_B0bar, iset);
       if (ierr != 0)
       {
@@ -382,9 +382,9 @@ void EvtBTo3hCP::Evt3piMPP(double alpha, int iset,
     return;
   }
 
-  EvtRotation(p_p1, 1);
-  EvtRotation(p_p2, 0);
-  EvtRotation(p_p3, 0);
+  rotation(p_p1, 1);
+  rotation(p_p2, 0);
+  rotation(p_p3, 0);
 }
 
 void EvtBTo3hCP::Evt3piP00(double alpha, int iset, EvtVector4R &p_p1,
@@ -406,7 +406,7 @@ void EvtBTo3hCP::Evt3piP00(double alpha, int iset, EvtVector4R &p_p1,
     do 
     {
       firstStep(p_p1, p_p2, p_p3, 3);
-      ierr = EvtCompute_3piP00(p_p1, p_p2, p_p3, Real_B0, Imag_B0, Real_B0bar,
+      ierr = compute3piP00(p_p1, p_p2, p_p3, Real_B0, Imag_B0, Real_B0bar,
                        Imag_B0bar, iset);
     } while (ierr != 0);
   }
@@ -414,7 +414,7 @@ void EvtBTo3hCP::Evt3piP00(double alpha, int iset, EvtVector4R &p_p1,
   {
     p_p2 = p_p1_gamma1 + p_p1_gamma2;
     p_p3 = p_p2_gamma1 + p_p2_gamma2;
-    ierr = EvtCompute_3piP00(p_p1, p_p2, p_p3, Real_B0, Imag_B0,
+    ierr = compute3piP00(p_p1, p_p2, p_p3, Real_B0, Imag_B0,
                             Real_B0bar, Imag_B0bar, iset);
     if (ierr != 0)
     {
@@ -427,7 +427,7 @@ void EvtBTo3hCP::Evt3piP00(double alpha, int iset, EvtVector4R &p_p1,
   {
     factor_max = 0;
 // Ghm : beta is not needed for this generation - put a default value
-    EvtSet_Constants(alpha, 0.362);
+    setConstants(alpha, 0.362);
 
     int endLoop = iset;
     for (int i = 0; i < endLoop; ++i)
@@ -437,7 +437,7 @@ void EvtBTo3hCP::Evt3piP00(double alpha, int iset, EvtVector4R &p_p1,
       p_p3.set(M_pi0, 0, 0, 0);
 
       firstStep(p_p1, p_p2, p_p3, 3);
-      ierr = EvtCompute_3piP00(p_p1, p_p2, p_p3, Real_B0, Imag_B0, Real_B0bar,
+      ierr = compute3piP00(p_p1, p_p2, p_p3, Real_B0, Imag_B0, Real_B0bar,
                        Imag_B0bar, iset);
       if (ierr != 0)
       {
@@ -463,12 +463,12 @@ void EvtBTo3hCP::Evt3piP00(double alpha, int iset, EvtVector4R &p_p1,
     return;
   }
 
-  EvtRotation(p_p1, 1);
-  EvtRotation(p_p2, 0);
-  EvtRotation(p_p3, 0);
+  rotation(p_p1, 1);
+  rotation(p_p2, 0);
+  rotation(p_p3, 0);
 
-  EvtGammaGamma(p_p2, p_p1_gamma1, p_p1_gamma2);
-  EvtGammaGamma(p_p3, p_p2_gamma1, p_p2_gamma2);
+  gammaGamma(p_p2, p_p1_gamma1, p_p1_gamma2);
+  gammaGamma(p_p3, p_p2_gamma1, p_p2_gamma2);
 }
 
 void EvtBTo3hCP::EvtKpipi(double alpha, double beta, int iset,
@@ -491,14 +491,14 @@ void EvtBTo3hCP::EvtKpipi(double alpha, double beta, int iset,
     do 
     {
       firstStep(p_K_plus, p_pi_minus, p_p3, 0);
-      ierr = EvtCompute_Kpipi(p_K_plus, p_pi_minus, p_p3, Real_B0, Imag_B0, Real_B0bar,
+      ierr = computeKpipi(p_K_plus, p_pi_minus, p_p3, Real_B0, Imag_B0, Real_B0bar,
                        Imag_B0bar, iset);
     } while (ierr != 0);
   }
   else if ( iset < 0 )
   {
     p_p3 = p_gamma_1 + p_gamma_2;
-    ierr = EvtCompute_Kpipi(p_K_plus, p_pi_minus, p_p3, Real_B0, Imag_B0,
+    ierr = computeKpipi(p_K_plus, p_pi_minus, p_p3, Real_B0, Imag_B0,
                             Real_B0bar, Imag_B0bar, iset);
     if (ierr != 0)
     {
@@ -510,7 +510,7 @@ void EvtBTo3hCP::EvtKpipi(double alpha, double beta, int iset,
   else  // iset > 0
   {
     factor_max = 0;
-    EvtSet_Constants(alpha, beta);
+    setConstants(alpha, beta);
 
 
     int endLoop = iset;
@@ -520,7 +520,7 @@ void EvtBTo3hCP::EvtKpipi(double alpha, double beta, int iset,
       p_pi_minus.set(M_pim, 0, 0, 0);
       p_p3.set(M_pi0, 0, 0, 0);
       firstStep(p_K_plus, p_pi_minus, p_p3, 0);
-      ierr = EvtCompute_Kpipi(p_K_plus, p_pi_minus, p_p3, Real_B0, Imag_B0, Real_B0bar,
+      ierr = computeKpipi(p_K_plus, p_pi_minus, p_p3, Real_B0, Imag_B0, Real_B0bar,
                        Imag_B0bar, iset);
       if (ierr != 0)
       {
@@ -551,11 +551,11 @@ void EvtBTo3hCP::EvtKpipi(double alpha, double beta, int iset,
     return;
   }
 
-  EvtRotation(p_K_plus, 1);
-  EvtRotation(p_pi_minus, 0);
-  EvtRotation(p_p3, 0);
+  rotation(p_K_plus, 1);
+  rotation(p_pi_minus, 0);
+  rotation(p_p3, 0);
 
-  EvtGammaGamma(p_p3, p_gamma_1, p_gamma_2);
+  gammaGamma(p_p3, p_gamma_1, p_gamma_2);
 }
 
 void EvtBTo3hCP::firstStep(EvtVector4R &p1, EvtVector4R &p2, EvtVector4R &p3,
@@ -968,7 +968,7 @@ C Note that in that case, the generation is no longer correct.
     }
 
 }
-int EvtBTo3hCP::EvtCompute_3pi(EvtVector4R &p1, EvtVector4R &p2,
+int EvtBTo3hCP::compute3pi(EvtVector4R &p1, EvtVector4R &p2,
                                  EvtVector4R &p3, double &real_B0,
                                  double &imag_B0, double &real_B0bar,
                                  double &imag_B0bar, int iset) 
@@ -1014,7 +1014,7 @@ int EvtBTo3hCP::EvtCompute_3pi(EvtVector4R &p1, EvtVector4R &p2,
   return ierr;
 }
 
-int EvtBTo3hCP::EvtCompute_3piMPP(EvtVector4R &p1, EvtVector4R &p2,
+int EvtBTo3hCP::compute3piMPP(EvtVector4R &p1, EvtVector4R &p2,
                                  EvtVector4R &p3, double &real_B0,
                                  double &imag_B0, double &real_B0bar,
                                  double &imag_B0bar, int iset) 
@@ -1048,7 +1048,7 @@ int EvtBTo3hCP::EvtCompute_3piMPP(EvtVector4R &p1, EvtVector4R &p2,
   return ierr;
 }
 
-int EvtBTo3hCP::EvtCompute_3piP00(EvtVector4R &p1, EvtVector4R &p2,
+int EvtBTo3hCP::compute3piP00(EvtVector4R &p1, EvtVector4R &p2,
                                  EvtVector4R &p3, double &real_B0,
                                  double &imag_B0, double &real_B0bar,
                                  double &imag_B0bar, int iset) 
@@ -1082,7 +1082,7 @@ int EvtBTo3hCP::EvtCompute_3piP00(EvtVector4R &p1, EvtVector4R &p2,
   return ierr;
 }
 
-int EvtBTo3hCP::EvtCompute_Kpipi(EvtVector4R &p1, EvtVector4R &p2,
+int EvtBTo3hCP::computeKpipi(EvtVector4R &p1, EvtVector4R &p2,
                                  EvtVector4R &p3, double &real_B0,
                                  double &imag_B0, double &real_B0bar,
                                  double &imag_B0bar, int iset) 
@@ -1129,7 +1129,7 @@ int EvtBTo3hCP::EvtCompute_Kpipi(EvtVector4R &p1, EvtVector4R &p2,
   return ierr;
 }
 
-void EvtBTo3hCP::EvtRotation(EvtVector4R& p, int newRot)
+void EvtBTo3hCP::rotation(EvtVector4R& p, int newRot)
 {
 
   if (newRot)
@@ -1171,7 +1171,7 @@ void EvtBTo3hCP::EvtRotation(EvtVector4R& p, int newRot)
   }
 }
 
-void EvtBTo3hCP::EvtGammaGamma(EvtVector4R &p, EvtVector4R &pgamma1,
+void EvtBTo3hCP::gammaGamma(EvtVector4R &p, EvtVector4R &pgamma1,
                                EvtVector4R &pgamma2)
 {
   double EGammaCmsPi0 = sqrt(p.mass2())/2.;

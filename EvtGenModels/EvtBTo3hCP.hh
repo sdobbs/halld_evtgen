@@ -26,10 +26,12 @@
 
 class EvtParticle;
 
+/*
 struct fcomplex {
   double re;
   double im;
 };
+*/
 
 class EvtBTo3hCP {
 
@@ -64,17 +66,17 @@ public:
 
 private:
 
-  void EvtSet_Constants(double balpha, double bbeta);
-  int EvtCompute_Kpipi(EvtVector4R &p1, EvtVector4R &p2, EvtVector4R &p3,
+  void setConstants(double balpha, double bbeta);
+  int computeKpipi(EvtVector4R &p1, EvtVector4R &p2, EvtVector4R &p3,
                        double &real_B0, double &imag_B0, double &real_B0bar,
                        double &imag_B0bar, int set);
-  int EvtCompute_3pi(EvtVector4R &p1, EvtVector4R &p2, EvtVector4R &p3,
+  int compute3pi(EvtVector4R &p1, EvtVector4R &p2, EvtVector4R &p3,
                        double &real_B0, double &imag_B0, double &real_B0bar,
                        double &imag_B0bar, int set);
-  int EvtCompute_3piMPP(EvtVector4R &p1, EvtVector4R &p2, EvtVector4R &p3,
+  int compute3piMPP(EvtVector4R &p1, EvtVector4R &p2, EvtVector4R &p3,
                        double &real_B0, double &imag_B0, double &real_B0bar,
                        double &imag_B0bar, int set);
-  int EvtCompute_3piP00(EvtVector4R &p1, EvtVector4R &p2, EvtVector4R &p3,
+  int compute3piP00(EvtVector4R &p1, EvtVector4R &p2, EvtVector4R &p3,
                        double &real_B0, double &imag_B0, double &real_B0bar,
                        double &imag_B0bar, int set);
 
@@ -91,8 +93,8 @@ private:
                                double MB2, double m1sq, double m2sq,
                                double m3sq);
 
-  void EvtRotation(EvtVector4R& p, int newRot);
-  void EvtGammaGamma(EvtVector4R &p, EvtVector4R &pgamma1,
+  void rotation(EvtVector4R& p, int newRot);
+  void gammaGamma(EvtVector4R &p, EvtVector4R &pgamma1,
                      EvtVector4R &pgamma2);
   EvtComplex BreitWigner(EvtVector4R &p1, EvtVector4R &p2, EvtVector4R &p3,
                          int &ierr, double Mass=0, double Width=0);
