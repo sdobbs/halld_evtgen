@@ -68,19 +68,29 @@ private:
   int EvtCompute_Kpipi(EvtVector4R &p1, EvtVector4R &p2, EvtVector4R &p3,
                        double &real_B0, double &imag_B0, double &real_B0bar,
                        double &imag_B0bar, int set);
-  void Evtfirst_step_Kpipi(EvtVector4R &p1, EvtVector4R &p2, EvtVector4R &p3);
   int EvtCompute_3pi(EvtVector4R &p1, EvtVector4R &p2, EvtVector4R &p3,
                        double &real_B0, double &imag_B0, double &real_B0bar,
                        double &imag_B0bar, int set);
-  void Evtfirst_step_3pi(EvtVector4R &p1, EvtVector4R &p2, EvtVector4R &p3);
   int EvtCompute_3piMPP(EvtVector4R &p1, EvtVector4R &p2, EvtVector4R &p3,
                        double &real_B0, double &imag_B0, double &real_B0bar,
                        double &imag_B0bar, int set);
-  void Evtfirst_step_3piMPP(EvtVector4R &p1, EvtVector4R &p2, EvtVector4R &p3);
   int EvtCompute_3piP00(EvtVector4R &p1, EvtVector4R &p2, EvtVector4R &p3,
                        double &real_B0, double &imag_B0, double &real_B0bar,
                        double &imag_B0bar, int set);
-  void Evtfirst_step_3piP00(EvtVector4R &p1, EvtVector4R &p2, EvtVector4R &p3);
+
+  // Modes are : 0 = Kpipi, 1 = 3pi, 2 = MPP, 3 = P00
+  void firstStep(EvtVector4R &p1, EvtVector4R &p2, EvtVector4R &p3, int mode);
+  void generateSqMasses_Kpipi(double &m12, double &m13, double &m23, double MB2,
+                              double m1sq, double m2sq, double m3sq);
+  void generateSqMasses_3pi(double &m12, double &m13, double &m23, double MB2,
+                            double m1sq, double m2sq, double m3sq);
+  void generateSqMasses_3piMPP(double &m12, double &m13, double &m23,
+                               double MB2, double m1sq, double m2sq,
+                               double m3sq);
+  void generateSqMasses_3piP00(double &m12, double &m13, double &m23,
+                               double MB2, double m1sq, double m2sq,
+                               double m3sq);
+
   void EvtRotation(EvtVector4R& p, int newRot);
   void EvtGammaGamma(EvtVector4R &p, EvtVector4R &pgamma1,
                      EvtVector4R &pgamma2);

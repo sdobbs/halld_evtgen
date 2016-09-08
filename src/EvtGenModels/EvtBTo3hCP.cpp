@@ -10,7 +10,8 @@
 //
 // Module: EvtBTo3hCP.cpp
 //
-// Description: 
+// Description: This package is providing a B -->-- 3hadrons decay
+// generator. It is reimplementation of original Fortran code.
 //
 // Modification history:
 //
@@ -241,7 +242,7 @@ void EvtBTo3hCP::Evt3pi(double alpha, int iset,
 
     do 
     {
-      Evtfirst_step_3pi(p_pi_plus, p_p2, p_pi_minus);
+      firstStep(p_pi_plus, p_p2, p_pi_minus, 1);
       ierr = EvtCompute_3pi(p_pi_plus, p_p2, p_pi_minus, Real_B0, Imag_B0, Real_B0bar,
                        Imag_B0bar, iset);
     } while (ierr != 0);
@@ -271,7 +272,7 @@ void EvtBTo3hCP::Evt3pi(double alpha, int iset,
       p_p2.set(M_pi0, 0, 0, 0);
       p_pi_minus.set(M_pim, 0, 0, 0);
 
-      Evtfirst_step_3pi(p_pi_plus, p_p2, p_pi_minus);
+      firstStep(p_pi_plus, p_p2, p_pi_minus, 1);
       ierr = EvtCompute_3pi(p_pi_plus, p_p2, p_pi_minus, Real_B0, Imag_B0, Real_B0bar,
                        Imag_B0bar, iset);
       if (ierr != 0)
@@ -325,7 +326,7 @@ void EvtBTo3hCP::Evt3piMPP(double alpha, int iset,
 
     do 
     {
-      Evtfirst_step_3piMPP(p_p1, p_p2, p_p3);
+      firstStep(p_p1, p_p2, p_p3, 2);
       ierr = EvtCompute_3piMPP(p_p1, p_p2, p_p3, Real_B0, Imag_B0, Real_B0bar,
                        Imag_B0bar, iset);
     } while (ierr != 0);
@@ -354,7 +355,7 @@ void EvtBTo3hCP::Evt3piMPP(double alpha, int iset,
       p_p2.set(M_pip, 0, 0, 0);
       p_p3.set(M_pip, 0, 0, 0);
 
-      Evtfirst_step_3piMPP(p_p1, p_p2, p_p3);
+      firstStep(p_p1, p_p2, p_p3, 2);
       ierr = EvtCompute_3piMPP(p_p1, p_p2, p_p3, Real_B0, Imag_B0, Real_B0bar,
                        Imag_B0bar, iset);
       if (ierr != 0)
@@ -404,7 +405,7 @@ void EvtBTo3hCP::Evt3piP00(double alpha, int iset, EvtVector4R &p_p1,
 
     do 
     {
-      Evtfirst_step_3piP00(p_p1, p_p2, p_p3);
+      firstStep(p_p1, p_p2, p_p3, 3);
       ierr = EvtCompute_3piP00(p_p1, p_p2, p_p3, Real_B0, Imag_B0, Real_B0bar,
                        Imag_B0bar, iset);
     } while (ierr != 0);
@@ -435,7 +436,7 @@ void EvtBTo3hCP::Evt3piP00(double alpha, int iset, EvtVector4R &p_p1,
       p_p2.set(M_pi0, 0, 0, 0);
       p_p3.set(M_pi0, 0, 0, 0);
 
-      Evtfirst_step_3piP00(p_p1, p_p2, p_p3);
+      firstStep(p_p1, p_p2, p_p3, 3);
       ierr = EvtCompute_3piP00(p_p1, p_p2, p_p3, Real_B0, Imag_B0, Real_B0bar,
                        Imag_B0bar, iset);
       if (ierr != 0)
@@ -462,13 +463,9 @@ void EvtBTo3hCP::Evt3piP00(double alpha, int iset, EvtVector4R &p_p1,
     return;
   }
 
-//  std::cout << "Generated 4-vectors: " << p_p1 << " " << p_p2 << " " << p_p3
-//            << std::endl;
   EvtRotation(p_p1, 1);
   EvtRotation(p_p2, 0);
   EvtRotation(p_p3, 0);
-//  std::cout << "Generated 4-vectors: " << p_p1 << " " << p_p2 << " " << p_p3
-//            << std::endl;
 
   EvtGammaGamma(p_p2, p_p1_gamma1, p_p1_gamma2);
   EvtGammaGamma(p_p3, p_p2_gamma1, p_p2_gamma2);
@@ -493,7 +490,7 @@ void EvtBTo3hCP::EvtKpipi(double alpha, double beta, int iset,
 
     do 
     {
-      Evtfirst_step_Kpipi(p_K_plus, p_pi_minus, p_p3);
+      firstStep(p_K_plus, p_pi_minus, p_p3, 0);
       ierr = EvtCompute_Kpipi(p_K_plus, p_pi_minus, p_p3, Real_B0, Imag_B0, Real_B0bar,
                        Imag_B0bar, iset);
     } while (ierr != 0);
@@ -522,7 +519,7 @@ void EvtBTo3hCP::EvtKpipi(double alpha, double beta, int iset,
       p_K_plus.set(M_Kp, 0, 0, 0);
       p_pi_minus.set(M_pim, 0, 0, 0);
       p_p3.set(M_pi0, 0, 0, 0);
-      Evtfirst_step_Kpipi(p_K_plus, p_pi_minus, p_p3);
+      firstStep(p_K_plus, p_pi_minus, p_p3, 0);
       ierr = EvtCompute_Kpipi(p_K_plus, p_pi_minus, p_p3, Real_B0, Imag_B0, Real_B0bar,
                        Imag_B0bar, iset);
       if (ierr != 0)
@@ -561,25 +558,30 @@ void EvtBTo3hCP::EvtKpipi(double alpha, double beta, int iset,
   EvtGammaGamma(p_p3, p_gamma_1, p_gamma_2);
 }
 
-void EvtBTo3hCP::Evtfirst_step_3pi(EvtVector4R &p1, EvtVector4R &p2,
-                               EvtVector4R &p3) 
+void EvtBTo3hCP::firstStep(EvtVector4R &p1, EvtVector4R &p2, EvtVector4R &p3,
+                           int mode) 
 {
-//  std::cout << "Initial 4-vectors: " << p1 << " " << p2 << " " << p3
-//            << std::endl;
-  static bool phaseSpace = false;
-
-  double m1sq = p1.mass2();
-  double m2sq = p2.mass2();
-  double m3sq = p3.mass2();
+  const double m1sq = p1.mass2();
+  const double m2sq = p2.mass2();
+  const double m3sq = p3.mass2();
+  double min_m12, min_m13, min_m23;
 
   double max_m12 = square(M_B);
-  double min_m12 = m1sq + m2sq;
-
   double max_m13 = square(M_B);
-  double min_m13 = m1sq + m3sq;
-
   double max_m23 = square(M_B);
-  double min_m23 = m2sq + m3sq;
+
+  if ( mode == 0 )
+  {
+    min_m12 = m1sq + m2sq + 2 * sqrt(m1sq * m2sq);
+    min_m13 = m1sq + m3sq + 2 * sqrt(m1sq * m3sq);
+    min_m23 = m2sq + m3sq + 2 * sqrt(m2sq* m3sq);
+  }
+  else
+  {
+    min_m12 = m1sq + m2sq;
+    min_m13 = m1sq + m3sq;
+    min_m23 = m2sq + m3sq;
+  }
 
   bool eventOK;
   double m13, m12, m23;
@@ -593,59 +595,21 @@ void EvtBTo3hCP::Evtfirst_step_3pi(EvtVector4R &p1, EvtVector4R &p2,
   double cost12;
   double cost23;
   eventOK  = false;
-  double mass = 0.0;
 
   do
   {
-
-    if (!phaseSpace)
+    switch (mode)
     {
-      double y = EvtRandom::Flat() * pi - pi / 2;
-      double x = std::tan(y);
-      mass = x * Gam_rho / 2. + Mass_rho;
+      case 0 : generateSqMasses_Kpipi(m12, m13, m23, MC2, m1sq, m2sq, m3sq);
+               break;
+      case 1 : generateSqMasses_3pi(m12, m13, m23, MB2, m1sq, m2sq, m3sq);
+               break;
+      case 2 : generateSqMasses_3piMPP(m12, m13, m23, MB2, m1sq, m2sq, m3sq);
+               break;
+      case 3 : generateSqMasses_3piP00(m12, m13, m23, MA2, m1sq, m2sq, m3sq);
+               break;
+      default : break;
     }
-
-    double z = 3. * EvtRandom::Flat();
-    if ( z < 1. )  
-    {
-      if (phaseSpace)
-      {
-        m12 = EvtRandom::Flat() * (max_m12 - min_m12) + min_m12;
-      }
-      else
-      {
-        m12 = square(mass);
-      }
-      m13 = EvtRandom::Flat() * (max_m13 - min_m13) + min_m13;
-      m23 = MB2 - m12 - m13;
-    }
-    else if ( z < 2. )  
-    {
-      if (phaseSpace)
-      {
-        m13 = EvtRandom::Flat() * (max_m13 - min_m13) + min_m13;
-      }
-      else
-      {
-        m13 = square(mass);
-      }
-      m12 = EvtRandom::Flat() * (max_m12 - min_m12) + min_m12;
-      m23 = MB2 - m12 - m13;
-    }
-    else  
-    {
-      if (phaseSpace)
-      {
-        m23 = EvtRandom::Flat() * (max_m23 - min_m23) + min_m23;
-      }
-      else
-      {
-        m23 = square(mass);
-      }
-      m12 = EvtRandom::Flat() * (max_m12 - min_m12) + min_m12;
-      m13 = MB2 - m12 - m23;
-    }
-
     // Check whether event is physical
     if ((m23 < min_m23) || (m23 > max_m23))
       continue;
@@ -701,23 +665,123 @@ void EvtBTo3hCP::Evtfirst_step_3pi(EvtVector4R &p1, EvtVector4R &p2,
   {
     std::cout<<"Unphysical p3 generated: "<<p3<<std::endl;
   } 
-  if ( fabs(m12+m13+m23-MB2) > 1e-4 )
+  double testMB2 = MB2;
+  switch (mode)
+  {
+    case 0: testMB2 = MC2;
+            break;
+    case 1:
+    case 2: testMB2 = MB2;
+            break;
+    case 3: testMB2 = MA2;
+            break;
+  }
+
+  if ( fabs(m12+m13+m23-testMB2) > 1e-4 )
   {
     std::cout << "Unphysical event generated: " << m12 << " " << m13 << " "
               << m23 << std::endl;
   }
-//  std::cout << "Generated 4-vectors: " << p1 << " " << p2 << " " << p3
-//            << std::endl;
 }
 
-void EvtBTo3hCP::Evtfirst_step_3piMPP(EvtVector4R &p1, EvtVector4R &p2,
-                               EvtVector4R &p3) 
+void EvtBTo3hCP::generateSqMasses_Kpipi(double &m12, double &m13, double &m23,
+                                        double MB2, double m1sq, double m2sq,
+                                        double m3sq) 
 {
+/*
+C There is two ways of generating the events:
+C The first one used a pole-compensation method to generate the
+C events efficiently taking into account the poles due to the
+C Breit-Wigners of the rho s. It is activated by setting
+C Phase_Space to .false.
+C The second one generates events according to phase space. It is
+C inneficient but allows the exploration of the full Dalitz plot
+C in an uniform way. It was found to be usefull fopr some peculiar
+C applications. It is activated by setting
+C Phase_space to .true.
+C Note that in that case, the generation is no longer correct.
+*/
   static bool phaseSpace = false;
 
-  const double m1sq = p1.mass2();
-  const double m2sq = p2.mass2();
-  const double m3sq = p3.mass2();
+  double max_m12 = square(M_B);
+  double min_m12 = m1sq + m2sq + 2 * sqrt(m1sq * m2sq);
+
+  double max_m13 = square(M_B);
+  double min_m13 = m1sq + m3sq + 2 * sqrt(m1sq * m3sq);
+
+  double max_m23 = square(M_B);
+  double min_m23 = m2sq + m3sq + 2 * sqrt(m2sq* m3sq);
+
+    double z = 3. * EvtRandom::Flat();
+    if ( z < 1. )  // K*+
+    {
+      if (phaseSpace)
+      {
+        m13 = EvtRandom::Flat() * (max_m13 - min_m13) + min_m13;
+      }
+      else
+      {
+        double y = EvtRandom::Flat() * pi - pi / 2;
+        double x = std::tan(y);
+        double mass = x * Gam_Kstarp / 2. + Mass_Kstarp;
+        m13 = square(mass);
+      }
+      m12 = EvtRandom::Flat() * (max_m12 - min_m12) + min_m12;
+      m23 = MB2 - m12 - m13;
+    }
+    else if ( z < 2. )  // K*0
+    {
+      if (phaseSpace)
+      {
+        m12 = EvtRandom::Flat() * (max_m12 - min_m12) + min_m12;
+      }
+      else
+      {
+        double y = EvtRandom::Flat() * pi - pi / 2;
+        double x = std::tan(y);
+        double mass = x * Gam_Kstar0 / 2. + Mass_Kstar0;
+        m12 = square(mass);
+      }
+      m13 = EvtRandom::Flat() * (max_m13 - min_m13) + min_m13;
+      m23 = MB2 - m12 - m13;
+    }
+    else  // rho-
+    {
+      if (phaseSpace)
+      {
+        m23 = EvtRandom::Flat() * (max_m23 - min_m23) + min_m23;
+      }
+      else
+      {
+        double y = EvtRandom::Flat() * pi - pi / 2;
+        double x = std::tan(y);
+        double mass = x * Gam_rho / 2. + Mass_rho;
+        m23 = square(mass);
+      }
+      m13 = EvtRandom::Flat() * (max_m13 - min_m13) + min_m13;
+      m12 = MB2 - m23 - m13;
+
+    }
+}
+
+void EvtBTo3hCP::generateSqMasses_3pi(double &m12, double &m13, double &m23,
+                                      double MB2, double m1sq, double m2sq,
+                                      double m3sq) 
+{
+/*
+C There is two ways of generating the events:
+C The first one used a pole-compensation method to generate the
+C events efficiently taking into account the poles due to the
+C Breit-Wigners of the rho s. It is activated by setting
+C Phase_Space to .false.
+C The second one generates events according to phase space. It is
+C inneficient but allows the exploration of the full Dalitz plot
+C in an uniform way. It was found to be usefull fopr some peculiar
+C applications. It is activated by setting
+C Phase_space to .true.
+C Note that in that case, the generation is no longer correct.
+*/
+  static bool phaseSpace = false;
 
   double max_m12 = square(M_B);
   double min_m12 = m1sq + m2sq;
@@ -727,23 +791,146 @@ void EvtBTo3hCP::Evtfirst_step_3piMPP(EvtVector4R &p1, EvtVector4R &p2,
 
   double max_m23 = square(M_B);
   double min_m23 = m2sq + m3sq;
+  double mass = 0;
 
-  bool eventOK;
-  double m13, m12, m23;
-  double E1;
-  double E2;
-  double E3;
-  double p1mom;
-  double p2mom;
-  double p3mom;
-  double cost13;
-  double cost12;
-  double cost23;
-  eventOK  = false;
-  double mass = 0.0;
+    if (!phaseSpace)
+    {
+      double y = EvtRandom::Flat() * pi - pi / 2;
+      double x = std::tan(y);
+      mass = x * Gam_rho / 2. + Mass_rho;
+    }
 
-  do
-  {
+    double z = 3. * EvtRandom::Flat();
+    if ( z < 1. )  
+    {
+      if (phaseSpace)
+      {
+        m12 = EvtRandom::Flat() * (max_m12 - min_m12) + min_m12;
+      }
+      else
+      {
+        m12 = square(mass);
+      }
+      m13 = EvtRandom::Flat() * (max_m13 - min_m13) + min_m13;
+      m23 = MB2 - m12 - m13;
+    }
+    else if ( z < 2. )  
+    {
+      if (phaseSpace)
+      {
+        m13 = EvtRandom::Flat() * (max_m13 - min_m13) + min_m13;
+      }
+      else
+      {
+        m13 = square(mass);
+      }
+      m12 = EvtRandom::Flat() * (max_m12 - min_m12) + min_m12;
+      m23 = MB2 - m12 - m13;
+    }
+    else  
+    {
+      if (phaseSpace)
+      {
+        m23 = EvtRandom::Flat() * (max_m23 - min_m23) + min_m23;
+      }
+      else
+      {
+        m23 = square(mass);
+      }
+      m12 = EvtRandom::Flat() * (max_m12 - min_m12) + min_m12;
+      m13 = MB2 - m12 - m23;
+    }
+}
+
+void EvtBTo3hCP::generateSqMasses_3piMPP(double &m12, double &m13, double &m23,
+                                         double MB2, double m1sq, double m2sq,
+                                         double m3sq) 
+{
+/*
+C There is two ways of generating the events:
+C The first one used a pole-compensation method to generate the
+C events efficiently taking into account the poles due to the
+C Breit-Wigners of the rho s. It is activated by setting
+C Phase_Space to .false.
+C The second one generates events according to phase space. It is
+C inneficient but allows the exploration of the full Dalitz plot
+C in an uniform way. It was found to be usefull fopr some peculiar
+C applications. It is activated by setting
+C Phase_space to .true.
+C Note that in that case, the generation is no longer correct.
+*/
+  static bool phaseSpace = false;
+
+  double max_m12 = square(M_B);
+  double min_m12 = m1sq + m2sq;
+
+  double max_m13 = square(M_B);
+  double min_m13 = m1sq + m3sq;
+
+  double mass = 0;
+
+    if (!phaseSpace)
+    {
+      double y = EvtRandom::Flat() * pi - pi / 2;
+      double x = std::tan(y);
+      mass = x * Gam_rho / 2. + Mass_rho;
+    }
+
+    double z = EvtRandom::Flat();
+    if ( z < 0.5 )  
+    {
+      if (phaseSpace)
+      {
+        m12 = EvtRandom::Flat() * (max_m12 - min_m12) + min_m12;
+      }
+      else
+      {
+        m12 = square(mass);
+      }
+      m13 = EvtRandom::Flat() * (max_m13 - min_m13) + min_m13;
+      m23 = MB2 - m12 - m13;
+    }
+    else  
+    {
+      if (phaseSpace)
+      {
+        m13 = EvtRandom::Flat() * (max_m13 - min_m13) + min_m13;
+      }
+      else
+      {
+        m13 = square(mass);
+      }
+      m12 = EvtRandom::Flat() * (max_m12 - min_m12) + min_m12;
+      m23 = MB2 - m12 - m13;
+    }
+}
+
+void EvtBTo3hCP::generateSqMasses_3piP00(double &m12, double &m13, double &m23,
+                                         double MB2, double m1sq, double m2sq,
+                                         double m3sq) 
+{
+/*
+C There is two ways of generating the events:
+C The first one used a pole-compensation method to generate the
+C events efficiently taking into account the poles due to the
+C Breit-Wigners of the rho s. It is activated by setting
+C Phase_Space to .false.
+C The second one generates events according to phase space. It is
+C inneficient but allows the exploration of the full Dalitz plot
+C in an uniform way. It was found to be usefull fopr some peculiar
+C applications. It is activated by setting
+C Phase_space to .true.
+C Note that in that case, the generation is no longer correct.
+*/
+  static bool phaseSpace = false;
+
+  double max_m12 = square(M_B);
+  double min_m12 = m1sq + m2sq;
+
+  double max_m13 = square(M_B);
+  double min_m13 = m1sq + m3sq;
+
+  double mass = 0;
 
     if (!phaseSpace)
     {
@@ -780,212 +967,12 @@ void EvtBTo3hCP::Evtfirst_step_3piMPP(EvtVector4R &p1, EvtVector4R &p2,
       m23 = MB2 - m12 - m13;
     }
 
-    // Check whether event is physical
-    if ((m23 < min_m23) || (m23 > max_m23))
-      continue;
-    if ((m13 < min_m13) || (m13 > max_m13))
-      continue;
-    if ((m12 < min_m12) || (m12 > max_m12))
-      continue;
-
-    // Now check the cosines of the angles
-    E1 = (square(M_B) + m1sq - m23) / (2. * M_B);
-    E2 = (square(M_B) + m2sq - m13) / (2. * M_B);
-    E3 = (square(M_B) + m3sq - m12) / (2. * M_B);
-    p1mom = square(E1) - m1sq;
-    p2mom = square(E2) - m2sq;
-    p3mom = square(E3) - m3sq;
-    if (p1mom < 0 || p2mom < 0 || p3mom < 0)
-    {
-//      std::cout<<"Momenta magnitude negative\n";
-      continue;
-    }
-    p1mom = sqrt(p1mom);
-    p2mom = sqrt(p2mom);
-    p3mom = sqrt(p3mom);
-
-    cost13 = (2. * E1 * E3 + m1sq + m3sq - m13) / (2. * p1mom * p3mom);
-    cost12 = (2. * E1 * E2 + m1sq + m2sq - m12) / (2. * p1mom * p2mom);
-    cost23 = (2. * E2 * E3 + m2sq + m3sq - m23) / (2. * p2mom * p3mom);
-    if (cost13 < -1. || cost13 > 1. || cost12 < -1. || cost12 > 1. ||
-        cost23 < -1. || cost23 > 1.) 
-    {
-      continue;
-    }
-    eventOK = true;
-  } while ( eventOK == false);
-
-  // Now is time to fill 4-vectors
-  p3.set(E3, 0, 0, p3mom);
-  p1.set(E1, p1mom * sqrt(1. - square(cost13)), 0, p1mom * cost13);
-  p2.set(0, E2);
-  for (int i = 1; i<4; ++i)
-  {
-    p2.set(i, -p1.get(i) - p3.get(i));
-  }
-  if ( p1.get(0) < p1.d3mag() )
-  {
-    std::cout<<"Unphysical p1 generated: "<<p1<<std::endl;
-  } 
-  if ( p2.get(0) < p2.d3mag() )
-  {
-    std::cout<<"Unphysical p2 generated: "<<p2<<std::endl;
-  } 
-  if ( p3.get(0) < p3.d3mag() )
-  {
-    std::cout<<"Unphysical p3 generated: "<<p3<<std::endl;
-  } 
-  if ( fabs(m12+m13+m23-MB2) > 1e-4 )
-  {
-    std::cout << "Unphysical event generated: " << m12 << " " << m13 << " "
-              << m23 << std::endl;
-  }
-//  std::cout << "Generated 4-vectors: " << p1 << " " << p2 << " " << p3
-//            << std::endl;
 }
-
-void EvtBTo3hCP::Evtfirst_step_3piP00(EvtVector4R &p1, EvtVector4R &p2,
-                               EvtVector4R &p3) 
-{
-  static bool phaseSpace = false;
-
-  const double m1sq = p1.mass2();
-  const double m2sq = p2.mass2();
-  const double m3sq = p3.mass2();
-
-  double max_m12 = square(M_B);
-  double min_m12 = m1sq + m2sq;
-
-  double max_m13 = square(M_B);
-  double min_m13 = m1sq + m3sq;
-
-  double max_m23 = square(M_B);
-  double min_m23 = m2sq + m3sq;
-
-  bool eventOK;
-  double m13, m12, m23;
-  double E1;
-  double E2;
-  double E3;
-  double p1mom;
-  double p2mom;
-  double p3mom;
-  double cost13;
-  double cost12;
-  double cost23;
-  eventOK  = false;
-  double mass = 0.0;
-
-  do
-  {
-
-    if (!phaseSpace)
-    {
-      double y = EvtRandom::Flat() * pi - pi / 2;
-      double x = std::tan(y);
-      mass = x * Gam_rho / 2. + Mass_rho;
-    }
-
-    double z = EvtRandom::Flat();
-    if ( z < 0.5 )  
-    {
-      if (phaseSpace)
-      {
-        m12 = EvtRandom::Flat() * (max_m12 - min_m12) + min_m12;
-      }
-      else
-      {
-        m12 = square(mass);
-      }
-      m13 = EvtRandom::Flat() * (max_m13 - min_m13) + min_m13;
-      m23 = MA2 - m12 - m13;
-    }
-    else  
-    {
-      if (phaseSpace)
-      {
-        m13 = EvtRandom::Flat() * (max_m13 - min_m13) + min_m13;
-      }
-      else
-      {
-        m13 = square(mass);
-      }
-      m12 = EvtRandom::Flat() * (max_m12 - min_m12) + min_m12;
-      m23 = MA2 - m12 - m13;
-    }
-
-    // Check whether event is physical
-    if ((m23 < min_m23) || (m23 > max_m23))
-      continue;
-    if ((m13 < min_m13) || (m13 > max_m13))
-      continue;
-    if ((m12 < min_m12) || (m12 > max_m12))
-      continue;
-
-    // Now check the cosines of the angles
-    E1 = (square(M_B) + m1sq - m23) / (2. * M_B);
-    E2 = (square(M_B) + m2sq - m13) / (2. * M_B);
-    E3 = (square(M_B) + m3sq - m12) / (2. * M_B);
-    p1mom = square(E1) - m1sq;
-    p2mom = square(E2) - m2sq;
-    p3mom = square(E3) - m3sq;
-    if (p1mom < 0 || p2mom < 0 || p3mom < 0)
-    {
-//      std::cout<<"Momenta magnitude negative\n";
-      continue;
-    }
-    p1mom = sqrt(p1mom);
-    p2mom = sqrt(p2mom);
-    p3mom = sqrt(p3mom);
-
-    cost13 = (2. * E1 * E3 + m1sq + m3sq - m13) / (2. * p1mom * p3mom);
-    cost12 = (2. * E1 * E2 + m1sq + m2sq - m12) / (2. * p1mom * p2mom);
-    cost23 = (2. * E2 * E3 + m2sq + m3sq - m23) / (2. * p2mom * p3mom);
-    if (cost13 < -1. || cost13 > 1. || cost12 < -1. || cost12 > 1. ||
-        cost23 < -1. || cost23 > 1.) 
-    {
-      continue;
-    }
-    eventOK = true;
-  } while ( eventOK == false);
-
-  // Now is time to fill 4-vectors
-  p3.set(E3, 0, 0, p3mom);
-  p1.set(E1, p1mom * sqrt(1. - square(cost13)), 0, p1mom * cost13);
-  p2.set(0, E2);
-  for (int i = 1; i<4; ++i)
-  {
-    p2.set(i, -p1.get(i) - p3.get(i));
-  }
-  if ( p1.get(0) < p1.d3mag() )
-  {
-    std::cout<<"Unphysical p1 generated: "<<p1<<std::endl;
-  } 
-  if ( p2.get(0) < p2.d3mag() )
-  {
-    std::cout<<"Unphysical p2 generated: "<<p2<<std::endl;
-  } 
-  if ( p3.get(0) < p3.d3mag() )
-  {
-    std::cout<<"Unphysical p3 generated: "<<p3<<std::endl;
-  } 
-  if ( fabs(m12+m13+m23-MA2) > 1e-4 )
-  {
-    std::cout << "Unphysical event generated: " << m12 << " " << m13 << " "
-              << m23 << std::endl;
-  }
-//  std::cout << "Generated 4-vectors: " << p1 << " " << p2 << " " << p3
-//            << std::endl;
-}
-
 int EvtBTo3hCP::EvtCompute_3pi(EvtVector4R &p1, EvtVector4R &p2,
                                  EvtVector4R &p3, double &real_B0,
                                  double &imag_B0, double &real_B0bar,
                                  double &imag_B0bar, int iset) 
 {
-//  std::cout << "Computing with 4-vectors: " << p1 << " " << p2 << " " << p3
-//            << std::endl;
-
   int ierr = 0;
 
   double m12 = (p1+p2).mass();
@@ -1032,9 +1019,6 @@ int EvtBTo3hCP::EvtCompute_3piMPP(EvtVector4R &p1, EvtVector4R &p2,
                                  double &imag_B0, double &real_B0bar,
                                  double &imag_B0bar, int iset) 
 {
-//  std::cout << "Computing with 4-vectors: " << p1 << " " << p2 << " " << p3
-//            << std::endl;
-
   int ierr = 0;
   const double ASHQ = sqrt(2.);
   double m12 = (p1+p2).mass();
@@ -1069,9 +1053,6 @@ int EvtBTo3hCP::EvtCompute_3piP00(EvtVector4R &p1, EvtVector4R &p2,
                                  double &imag_B0, double &real_B0bar,
                                  double &imag_B0bar, int iset) 
 {
-//  std::cout << "Computing with 4-vectors: " << p1 << " " << p2 << " " << p3
-//            << std::endl;
-
   int ierr = 0;
   const double ASHQ = sqrt(2.);
   double m12 = (p1+p2).mass();
@@ -1146,163 +1127,6 @@ int EvtBTo3hCP::EvtCompute_Kpipi(EvtVector4R &p1, EvtVector4R &p2,
   imag_B0bar = imag(MatB0bar) * Wtot;
 
   return ierr;
-}
-
-void EvtBTo3hCP::Evtfirst_step_Kpipi(EvtVector4R &p1, EvtVector4R &p2, EvtVector4R &p3)
-{
-/*
-C There is two ways of generating the events:
-C The first one used a pole-compensation method to generate the
-C events efficiently taking into account the poles due to the
-C Breit-Wigners of the rho s. It is activated by setting
-C Phase_Space to .false.
-C The second one generates events according to phase space. It is
-C inneficient but allows the exploration of the full Dalitz plot
-C in an uniform way. It was found to be usefull fopr some peculiar
-C applications. It is activated by setting
-C Phase_space to .true.
-C Note that in that case, the generation is no longer correct.
-*/
-  static bool phaseSpace = false;
-
-  double m1sq = p1.mass2();
-  double m2sq = p2.mass2();
-  double m3sq = p3.mass2();
-
-  double max_m12 = square(M_B);
-  double min_m12 = m1sq + m2sq + 2 * sqrt(m1sq * m2sq);
-
-  double max_m13 = square(M_B);
-  double min_m13 = m1sq + m3sq + 2 * sqrt(m1sq * m3sq);
-
-  double max_m23 = square(M_B);
-  double min_m23 = m2sq + m3sq + 2 * sqrt(m2sq* m3sq);
-
-  bool eventOK;
-  double m13, m12, m23;
-  double E1;
-  double E2;
-  double E3;
-  double p1mom;
-  double p2mom;
-  double p3mom;
-  double cost13;
-  double cost12;
-  double cost23;
-  eventOK  = false;
-  do
-  {
-    double z = 3. * EvtRandom::Flat();
-    if ( z < 1. )  // K*+
-    {
-      if (phaseSpace)
-      {
-        m13 = EvtRandom::Flat() * (max_m13 - min_m13) + min_m13;
-      }
-      else
-      {
-        double y = EvtRandom::Flat() * pi - pi / 2;
-        double x = std::tan(y);
-        double mass = x * Gam_Kstarp / 2. + Mass_Kstarp;
-        m13 = square(mass);
-      }
-      m12 = EvtRandom::Flat() * (max_m12 - min_m12) + min_m12;
-      m23 = MC2 - m12 - m13;
-    }
-    else if ( z < 2. )  // K*0
-    {
-      if (phaseSpace)
-      {
-        m12 = EvtRandom::Flat() * (max_m12 - min_m12) + min_m12;
-      }
-      else
-      {
-        double y = EvtRandom::Flat() * pi - pi / 2;
-        double x = std::tan(y);
-        double mass = x * Gam_Kstar0 / 2. + Mass_Kstar0;
-        m12 = square(mass);
-      }
-      m13 = EvtRandom::Flat() * (max_m13 - min_m13) + min_m13;
-      m23 = MC2 - m12 - m13;
-    }
-    else  // rho-
-    {
-      if (phaseSpace)
-      {
-        m23 = EvtRandom::Flat() * (max_m23 - min_m23) + min_m23;
-      }
-      else
-      {
-        double y = EvtRandom::Flat() * pi - pi / 2;
-        double x = std::tan(y);
-        double mass = x * Gam_rho / 2. + Mass_rho;
-        m23 = square(mass);
-      }
-      m13 = EvtRandom::Flat() * (max_m13 - min_m13) + min_m13;
-      m12 = MC2 - m23 - m13;
-
-    }
-
-    // Check whether event is physical
-    if ((m23 < min_m23) || (m23 > max_m23))
-      continue;
-    if ((m13 < min_m13) || (m13 > max_m13))
-      continue;
-    if ((m12 < min_m12) || (m12 > max_m12))
-      continue;
-
-    // Now check the cosines of the angles
-    E1 = (square(M_B) + m1sq - m23) / (2. * M_B);
-    E2 = (square(M_B) + m2sq - m13) / (2. * M_B);
-    E3 = (square(M_B) + m3sq - m12) / (2. * M_B);
-    p1mom = square(E1) - m1sq;
-    p2mom = square(E2) - m2sq;
-    p3mom = square(E3) - m3sq;
-    if (p1mom < 0 || p2mom < 0 || p3mom < 0)
-    {
-//      std::cout<<"Momenta magnitude negative\n";
-      continue;
-    }
-    p1mom = sqrt(p1mom);
-    p2mom = sqrt(p2mom);
-    p3mom = sqrt(p3mom);
-
-    cost13 = (2. * E1 * E3 + m1sq + m3sq - m13) / (2. * p1mom * p3mom);
-    cost12 = (2. * E1 * E2 + m1sq + m2sq - m12) / (2. * p1mom * p2mom);
-    cost23 = (2. * E2 * E3 + m2sq + m3sq - m23) / (2. * p2mom * p3mom);
-    if (cost13 < -1. || cost13 > 1. || cost12 < -1. || cost12 > 1. ||
-        cost23 < -1. || cost23 > 1.) 
-    {
-      continue;
-    }
-    eventOK = true;
-  } while ( eventOK == false);
-
-  // Now is time to fill 4-vectors
-  p3.set(E3, 0, 0, p3mom);
-  p1.set(E1, p1mom * sqrt(1 - square(cost13)), 0, p1mom * cost13);
-  p2.set(0, E2);
-  for (int i = 1; i<4; ++i)
-  {
-    p2.set(i, -p1.get(i) - p3.get(i));
-  }
-  if ( p1.get(0) < p1.d3mag() )
-  {
-    std::cout<<"Unphysical p1 generated: "<<p1<<std::endl;
-  } 
-  if ( p2.get(0) < p2.d3mag() )
-  {
-    std::cout<<"Unphysical p2 generated: "<<p2<<std::endl;
-  } 
-  if ( p3.get(0) < p3.d3mag() )
-  {
-    std::cout<<"Unphysical p3 generated: "<<p3<<std::endl;
-  } 
-  if ( fabs(m12+m13+m23-MC2) > 1e-4 )
-  {
-    std::cout << "Unphysical event generated: " << m12 << " " << m13 << " "
-              << m23 << std::endl;
-  }
 }
 
 void EvtBTo3hCP::EvtRotation(EvtVector4R& p, int newRot)
