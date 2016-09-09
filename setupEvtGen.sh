@@ -6,6 +6,8 @@
 # http://svn.cern.ch/guest/evtgen/tags in a web browser. Note that some earlier EvtGen versions
 # will not be compatible with all external dependency versions given below, owing to C++
 # interface differences; see the specific tagged version of the EvtGen/README file for guidance
+# To obtain this script, use 
+# wget -O setupEvtGen.sh "http://evtgen.hepforge.org/git?p=evtgen.git;a=blob_plain;f=setupEvtGen.sh;hb=HEAD"
 
 # Version or tag number. No extraneous spaces on this line!
 VERSION=R01-06-00
@@ -17,8 +19,9 @@ INSTALL_BASE=`pwd`
 
 echo Will setup EvtGen $VERSION in $INSTALL_BASE
 
-echo Downloading EvtGen from SVN
-svn export http://svn.cern.ch/guest/evtgen/tags/$VERSION
+echo Downloading EvtGen from GIT
+#svn export http://svn.cern.ch/guest/evtgen/tags/$VERSION
+git clone -b $VERSION http://evtgen.hepforge.org/git/evtgen.git
 
 osArch=`uname`
 
@@ -42,8 +45,8 @@ tar -xzf TAUOLA.1.1.5.tar.gz
 # Patch TAUOLA and PHOTOS on Darwin (Mac)
 if [ "$osArch" == "Darwin" ]
 then
-  patch -p0 < $INSTALL_BASE/$VERSION/platform/tauola_Darwin.patch
-  patch -p0 < $INSTALL_BASE/$VERSION/platform/photos_Darwin.patch
+  patch -p0 < $INSTALL_BASE/evtgen/platform/tauola_Darwin.patch
+  patch -p0 < $INSTALL_BASE/evtgen/platform/photos_Darwin.patch
 fi
 
 echo Installing HepMC in $INSTALL_BASE/external/HepMC/
@@ -69,12 +72,12 @@ cd ../PHOTOS/
 make
 
 echo Building EvtGen
-cd $INSTALL_BASE/$VERSION
+cd $INSTALL_BASE/evtgen
 ./configure --hepmcdir=$INSTALL_BASE/external/HepMC/ --photosdir=$INSTALL_BASE/external/PHOTOS/ --pythiadir=$INSTALL_BASE/external/pythia8186/ --tauoladir=$INSTALL_BASE/external/TAUOLA/
 make
 
 echo Setup done.
 echo To complete, add the following command to your .bashrc file or run it in your terminal before running any programs that use the EvtGen library:
-echo LD_LIBRARY_PATH=$INSTALL_BASE/external/HepMC/lib:$INSTALL_BASE/external/pythia8186/lib:$INSTALL_BASE/external/PHOTOS/lib:$INSTALL_BASE/external/TAUOLA/lib:$INSTALL_BASE/$VERSION/lib:\$LD_LIBRARY_PATH
+echo LD_LIBRARY_PATH=$INSTALL_BASE/external/HepMC/lib:$INSTALL_BASE/external/pythia8186/lib:$INSTALL_BASE/external/PHOTOS/lib:$INSTALL_BASE/external/TAUOLA/lib:$INSTALL_BASE/evtgen/lib:\$LD_LIBRARY_PATH
 echo Also set the Pythia8 data path:
 echo PYTHIA8DATA=$INSTALL_BASE/external/pythia8186/xmldoc
