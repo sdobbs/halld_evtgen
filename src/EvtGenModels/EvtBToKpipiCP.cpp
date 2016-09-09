@@ -23,6 +23,7 @@
 //
 // Modification history:
 //
+//    MK               September, 2016     Reimplementation to C++
 //    Versille     September, 1997         Module created
 //
 //------------------------------------------------------------------------
