@@ -4,6 +4,14 @@
 //
 //===========================================================================
 
+13th September 2016 John Back
+    Modified EvtTauolaEngine to use internal Tauola spin matrices for 
+    tau pair events by temporarily setting the PDG id of the mother as a
+    boson, keeping the same 4-momentum. The new hadronic currents are now 
+    used by default. Also added the ability to change some Tauola parameters 
+    using the "Define" keyword in decay files. Added an example decay file
+    illustrating the new features: validation/TauolaFiles/Btautau.dec
+
 9th September 2016 Michal Kreps
     Reimplement code in EvtBTo3pi.F, EvtBTo3piMPP.F, EvtBTo3piP00.F and 
     EvtBToKpipi.F in C++ in order to remove dependence on Fortran compiler.
