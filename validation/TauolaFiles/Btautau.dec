@@ -19,6 +19,9 @@ Define TauolaBR1 1.0
 #Define TauolaBR3 0.5
 #Define TauolaBR4 0.6667
 
+# Use this to disable spin effects, i.e. just generate kinematics
+#Define TauolaNoSpin 1
+
 Decay B0
 1.0 tau- tau+ PHSP;
 Enddecay

@@ -51,6 +51,7 @@ private:
   bool _initialised;
   int _tauPDG, _nTauolaModes;    
   int _neutPropType, _posPropType, _negPropType;
+  bool _useSpin;
 
   HepMC::GenParticle* createGenParticle(EvtParticle* theParticle);
 
