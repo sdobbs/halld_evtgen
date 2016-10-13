@@ -4,10 +4,19 @@
 //
 //===========================================================================
 
+13th October 2016 John Back
+    Added the TauolaCurrentOption decfile keyword to select the hadronic 
+    current in Tauola; default is the BaBar-tuned current option (int = 1).
+    EvtParticles can store double attributes using the functions 
+    setAttributeDouble(name, double) and getAttributeDouble(name), which can
+    be useful for storing and retrieving amplitude weights, for example.
+    The analogous EvtParticle integer attribute interface remains unchanged:
+    setAttribute(name, int) and getAttribute(name).
+
 13th September 2016 John Back
     Modified EvtTauolaEngine to use internal Tauola spin matrices for 
     tau pair events by temporarily setting the PDG id of the mother as a
-    boson, keeping the same 4-momentum. The new hadronic currents are now 
+    boson, keeping the same 4-momentum. The BaBar hadronic currents are now 
     used by default. Also added the ability to change some Tauola parameters 
     using the "Define" keyword in decay files. Added an example decay file
     illustrating the new features: validation/TauolaFiles/Btautau.dec

@@ -1,5 +1,6 @@
-# Specify if we want to use the old CLEO-type hadronic currents (default = 0 i.e. "No")
-#Define TauolaUseOldCurrents 1
+# Specify what hadronic currents we want: orig CLEO = 0, BaBar = 1 (default).
+# No check is made by EvtGen on valid integer options - its just passed to Tauola
+#Define TauolaCurrentOption 1
 
 # Choose the neutral propagator type for Tauola spin matrix calculations
 # "Z", "Gamma", "Higgs" (H0), "PseudoHiggs" (A0), "MixedHiggs" (A0/H0)
