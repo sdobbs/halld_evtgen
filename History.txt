@@ -4,6 +4,12 @@
 //
 //===========================================================================
 
+3rd November 2016 John Back
+    Modified EvtFlatQ2 model to work for all B -> X lepton lepton modes, as
+    well as adding an extra phase space factor to correct for the dip at low
+    q^2, courtesy of Marcin Chrzaszcz & Thomas Blake (LHCb), which is enabled
+    by using "FLATQ2 1" instead of just "FLATQ2" in the decay file.
+
 13th October 2016 John Back
     Added the TauolaCurrentOption decfile keyword to select the hadronic 
     current in Tauola; default is the BaBar-tuned current option (int = 1).
