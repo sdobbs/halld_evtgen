@@ -4,6 +4,15 @@
 //
 //===========================================================================
 
+7th April 2017 John Back
+    Modified EvtGenExternal/EvtPythiaEngine to ensure that the EvtGen-based
+    instances of Pythia8 (for generic and alias decays) use the same
+    particle properties as defined by EvtGen, courtesy Patrick Robbe (LHCb).
+
+5th April 2017 Michal Kreps
+    Fixed indexing in copy constructor of Evt3Rank3C, which would otherwise
+    produce an infinite loop; bug report from David Grellscheid.
+
 3rd November 2016 John Back
     Modified EvtFlatQ2 model to work for all B -> X lepton lepton modes, as
     well as adding an extra phase space factor to correct for the dip at low
