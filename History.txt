@@ -4,6 +4,9 @@
 //
 //===========================================================================
 
+27th April 2017 John Back
+    Fixed DDalitz particle ordering for D+ -> pi+ K- K+ and K+ pi+ K- modes.
+
 7th April 2017 John Back
     Modified EvtGenExternal/EvtPythiaEngine to ensure that the EvtGen-based
     instances of Pythia8 (for generic and alias decays) use the same

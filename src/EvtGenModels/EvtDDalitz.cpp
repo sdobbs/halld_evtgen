@@ -311,8 +311,8 @@ void EvtDDalitz::init(){
      if ( d1==KM && d2==KP && d3==PIP ) { _flag=7; _d1=0; _d2=1; _d3=2; }
      if ( d1==KM && d3==KP && d2==PIP ) { _flag=7; _d1=0; _d2=2; _d3=1; }
      if ( d2==KM && d1==KP && d3==PIP ) { _flag=7; _d1=1; _d2=0; _d3=2; }
-     if ( d2==KM && d3==KP && d1==PIP ) { _flag=7; _d1=2; _d2=0; _d3=1; }
-     if ( d3==KM && d1==KP && d2==PIP ) { _flag=7; _d1=1; _d2=2; _d3=0; }
+     if ( d2==KM && d3==KP && d1==PIP ) { _flag=7; _d1=1; _d2=2; _d3=0; }
+     if ( d3==KM && d1==KP && d2==PIP ) { _flag=7; _d1=2; _d2=0; _d3=1; }
      if ( d3==KM && d2==KP && d1==PIP ) { _flag=7; _d1=2; _d2=1; _d3=0; }
 
      if ( d1==PIM && d2==PIP && d3==KP ) { _flag=8; _d1=0; _d2=1; _d3=2; }
@@ -334,8 +334,8 @@ void EvtDDalitz::init(){
      if ( d1==KP && d2==KM && d3==PIM ) { _flag=7; _d1=0; _d2=1; _d3=2; }
      if ( d1==KP && d3==KM && d2==PIM ) { _flag=7; _d1=0; _d2=2; _d3=1; }
      if ( d2==KP && d1==KM && d3==PIM ) { _flag=7; _d1=1; _d2=0; _d3=2; }
-     if ( d2==KP && d3==KM && d1==PIM ) { _flag=7; _d1=2; _d2=0; _d3=1; }
-     if ( d3==KP && d1==KM && d2==PIM ) { _flag=7; _d1=1; _d2=2; _d3=0; }
+     if ( d2==KP && d3==KM && d1==PIM ) { _flag=7; _d1=1; _d2=2; _d3=0; }
+     if ( d3==KP && d1==KM && d2==PIM ) { _flag=7; _d1=2; _d2=0; _d3=1; }
      if ( d3==KP && d2==KM && d1==PIM ) { _flag=7; _d1=2; _d2=1; _d3=0; } 
     
      if ( d1==PIP && d2==PIM && d3==KM ) { _flag=8; _d1=0; _d2=1; _d3=2; }
