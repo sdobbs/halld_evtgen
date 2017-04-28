@@ -4,8 +4,14 @@
 //
 //===========================================================================
 
-27th April 2017 John Back
-    Fixed DDalitz particle ordering for D+ -> pi+ K- K+ and K+ pi+ K- modes.
+27th and 28th April 2017 John Back
+    Fixed DDalitz particle ordering for the following modes (including CC):
+      Flag 6:  Ds+ -> pi+ K- K+  and  K+ pi+ K-
+      Flag 7:  D+  -> pi+ K- K+  and  K+ pi+ K-
+      Flag 8:  D+  -> K+ pi- pi+ and  pi+ K+ pi-
+      Flag 9:  Ds+ -> K+ pi- pi+ and  pi+ K+ pi-
+      Flag 10: D+  -> 2nd pi+ pi- 1st pi+  and  pi+ pi+ pi-
+      Flag 11: Ds+ -> 2nd pi+ pi- 1st pi+  and  pi+ pi+ pi-
 
 7th April 2017 John Back
     Modified EvtGenExternal/EvtPythiaEngine to ensure that the EvtGen-based
