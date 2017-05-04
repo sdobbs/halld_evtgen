@@ -4,8 +4,16 @@
 //
 //===========================================================================
 
+4th May 2017 John Back
+    Further fixes to DDalitz particle ordering (including charge-conjugates):
+    Mode 5:  D0 -> K- K0bar K+ and K+ K- K0bar
+    Mode 12: D0 -> pi0 pi- pi+ and pi+ pi0 pi-
+    Removed unneeded index ordering checks for mode 10 (D+ -> pi- pi+ pi+)
+    and mode 11 (Ds+ -> pi- pi+ pi+)
+
 27th April 2017 John Back
-    Fixed DDalitz particle ordering for D+ -> pi+ K- K+ and K+ pi+ K- modes.
+    Fixed DDalitz particle ordering for mode 7: D+ -> pi+ K- K+ and K+ pi+ K-
+    and their charge-conjugates
 
 7th April 2017 John Back
     Modified EvtGenExternal/EvtPythiaEngine to ensure that the EvtGen-based
