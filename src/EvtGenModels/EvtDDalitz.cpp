@@ -109,9 +109,6 @@ void EvtDDalitz::init(){
   checkSpinDaughter(2,EvtSpinType::SCALAR);
 
   EvtId parnum=getParentId();
-  EvtId d1=getDaug(0);
-  EvtId d2=getDaug(1);
-  EvtId d3=getDaug(2);
 
   std::vector<std::pair<EvtId, int> > daughters;
   for (int i=0; i<3; ++i) {
@@ -120,129 +117,92 @@ void EvtDDalitz::init(){
 
   // Sort daughters, they will end in order K0/KB/KS/KL, KM, PIM, PI0, PIP, KP
   std::sort(daughters.begin(), daughters.end(), compareIds);
+/*
   std::cout << "DDALITZ sorting: ";
   for (int i=0; i<3; ++i ) {
     std::cout << EvtPDL::getStdHep(daughters[i].first) << " ";
   }
   std::cout << std::endl;
+*/
 
   _flag=0;
   if ( parnum == D0 ) {
-    //look for either a K- pi+ pi0 or K0bar pi+ pi-
-    if ( d1==KM && d2==PIP && d3==PI0 ) { _flag=4; _d1=0; _d2=1; _d3=2;}
-    if ( d1==KM && d3==PIP && d2==PI0 ) { _flag=4; _d1=0; _d2=2; _d3=1;}
-    if ( d2==KM && d1==PIP && d3==PI0 ) { _flag=4; _d1=1; _d2=0; _d3=2;}
-    if ( d2==KM && d3==PIP && d1==PI0 ) { _flag=4; _d1=1; _d2=2; _d3=0;}
-    if ( d3==KM && d1==PIP && d2==PI0 ) { _flag=4; _d1=2; _d2=0; _d3=1;}
-    if ( d3==KM && d2==PIP && d1==PI0 ) { _flag=4; _d1=2; _d2=1; _d3=0;}
+    //look for K- pi+ pi0
+    if (daughters[0].first == KM && daughters[1].first == PI0 &&
+        daughters[2].first == PIP) {
+      _flag = 4;
+      _d1 = daughters[0].second;
+      _d2 = daughters[2].second;
+      _d3 = daughters[1].second;
+    }
 
-    if ( d1==KB && d2==PIP && d3==PIM )  { _flag=3; _d1=0; _d2=2; _d3=1;}
-    if ( d1==KB && d3==PIP && d2==PIM ) { _flag=3; _d1=0; _d2=1; _d3=2;}
-    if ( d2==KB && d1==PIP && d3==PIM ) { _flag=3; _d1=1; _d2=2; _d3=0;}
-    if ( d2==KB && d3==PIP && d1==PIM ) { _flag=3; _d1=1; _d2=0; _d3=2;}
-    if ( d3==KB && d1==PIP && d2==PIM ) { _flag=3; _d1=2; _d2=1; _d3=0;}
-    if ( d3==KB && d2==PIP && d1==PIM ) { _flag=3; _d1=2; _d2=0; _d3=1;}
+    //look for KB pi+ pi-
+    if ((daughters[0].first == KB || daughters[0].first == KL ||
+         daughters[0].first == KS) &&
+        daughters[1].first == PIM && daughters[2].first == PIP) {
+      _flag = 3;
+      _d1 = daughters[0].second;
+      _d2 = daughters[1].second;
+      _d3 = daughters[2].second;
+    }
 
-    if ( d1==KL && d2==PIP && d3==PIM )  { _flag=3; _d1=0; _d2=2; _d3=1;}
-    if ( d1==KL && d3==PIP && d2==PIM ) { _flag=3; _d1=0; _d2=1; _d3=2;}
-    if ( d2==KL && d1==PIP && d3==PIM ) { _flag=3; _d1=1; _d2=2; _d3=0;}
-    if ( d2==KL && d3==PIP && d1==PIM ) { _flag=3; _d1=1; _d2=0; _d3=2;}
-    if ( d3==KL && d1==PIP && d2==PIM ) { _flag=3; _d1=2; _d2=1; _d3=0;}
-    if ( d3==KL && d2==PIP && d1==PIM ) { _flag=3; _d1=2; _d2=0; _d3=1;}
+    //look for KB K+ K-
+    if ((daughters[0].first == KB || daughters[0].first == KL ||
+         daughters[0].first == KS) &&
+        daughters[1].first == KM && daughters[2].first == KP) {
+      _flag = 5;
+      _d1 = daughters[0].second;
+      _d2 = daughters[2].second;
+      _d3 = daughters[1].second;
+    }
 
-    if ( d1==KS && d2==PIP && d3==PIM )  { _flag=3; _d1=0; _d2=2; _d3=1;}
-    if ( d1==KS && d3==PIP && d2==PIM ) { _flag=3; _d1=0; _d2=1; _d3=2;}
-    if ( d2==KS && d1==PIP && d3==PIM ) { _flag=3; _d1=1; _d2=2; _d3=0;}
-    if ( d2==KS && d3==PIP && d1==PIM ) { _flag=3; _d1=1; _d2=0; _d3=2;}
-    if ( d3==KS && d1==PIP && d2==PIM ) { _flag=3; _d1=2; _d2=1; _d3=0;}
-    if ( d3==KS && d2==PIP && d1==PIM ) { _flag=3; _d1=2; _d2=0; _d3=1;}
-    
-    if ( d1==KS && d2==KP && d3==KM ) {_flag=5;_d1=0;_d2=1;_d3=2;}
-    if ( d1==KS && d3==KP && d2==KM ) {_flag=5;_d1=0;_d2=2;_d3=1;}
-    if ( d2==KS && d1==KP && d3==KM ) {_flag=5;_d1=1;_d2=0;_d3=2;}
-    if ( d2==KS && d3==KP && d1==KM ) {_flag=5;_d1=1;_d2=2;_d3=0;}
-    if ( d3==KS && d1==KP && d2==KM ) {_flag=5;_d1=2;_d2=0;_d3=1;}
-    if ( d3==KS && d2==KP && d1==KM ) {_flag=5;_d1=2;_d2=1;_d3=0;}   
-
-    if ( d1==KL && d2==KP && d3==KM ) {_flag=5;_d1=0;_d2=1;_d3=2;}
-    if ( d1==KL && d3==KP && d2==KM ) {_flag=5;_d1=0;_d2=2;_d3=1;}
-    if ( d2==KL && d1==KP && d3==KM ) {_flag=5;_d1=1;_d2=0;_d3=2;}
-    if ( d2==KL && d3==KP && d1==KM ) {_flag=5;_d1=1;_d2=2;_d3=0;}
-    if ( d3==KL && d1==KP && d2==KM ) {_flag=5;_d1=2;_d2=0;_d3=1;}
-    if ( d3==KL && d2==KP && d1==KM ) {_flag=5;_d1=2;_d2=1;_d3=0;}   
-
-    if ( d1==KB && d2==KP && d3==KM ) {_flag=5;_d1=0;_d2=1;_d3=2;}
-    if ( d1==KB && d3==KP && d2==KM ) {_flag=5;_d1=0;_d2=2;_d3=1;}
-    if ( d2==KB && d1==KP && d3==KM ) {_flag=5;_d1=1;_d2=0;_d3=2;}
-    if ( d2==KB && d3==KP && d1==KM ) {_flag=5;_d1=1;_d2=2;_d3=0;}
-    if ( d3==KB && d1==KP && d2==KM ) {_flag=5;_d1=2;_d2=0;_d3=1;}
-    if ( d3==KB && d2==KP && d1==KM ) {_flag=5;_d1=2;_d2=1;_d3=0;}   
-
-    if ( d1==PIM && d2==PIP && d3==PI0 ) { _flag=12;_d1=0;_d2=1;_d3=2;}
-    if ( d1==PIM && d3==PIP && d2==PI0 ) { _flag=12;_d1=0;_d2=2;_d3=1;}
-    if ( d2==PIM && d1==PIP && d3==PI0 ) { _flag=12;_d1=1;_d2=0;_d3=2;}
-    if ( d2==PIM && d3==PIP && d1==PI0 ) { _flag=12;_d1=1;_d2=2;_d3=0;}
-    if ( d3==PIM && d1==PIP && d2==PI0 ) { _flag=12;_d1=2;_d2=0;_d3=1;}
-    if ( d3==PIM && d2==PIP && d1==PI0 ) { _flag=12;_d1=2;_d2=1;_d3=0;}
+    //look for pi- pi+ pi0
+    if (daughters[0].first == PIM && daughters[1].first == PI0 &&
+        daughters[2].first == PIP) {
+      _flag = 12;
+      _d1 = daughters[0].second;
+      _d2 = daughters[2].second;
+      _d3 = daughters[1].second;
+    }
   }
   if ( parnum == D0B ) {
-    //look for either a K+ pi- pi0 or K0 pi+ pi-
-    if ( d1==KP && d2==PIM && d3==PI0 )  { _flag=4; _d1=0; _d2=1; _d3=2;}
-    if ( d1==KP && d3==PIM && d2==PI0 ) { _flag=4; _d1=0; _d2=2; _d3=1;}
-    if ( d2==KP && d1==PIM && d3==PI0 ) { _flag=4; _d1=1; _d2=0; _d3=2;}
-    if ( d2==KP && d3==PIM && d1==PI0 ) { _flag=4; _d1=1; _d2=2; _d3=0;}
-    if ( d3==KP && d1==PIM && d2==PI0 ) { _flag=4; _d1=2; _d2=0; _d3=1;}
-    if ( d3==KP && d2==PIM && d1==PI0 ) { _flag=4; _d1=2; _d2=1; _d3=0;}
+    //look for K+ pi- pi0
+    if (daughters[0].first == PIM && daughters[1].first == PI0 &&
+        daughters[2].first == KP) {
+      _flag = 4;
+      _d1 = daughters[2].second;
+      _d2 = daughters[0].second;
+      _d3 = daughters[1].second;
+    }
 
-    if ( d1==K0 && d2==PIP && d3==PIM )  { _flag=3; _d1=0; _d2=1; _d3=2;}
-    if ( d1==K0 && d3==PIP && d2==PIM ) { _flag=3; _d1=0; _d2=2; _d3=1;}
-    if ( d2==K0 && d1==PIP && d3==PIM ) { _flag=3; _d1=1; _d2=0; _d3=2;}
-    if ( d2==K0 && d3==PIP && d1==PIM ) { _flag=3; _d1=1; _d2=2; _d3=0;}
-    if ( d3==K0 && d1==PIP && d2==PIM ) { _flag=3; _d1=2; _d2=0; _d3=1;}
-    if ( d3==K0 && d2==PIP && d1==PIM ) { _flag=3; _d1=2; _d2=1; _d3=0;}
+    //look for K0 pi+ pi-
+    if ((daughters[0].first == K0 || daughters[0].first == KL ||
+         daughters[0].first == KS) &&
+        daughters[1].first == PIM && daughters[2].first == PIP) {
+      _flag = 3;
+      _d1 = daughters[0].second;
+      _d2 = daughters[2].second;
+      _d3 = daughters[1].second;
+    }
 
-    if ( d1==KL && d2==PIP && d3==PIM )  { _flag=3; _d1=0; _d2=1; _d3=2;}
-    if ( d1==KL && d3==PIP && d2==PIM ) { _flag=3; _d1=0; _d2=2; _d3=1;}
-    if ( d2==KL && d1==PIP && d3==PIM ) { _flag=3; _d1=1; _d2=0; _d3=2;}
-    if ( d2==KL && d3==PIP && d1==PIM ) { _flag=3; _d1=1; _d2=2; _d3=0;}
-    if ( d3==KL && d1==PIP && d2==PIM ) { _flag=3; _d1=2; _d2=0; _d3=1;}
-    if ( d3==KL && d2==PIP && d1==PIM ) { _flag=3; _d1=2; _d2=1; _d3=0;}
+    //look for K0 K+ K-
+    if ((daughters[0].first == K0 || daughters[0].first == KL ||
+         daughters[0].first == KS) &&
+        daughters[1].first == KM && daughters[2].first == KP) {
+      _flag = 5;
+      _d1 = daughters[0].second;
+      _d2 = daughters[1].second;
+      _d3 = daughters[2].second;
+    }
 
-    if ( d1==KS && d2==PIP && d3==PIM )  { _flag=3; _d1=0; _d2=1; _d3=2;}
-    if ( d1==KS && d3==PIP && d2==PIM ) { _flag=3; _d1=0; _d2=2; _d3=1;}
-    if ( d2==KS && d1==PIP && d3==PIM ) { _flag=3; _d1=1; _d2=0; _d3=2;}
-    if ( d2==KS && d3==PIP && d1==PIM ) { _flag=3; _d1=1; _d2=2; _d3=0;}
-    if ( d3==KS && d1==PIP && d2==PIM ) { _flag=3; _d1=2; _d2=0; _d3=1;}
-    if ( d3==KS && d2==PIP && d1==PIM ) { _flag=3; _d1=2; _d2=1; _d3=0;}
-
-    if ( d1==KS && d2==KM && d3==KP ) {_flag=5;_d1=0;_d2=1;_d3=2;}
-    if ( d1==KS && d3==KM && d2==KP ) {_flag=5;_d1=0;_d2=2;_d3=1;}
-    if ( d2==KS && d1==KM && d3==KP ) {_flag=5;_d1=1;_d2=0;_d3=2;}
-    if ( d2==KS && d3==KM && d1==KP ) {_flag=5;_d1=1;_d2=2;_d3=0;}
-    if ( d3==KS && d1==KM && d2==KP ) {_flag=5;_d1=2;_d2=0;_d3=1;}
-    if ( d3==KS && d2==KM && d1==KP ) {_flag=5;_d1=2;_d2=1;_d3=0;}
-
-    if ( d1==KL && d2==KM && d3==KP ) {_flag=5;_d1=0;_d2=1;_d3=2;}
-    if ( d1==KL && d3==KM && d2==KP ) {_flag=5;_d1=0;_d2=2;_d3=1;}
-    if ( d2==KL && d1==KM && d3==KP ) {_flag=5;_d1=1;_d2=0;_d3=2;}
-    if ( d2==KL && d3==KM && d1==KP ) {_flag=5;_d1=1;_d2=2;_d3=0;}
-    if ( d3==KL && d1==KM && d2==KP ) {_flag=5;_d1=2;_d2=0;_d3=1;}
-    if ( d3==KL && d2==KM && d1==KP ) {_flag=5;_d1=2;_d2=1;_d3=0;}
-
-    if ( d1==K0 && d2==KM && d3==KP ) {_flag=5;_d1=0;_d2=1;_d3=2;}
-    if ( d1==K0 && d3==KM && d2==KP ) {_flag=5;_d1=0;_d2=2;_d3=1;}
-    if ( d2==K0 && d1==KM && d3==KP ) {_flag=5;_d1=1;_d2=0;_d3=2;}
-    if ( d2==K0 && d3==KM && d1==KP ) {_flag=5;_d1=1;_d2=2;_d3=0;}
-    if ( d3==K0 && d1==KM && d2==KP ) {_flag=5;_d1=2;_d2=0;_d3=1;}
-    if ( d3==K0 && d2==KM && d1==KP ) {_flag=5;_d1=2;_d2=1;_d3=0;}
-
-    if ( d1==PIP && d2==PIM && d3==PI0 ) { _flag=12;_d1=0;_d2=1;_d3=2;}
-    if ( d1==PIP && d3==PIM && d2==PI0 ) { _flag=12;_d1=0;_d2=2;_d3=1;}
-    if ( d2==PIP && d1==PIM && d3==PI0 ) { _flag=12;_d1=1;_d2=0;_d3=2;}
-    if ( d2==PIP && d3==PIM && d1==PI0 ) { _flag=12;_d1=1;_d2=2;_d3=0;}
-    if ( d3==PIP && d1==PIM && d2==PI0 ) { _flag=12;_d1=2;_d2=0;_d3=1;}
-    if ( d3==PIP && d2==PIM && d1==PI0 ) { _flag=12;_d1=2;_d2=1;_d3=0;}
-
+    //look for pi- pi+ pi0
+    if (daughters[0].first == PIM && daughters[1].first == PI0 &&
+        daughters[2].first == PIP) {
+      _flag = 12;
+      _d1 = daughters[2].second;
+      _d2 = daughters[0].second;
+      _d3 = daughters[1].second;
+    }
   }
 
   if ( parnum == DP ) {
@@ -264,10 +224,37 @@ void EvtDDalitz::init(){
       _d2 = daughters[1].second;
       _d3 = daughters[2].second;
     }
+
+    //look for K- K+ pi+
+    if (daughters[0].first == KM && daughters[1].first == PIP &&
+        daughters[2].first == KP) {
+      _flag = 7;
+      _d1 = daughters[0].second;
+      _d2 = daughters[2].second;
+      _d3 = daughters[1].second;
+    }
+
+    //look for K+ pi+ pi-
+    if (daughters[0].first == PIM && daughters[1].first == PIP &&
+        daughters[2].first == KP) {
+      _flag = 8;
+      _d1 = daughters[0].second;
+      _d2 = daughters[1].second;
+      _d3 = daughters[2].second;
+    }
+
+    //look for pi+ pi+ pi-
+    if (daughters[0].first == PIM && daughters[1].first == PIP &&
+        daughters[2].first == PIP) {
+      _flag = 10;
+      _d1 = daughters[0].second;
+      _d2 = daughters[1].second;
+      _d3 = daughters[2].second;
+    }
   }
 
   if ( parnum == DM ) {
-    //look for KB pi+ pi0
+    //look for K0 pi- pi0
     if ((daughters[0].first == K0 || daughters[0].first == KL ||
          daughters[0].first == KS) &&
         daughters[1].first == PIM && daughters[2].first == PI0) {
@@ -277,7 +264,7 @@ void EvtDDalitz::init(){
       _d3 = daughters[2].second;
     }
 
-    //look for K- pi+ pi+
+    //look for K+ pi- pi-
     if (daughters[0].first == PIM && daughters[1].first == PIM &&
         daughters[2].first == KP) {
       _flag = 1;
@@ -285,86 +272,91 @@ void EvtDDalitz::init(){
       _d2 = daughters[0].second;
       _d3 = daughters[1].second;
     }
+
+    //look for K- K+ pi-
+    if (daughters[0].first == KM && daughters[1].first == PIM &&
+        daughters[2].first == KP) {
+      _flag = 7;
+      _d1 = daughters[2].second;
+      _d2 = daughters[0].second;
+      _d3 = daughters[1].second;
+    }
+
+    //look for K- pi+ pi-
+    if (daughters[0].first == KM && daughters[1].first == PIM &&
+        daughters[2].first == PIP) {
+      _flag = 8;
+      _d1 = daughters[2].second;
+      _d2 = daughters[1].second;
+      _d3 = daughters[0].second;
+    }
+
+    //look for pi+ pi- pi-
+    if (daughters[0].first == PIM && daughters[1].first == PIM &&
+        daughters[2].first == PIP) {
+      _flag = 10;
+      _d1 = daughters[2].second;
+      _d2 = daughters[0].second;
+      _d3 = daughters[1].second;
+    }
   }
 
   if ( parnum == DSP ) {
-     if ( d1==KM && d2==KP && d3==PIP ) { _flag=6; _d1=0; _d2=1; _d3=2; }
-     if ( d1==KM && d3==KP && d2==PIP ) { _flag=6; _d1=0; _d2=2; _d3=1; }
-     if ( d2==KM && d1==KP && d3==PIP ) { _flag=6; _d1=1; _d2=0; _d3=2; }
-     if ( d2==KM && d3==KP && d1==PIP ) { _flag=6; _d1=1; _d2=2; _d3=0; }
-     if ( d3==KM && d1==KP && d2==PIP ) { _flag=6; _d1=2; _d2=0; _d3=1; }
-     if ( d3==KM && d2==KP && d1==PIP ) { _flag=6; _d1=2; _d2=1; _d3=0; }
+    //look for K- K+ pi+
+    if (daughters[0].first == KM && daughters[1].first == PIP &&
+        daughters[2].first == KP) {
+      _flag = 6;
+      _d1 = daughters[0].second;
+      _d2 = daughters[2].second;
+      _d3 = daughters[1].second;
+    }
 
-     if ( d1==PIM && d2==PIP && d3==KP ) { _flag=9; _d1=0; _d2=1; _d3=2; }
-     if ( d1==PIM && d3==PIP && d2==KP ) { _flag=9; _d1=0; _d2=2; _d3=1; }
-     if ( d2==PIM && d1==PIP && d3==KP ) { _flag=9; _d1=1; _d2=0; _d3=2; }
-     if ( d2==PIM && d3==PIP && d1==KP ) { _flag=9; _d1=1; _d2=2; _d3=0; }
-     if ( d3==PIM && d1==PIP && d2==KP ) { _flag=9; _d1=2; _d2=0; _d3=1; }
-     if ( d3==PIM && d2==PIP && d1==KP ) { _flag=9; _d1=2; _d2=1; _d3=0; }
+    //look for K+ pi+ pi-
+    if (daughters[0].first == PIM && daughters[1].first == PIP &&
+        daughters[2].first == KP) {
+      _flag = 9;
+      _d1 = daughters[0].second;
+      _d2 = daughters[1].second;
+      _d3 = daughters[2].second;
+    }
 
-     if ( d1==PIM && d2==PIP && d3==PIP ) { _flag=11; _d1=0; _d2=1; _d3=2; }
-     if ( d2==PIM && d1==PIP && d3==PIP ) { _flag=11; _d1=1; _d2=0; _d3=2; }
-     if ( d3==PIM && d1==PIP && d2==PIP ) { _flag=11; _d1=2; _d2=0; _d3=1; }
+    //look for pi+ pi+ pi-
+    if (daughters[0].first == PIM && daughters[1].first == PIP &&
+        daughters[2].first == PIP) {
+      _flag = 10;
+      _d1 = daughters[0].second;
+      _d2 = daughters[1].second;
+      _d3 = daughters[2].second;
+    }
   }
 
   if ( parnum == DSM ) {
-     if ( d1==KP && d2==KM && d3==PIM ) { _flag=6; _d1=0; _d2=1; _d3=2; }
-     if ( d1==KP && d3==KM && d2==PIM ) { _flag=6; _d1=0; _d2=2; _d3=1; }
-     if ( d2==KP && d1==KM && d3==PIM ) { _flag=6; _d1=1; _d2=0; _d3=2; }
-     if ( d2==KP && d3==KM && d1==PIM ) { _flag=6; _d1=1; _d2=2; _d3=0; }
-     if ( d3==KP && d1==KM && d2==PIM ) { _flag=6; _d1=2; _d2=0; _d3=1; }
-     if ( d3==KP && d2==KM && d1==PIM ) { _flag=6; _d1=2; _d2=1; _d3=0; }
+    //look for K- K+ pi+
+    if (daughters[0].first == KM && daughters[1].first == PIM &&
+        daughters[2].first == KP) {
+      _flag = 6;
+      _d1 = daughters[2].second;
+      _d2 = daughters[0].second;
+      _d3 = daughters[1].second;
+    }
 
-     if ( d1==PIP && d2==PIM && d3==KM ) { _flag=9; _d1=0; _d2=1; _d3=2; }
-     if ( d1==PIP && d3==PIM && d2==KM ) { _flag=9; _d1=0; _d2=2; _d3=1; }
-     if ( d2==PIP && d1==PIM && d3==KM ) { _flag=9; _d1=1; _d2=0; _d3=2; }
-     if ( d2==PIP && d3==PIM && d1==KM ) { _flag=9; _d1=1; _d2=2; _d3=0; }
-     if ( d3==PIP && d1==PIM && d2==KM ) { _flag=9; _d1=2; _d2=0; _d3=1; }
-     if ( d3==PIP && d2==PIM && d1==KM ) { _flag=9; _d1=2; _d2=1; _d3=0; }
+    //look for K- pi+ pi-
+    if (daughters[0].first == KM && daughters[1].first == PIM &&
+        daughters[2].first == PIP) {
+      _flag = 9;
+      _d1 = daughters[2].second;
+      _d2 = daughters[1].second;
+      _d3 = daughters[0].second;
+    }
      
-     if ( d1==PIP && d2==PIM && d3==PIM ) { _flag=11; _d1=0; _d2=1; _d3=2; }
-     if ( d2==PIP && d1==PIM && d3==PIM ) { _flag=11; _d1=1; _d2=0; _d3=2; }
-     if ( d3==PIP && d1==PIM && d2==PIM ) { _flag=11; _d1=2; _d2=0; _d3=1; }
-     
-  }
-  if ( parnum == DP ) {
-     if ( d1==KM && d2==KP && d3==PIP ) { _flag=7; _d1=0; _d2=1; _d3=2; }
-     if ( d1==KM && d3==KP && d2==PIP ) { _flag=7; _d1=0; _d2=2; _d3=1; }
-     if ( d2==KM && d1==KP && d3==PIP ) { _flag=7; _d1=1; _d2=0; _d3=2; }
-     if ( d2==KM && d3==KP && d1==PIP ) { _flag=7; _d1=1; _d2=2; _d3=0; }
-     if ( d3==KM && d1==KP && d2==PIP ) { _flag=7; _d1=2; _d2=0; _d3=1; }
-     if ( d3==KM && d2==KP && d1==PIP ) { _flag=7; _d1=2; _d2=1; _d3=0; }
-
-     if ( d1==PIM && d2==PIP && d3==KP ) { _flag=8; _d1=0; _d2=1; _d3=2; }
-     if ( d1==PIM && d3==PIP && d2==KP ) { _flag=8; _d1=0; _d2=2; _d3=1; }
-     if ( d2==PIM && d1==PIP && d3==KP ) { _flag=8; _d1=1; _d2=0; _d3=2; }
-     if ( d2==PIM && d3==PIP && d1==KP ) { _flag=8; _d1=1; _d2=2; _d3=0; }
-     if ( d3==PIM && d1==PIP && d2==KP ) { _flag=8; _d1=2; _d2=0; _d3=1; }
-     if ( d3==PIM && d2==PIP && d1==KP ) { _flag=8; _d1=2; _d2=1; _d3=0; }
-
-     if ( d1==PIM && d2==PIP && d3==PIP ) { _flag=10; _d1=0; _d2=1; _d3=2; }
-     if ( d2==PIM && d1==PIP && d3==PIP ) { _flag=10; _d1=1; _d2=0; _d3=2; }
-     if ( d3==PIM && d1==PIP && d2==PIP ) { _flag=10; _d1=2; _d2=0; _d3=1; }
-
-  }
-  if ( parnum == DM ) {
-     if ( d1==KP && d2==KM && d3==PIM ) { _flag=7; _d1=0; _d2=1; _d3=2; }
-     if ( d1==KP && d3==KM && d2==PIM ) { _flag=7; _d1=0; _d2=2; _d3=1; }
-     if ( d2==KP && d1==KM && d3==PIM ) { _flag=7; _d1=1; _d2=0; _d3=2; }
-     if ( d2==KP && d3==KM && d1==PIM ) { _flag=7; _d1=1; _d2=2; _d3=0; }
-     if ( d3==KP && d1==KM && d2==PIM ) { _flag=7; _d1=2; _d2=0; _d3=1; }
-     if ( d3==KP && d2==KM && d1==PIM ) { _flag=7; _d1=2; _d2=1; _d3=0; } 
-    
-     if ( d1==PIP && d2==PIM && d3==KM ) { _flag=8; _d1=0; _d2=1; _d3=2; }
-     if ( d1==PIP && d3==PIM && d2==KM ) { _flag=8; _d1=0; _d2=2; _d3=1; }
-     if ( d2==PIP && d1==PIM && d3==KM ) { _flag=8; _d1=1; _d2=0; _d3=2; }
-     if ( d2==PIP && d3==PIM && d1==KM ) { _flag=8; _d1=1; _d2=2; _d3=0; }
-     if ( d3==PIP && d1==PIM && d2==KM ) { _flag=8; _d1=2; _d2=0; _d3=1; }
-     if ( d3==PIP && d2==PIM && d1==KM ) { _flag=8; _d1=2; _d2=1; _d3=0; }
-
-     if ( d1==PIP && d2==PIM && d3==PIM ) { _flag=10; _d1=0; _d2=1; _d3=2; }
-     if ( d2==PIP && d1==PIM && d3==PIM ) { _flag=10; _d1=1; _d2=0; _d3=2; }
-     if ( d3==PIP && d1==PIM && d2==PIM ) { _flag=10; _d1=2; _d2=0; _d3=1; }
+    //look for pi+ pi- pi-
+    if (daughters[0].first == PIM && daughters[1].first == PIM &&
+        daughters[2].first == PIP) {
+      _flag = 10;
+      _d1 = daughters[2].second;
+      _d2 = daughters[0].second;
+      _d3 = daughters[1].second;
+    }
   }
 
   if ( _flag==6) {
@@ -377,10 +369,12 @@ void EvtDDalitz::init(){
     assert(0);
   }
 
+/*
   std::cout << "DDALITZ ordering: " << _flag << " ";
   std::cout << EvtPDL::getStdHep(getDaug(_d1)) << " ";
   std::cout << EvtPDL::getStdHep(getDaug(_d2)) << " ";
   std::cout << EvtPDL::getStdHep(getDaug(_d3)) << std::endl;
+*/
 }
 
 void EvtDDalitz::initProbMax() {
