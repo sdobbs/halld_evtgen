@@ -31,6 +31,10 @@
 #include "EvtGenBase/EvtConst.hh"
 #include "EvtGenBase/EvtFlatte.hh"
 #include "EvtGenBase/EvtDecayTable.hh"
+#include <vector>
+#include <utility>
+#include <algorithm>
+
 using std::endl;
 
 EvtDDalitz::~EvtDDalitz() {}
@@ -46,6 +50,29 @@ EvtDecayBase* EvtDDalitz::clone(){
 
   return new EvtDDalitz;
 
+}
+
+bool compareIds(const std::pair<EvtId, int> &left,
+                const std::pair<EvtId, int> &right) {
+  // left is K0 and right not
+  int leftPDGid = EvtPDL::getStdHep(left.first);
+  int rightPDGid = EvtPDL::getStdHep(right.first);
+  if ((leftPDGid == 130 || leftPDGid == 310 || abs(leftPDGid) == 311) &&
+      (rightPDGid != 130 && rightPDGid != 310 && abs(rightPDGid) != 311)) {
+    return true;
+  }
+  // else right is K0 and left not
+  else if (rightPDGid == 130 || rightPDGid == 310 || abs(rightPDGid) == 311) {
+    return false;
+  }
+  // else all rest
+  else {
+    if (leftPDGid < rightPDGid) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 void EvtDDalitz::init(){
@@ -85,7 +112,20 @@ void EvtDDalitz::init(){
   EvtId d1=getDaug(0);
   EvtId d2=getDaug(1);
   EvtId d3=getDaug(2);
-    
+
+  std::vector<std::pair<EvtId, int> > daughters;
+  for (int i=0; i<3; ++i) {
+    daughters.push_back(std::make_pair(getDaug(i), i));
+  }
+
+  // Sort daughters, they will end in order K0/KB/KS/KL, KM, PIM, PI0, PIP, KP
+  std::sort(daughters.begin(), daughters.end(), compareIds);
+  std::cout << "DDALITZ sorting: ";
+  for (int i=0; i<3; ++i ) {
+    std::cout << EvtPDL::getStdHep(daughters[i].first) << " ";
+  }
+  std::cout << std::endl;
+
   _flag=0;
   if ( parnum == D0 ) {
     //look for either a K- pi+ pi0 or K0bar pi+ pi-
@@ -206,59 +246,45 @@ void EvtDDalitz::init(){
   }
 
   if ( parnum == DP ) {
+    //look for KB pi+ pi0
+    if ((daughters[0].first == KB || daughters[0].first == KL ||
+         daughters[0].first == KS) &&
+        daughters[1].first == PI0 && daughters[2].first == PIP) {
+      _flag = 2;
+      _d1 = daughters[0].second;
+      _d2 = daughters[2].second;
+      _d3 = daughters[1].second;
+    }
+
     //look for K- pi+ pi+
-    if ( d1==KB && d2==PIP && d3==PI0 )  { _flag=2; _d1=0; _d2=1; _d3=2;}
-    if ( d1==KB && d3==PIP && d2==PI0 ) { _flag=2; _d1=0; _d2=2; _d3=1;}
-    if ( d2==KB && d1==PIP && d3==PI0 ) { _flag=2; _d1=1; _d2=0; _d3=2;}
-    if ( d2==KB && d3==PIP && d1==PI0 ) { _flag=2; _d1=1; _d2=2; _d3=0;}
-    if ( d3==KB && d1==PIP && d2==PI0 ) { _flag=2; _d1=2; _d2=0; _d3=1;}
-    if ( d3==KB && d2==PIP && d1==PI0 ) { _flag=2; _d1=2; _d2=1; _d3=0;}
-
-    if ( d1==KL && d2==PIP && d3==PI0 )  { _flag=2; _d1=0; _d2=1; _d3=2;}
-    if ( d1==KL && d3==PIP && d2==PI0 ) { _flag=2; _d1=0; _d2=2; _d3=1;}
-    if ( d2==KL && d1==PIP && d3==PI0 ) { _flag=2; _d1=1; _d2=0; _d3=2;}
-    if ( d2==KL && d3==PIP && d1==PI0 ) { _flag=2; _d1=1; _d2=2; _d3=0;}
-    if ( d3==KL && d1==PIP && d2==PI0 ) { _flag=2; _d1=2; _d2=0; _d3=1;}
-    if ( d3==KL && d2==PIP && d1==PI0 ) { _flag=2; _d1=2; _d2=1; _d3=0;}
-
-    if ( d1==KS && d2==PIP && d3==PI0 )  { _flag=2; _d1=0; _d2=1; _d3=2;}
-    if ( d1==KS && d3==PIP && d2==PI0 ) { _flag=2; _d1=0; _d2=2; _d3=1;}
-    if ( d2==KS && d1==PIP && d3==PI0 ) { _flag=2; _d1=1; _d2=0; _d3=2;}
-    if ( d2==KS && d3==PIP && d1==PI0 ) { _flag=2; _d1=1; _d2=2; _d3=0;}
-    if ( d3==KS && d1==PIP && d2==PI0 ) { _flag=2; _d1=2; _d2=0; _d3=1;}
-    if ( d3==KS && d2==PIP && d1==PI0 ) { _flag=2; _d1=2; _d2=1; _d3=0;}
-
-    if ( d1==KM && d2==PIP && d3==PIP )  { _flag=1; _d1=0; _d2=1; _d3=2;}
-    if ( d2==KM && d1==PIP && d3==PIP ) { _flag=1; _d1=1; _d2=0; _d3=2;}
-    if ( d3==KM && d1==PIP && d2==PIP ) { _flag=1; _d1=2; _d2=0; _d3=1;}
+    if (daughters[0].first == KM && daughters[1].first == PIP &&
+        daughters[2].first == PIP) {
+      _flag = 1;
+      _d1 = daughters[0].second;
+      _d2 = daughters[1].second;
+      _d3 = daughters[2].second;
+    }
   }
 
   if ( parnum == DM ) {
+    //look for KB pi+ pi0
+    if ((daughters[0].first == K0 || daughters[0].first == KL ||
+         daughters[0].first == KS) &&
+        daughters[1].first == PIM && daughters[2].first == PI0) {
+      _flag = 2;
+      _d1 = daughters[0].second;
+      _d2 = daughters[1].second;
+      _d3 = daughters[2].second;
+    }
+
     //look for K- pi+ pi+
-    if ( d1==K0 && d2==PIM && d3==PI0 )  { _flag=2; _d1=0; _d2=1; _d3=2;}
-    if ( d1==K0 && d3==PIM && d2==PI0 ) { _flag=2; _d1=0; _d2=2; _d3=1;}
-    if ( d2==K0 && d1==PIM && d3==PI0 ) { _flag=2; _d1=1; _d2=0; _d3=2;}
-    if ( d2==K0 && d3==PIM && d1==PI0 ) { _flag=2; _d1=1; _d2=2; _d3=0;}
-    if ( d3==K0 && d1==PIM && d2==PI0 ) { _flag=2; _d1=2; _d2=0; _d3=1;}
-    if ( d3==K0 && d2==PIM && d1==PI0 ) { _flag=2; _d1=2; _d2=1; _d3=0;}
-
-    if ( d1==KL && d2==PIM && d3==PI0 )  { _flag=2; _d1=0; _d2=1; _d3=2;}
-    if ( d1==KL && d3==PIM && d2==PI0 ) { _flag=2; _d1=0; _d2=2; _d3=1;}
-    if ( d2==KL && d1==PIM && d3==PI0 ) { _flag=2; _d1=1; _d2=0; _d3=2;}
-    if ( d2==KL && d3==PIM && d1==PI0 ) { _flag=2; _d1=1; _d2=2; _d3=0;}
-    if ( d3==KL && d1==PIM && d2==PI0 ) { _flag=2; _d1=2; _d2=0; _d3=1;}
-    if ( d3==KL && d2==PIM && d1==PI0 ) { _flag=2; _d1=2; _d2=1; _d3=0;}
-
-    if ( d1==KS && d2==PIM && d3==PI0 )  { _flag=2; _d1=0; _d2=1; _d3=2;}
-    if ( d1==KS && d3==PIM && d2==PI0 ) { _flag=2; _d1=0; _d2=2; _d3=1;}
-    if ( d2==KS && d1==PIM && d3==PI0 ) { _flag=2; _d1=1; _d2=0; _d3=2;}
-    if ( d2==KS && d3==PIM && d1==PI0 ) { _flag=2; _d1=1; _d2=2; _d3=0;}
-    if ( d3==KS && d1==PIM && d2==PI0 ) { _flag=2; _d1=2; _d2=0; _d3=1;}
-    if ( d3==KS && d2==PIM && d1==PI0 ) { _flag=2; _d1=2; _d2=1; _d3=0;}
-
-    if ( d1==KP && d2==PIM && d3==PIM )  { _flag=1; _d1=0; _d2=1; _d3=2;}
-    if ( d2==KP && d1==PIM && d3==PIM ) { _flag=1; _d1=1; _d2=0; _d3=2;}
-    if ( d3==KP && d1==PIM && d2==PIM ) { _flag=1; _d1=2; _d2=0; _d3=1;}
+    if (daughters[0].first == PIM && daughters[1].first == PIM &&
+        daughters[2].first == KP) {
+      _flag = 1;
+      _d1 = daughters[2].second;
+      _d2 = daughters[0].second;
+      _d3 = daughters[1].second;
+    }
   }
 
   if ( parnum == DSP ) {
@@ -350,6 +376,11 @@ void EvtDDalitz::init(){
     EvtGenReport(EVTGEN_ERROR,"EvtGen") << "EvtDDaltiz: Invalid mode."<<endl;
     assert(0);
   }
+
+  std::cout << "DDALITZ ordering: " << _flag << " ";
+  std::cout << EvtPDL::getStdHep(getDaug(_d1)) << " ";
+  std::cout << EvtPDL::getStdHep(getDaug(_d2)) << " ";
+  std::cout << EvtPDL::getStdHep(getDaug(_d3)) << std::endl;
 }
 
 void EvtDDalitz::initProbMax() {
