@@ -5,6 +5,10 @@
 //===========================================================================
 
 8th May 2017 Michal Kreps
+    Fix bug in EvtbTosllVectorAmp to recognise Bs --> K*bar mu mu decay as
+    b --> d ll transition. 
+
+8th May 2017 Michal Kreps
     Significantly simplify way how we decide on decay mode and daughters
     ordering in DDalitz model. With new code by definition all orderings of
     daughters in the decay file will yield same output.
