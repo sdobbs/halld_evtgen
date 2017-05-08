@@ -4,6 +4,11 @@
 //
 //===========================================================================
 
+8th May 2017 Michal Kreps
+    Significantly simplify way how we decide on decay mode and daughters
+    ordering in DDalitz model. With new code by definition all orderings of
+    daughters in the decay file will yield same output.
+
 4th May 2017 John Back
     Further fixes to DDalitz particle ordering (including charge-conjugates):
     Mode 5:  D0 -> K- K0bar K+ and K+ K- K0bar
