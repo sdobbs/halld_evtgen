@@ -87,7 +87,7 @@ void EvtDDalitz::init(){
   static EvtId DSM=EvtPDL::getId("D_s-");
   static EvtId KM=EvtPDL::getId("K-");
   static EvtId KP=EvtPDL::getId("K+");
-  static EvtId K0=EvtPDL::getId("K0");
+//  static EvtId K0=EvtPDL::getId("K0");
   static EvtId KB=EvtPDL::getId("anti-K0");
   static EvtId KL=EvtPDL::getId("K_L0");
   static EvtId KS=EvtPDL::getId("K_S0");
@@ -110,9 +110,27 @@ void EvtDDalitz::init(){
 
   EvtId parnum=getParentId();
 
+  /*
+   * To decide which decay we have, we take list of daughters (or charge
+   * conjugate of daughters for D-, D0B or Ds-), sort these to order
+   * K0/KB/KS/KL, KM, PIM, PI0, PIP, KP while keeping track which daughter
+   * is which and at the end have single if statement picking up decay and
+   * assigning correct order for daughters (same condition used for charm
+   * and anti-charm.
+   */
+
   std::vector<std::pair<EvtId, int> > daughters;
-  for (int i=0; i<3; ++i) {
-    daughters.push_back(std::make_pair(getDaug(i), i));
+  if ( parnum == D0 || parnum == DP || parnum == DSP )
+  {
+    for (int i=0; i<3; ++i) {
+      daughters.push_back(std::make_pair(getDaug(i), i));
+    }
+  }
+  else
+  {
+    for (int i=0; i<3; ++i) {
+      daughters.push_back(std::make_pair(EvtPDL::chargeConj(getDaug(i)), i));
+    }
   }
 
   // Sort daughters, they will end in order K0/KB/KS/KL, KM, PIM, PI0, PIP, KP
@@ -126,7 +144,8 @@ void EvtDDalitz::init(){
 */
 
   _flag=0;
-  if ( parnum == D0 ) {
+
+  if ( parnum == D0 || parnum == D0B) {
     //look for K- pi+ pi0
     if (daughters[0].first == KM && daughters[1].first == PI0 &&
         daughters[2].first == PIP) {
@@ -165,47 +184,8 @@ void EvtDDalitz::init(){
       _d3 = daughters[1].second;
     }
   }
-  if ( parnum == D0B ) {
-    //look for K+ pi- pi0
-    if (daughters[0].first == PIM && daughters[1].first == PI0 &&
-        daughters[2].first == KP) {
-      _flag = 4;
-      _d1 = daughters[2].second;
-      _d2 = daughters[0].second;
-      _d3 = daughters[1].second;
-    }
 
-    //look for K0 pi+ pi-
-    if ((daughters[0].first == K0 || daughters[0].first == KL ||
-         daughters[0].first == KS) &&
-        daughters[1].first == PIM && daughters[2].first == PIP) {
-      _flag = 3;
-      _d1 = daughters[0].second;
-      _d2 = daughters[2].second;
-      _d3 = daughters[1].second;
-    }
-
-    //look for K0 K+ K-
-    if ((daughters[0].first == K0 || daughters[0].first == KL ||
-         daughters[0].first == KS) &&
-        daughters[1].first == KM && daughters[2].first == KP) {
-      _flag = 5;
-      _d1 = daughters[0].second;
-      _d2 = daughters[1].second;
-      _d3 = daughters[2].second;
-    }
-
-    //look for pi- pi+ pi0
-    if (daughters[0].first == PIM && daughters[1].first == PI0 &&
-        daughters[2].first == PIP) {
-      _flag = 12;
-      _d1 = daughters[2].second;
-      _d2 = daughters[0].second;
-      _d3 = daughters[1].second;
-    }
-  }
-
-  if ( parnum == DP ) {
+  if ( parnum == DP || parnum == DM ) {
     //look for KB pi+ pi0
     if ((daughters[0].first == KB || daughters[0].first == KL ||
          daughters[0].first == KS) &&
@@ -253,55 +233,7 @@ void EvtDDalitz::init(){
     }
   }
 
-  if ( parnum == DM ) {
-    //look for K0 pi- pi0
-    if ((daughters[0].first == K0 || daughters[0].first == KL ||
-         daughters[0].first == KS) &&
-        daughters[1].first == PIM && daughters[2].first == PI0) {
-      _flag = 2;
-      _d1 = daughters[0].second;
-      _d2 = daughters[1].second;
-      _d3 = daughters[2].second;
-    }
-
-    //look for K+ pi- pi-
-    if (daughters[0].first == PIM && daughters[1].first == PIM &&
-        daughters[2].first == KP) {
-      _flag = 1;
-      _d1 = daughters[2].second;
-      _d2 = daughters[0].second;
-      _d3 = daughters[1].second;
-    }
-
-    //look for K- K+ pi-
-    if (daughters[0].first == KM && daughters[1].first == PIM &&
-        daughters[2].first == KP) {
-      _flag = 7;
-      _d1 = daughters[2].second;
-      _d2 = daughters[0].second;
-      _d3 = daughters[1].second;
-    }
-
-    //look for K- pi+ pi-
-    if (daughters[0].first == KM && daughters[1].first == PIM &&
-        daughters[2].first == PIP) {
-      _flag = 8;
-      _d1 = daughters[2].second;
-      _d2 = daughters[1].second;
-      _d3 = daughters[0].second;
-    }
-
-    //look for pi+ pi- pi-
-    if (daughters[0].first == PIM && daughters[1].first == PIM &&
-        daughters[2].first == PIP) {
-      _flag = 10;
-      _d1 = daughters[2].second;
-      _d2 = daughters[0].second;
-      _d3 = daughters[1].second;
-    }
-  }
-
-  if ( parnum == DSP ) {
+  if ( parnum == DSP || parnum == DSM) {
     //look for K- K+ pi+
     if (daughters[0].first == KM && daughters[1].first == PIP &&
         daughters[2].first == KP) {
@@ -323,39 +255,10 @@ void EvtDDalitz::init(){
     //look for pi+ pi+ pi-
     if (daughters[0].first == PIM && daughters[1].first == PIP &&
         daughters[2].first == PIP) {
-      _flag = 10;
+      _flag = 11;
       _d1 = daughters[0].second;
       _d2 = daughters[1].second;
       _d3 = daughters[2].second;
-    }
-  }
-
-  if ( parnum == DSM ) {
-    //look for K- K+ pi+
-    if (daughters[0].first == KM && daughters[1].first == PIM &&
-        daughters[2].first == KP) {
-      _flag = 6;
-      _d1 = daughters[2].second;
-      _d2 = daughters[0].second;
-      _d3 = daughters[1].second;
-    }
-
-    //look for K- pi+ pi-
-    if (daughters[0].first == KM && daughters[1].first == PIM &&
-        daughters[2].first == PIP) {
-      _flag = 9;
-      _d1 = daughters[2].second;
-      _d2 = daughters[1].second;
-      _d3 = daughters[0].second;
-    }
-     
-    //look for pi+ pi- pi-
-    if (daughters[0].first == PIM && daughters[1].first == PIM &&
-        daughters[2].first == PIP) {
-      _flag = 10;
-      _d1 = daughters[2].second;
-      _d2 = daughters[0].second;
-      _d3 = daughters[1].second;
     }
   }
 
