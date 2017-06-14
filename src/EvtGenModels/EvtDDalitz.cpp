@@ -52,32 +52,65 @@ EvtDecayBase* EvtDDalitz::clone(){
 
 }
 
+bool isNeutralKaon(const EvtId& theId) {
+
+    // See if the particle id matches that for a neutral kaon
+    bool result(false);
+
+    static EvtId K0 = EvtPDL::getId("K0");
+    static EvtId KB = EvtPDL::getId("anti-K0");
+    static EvtId KL = EvtPDL::getId("K_L0");
+    static EvtId KS = EvtPDL::getId("K_S0");
+
+    // Compare EvtId integers, which are unique for each particle type, 
+    // corresponding to the order particles appear in the "evt.pdl" table. 
+    // Aliased particles will have the same ids (but different "alias" values)
+    if (theId == KB || theId == K0 || theId == KL || theId == KS) {
+	result = true;
+    }
+
+    return result;
+
+}
+
 bool compareIds(const std::pair<EvtId, int> &left,
                 const std::pair<EvtId, int> &right) {
-  // left is K0 and right not
-  int leftPDGid = EvtPDL::getStdHep(left.first);
-  int rightPDGid = EvtPDL::getStdHep(right.first);
-  if ((leftPDGid == 130 || leftPDGid == 310 || abs(leftPDGid) == 311) &&
-      (rightPDGid != 130 && rightPDGid != 310 && abs(rightPDGid) != 311)) {
-    return true;
-  }
-  // else right is K0 and left not
-  else if (rightPDGid == 130 || rightPDGid == 310 || abs(rightPDGid) == 311) {
-    return false;
-  }
-  // else all rest
-  else {
-    if (leftPDGid < rightPDGid) {
-      return true;
-    }
+
+  // Compare id numbers to achieve the ordering KB/K0/KS/KL, KM, PIM, PI0, PIP, KP, i.e.
+  // neutral kaon first, then normal PDG id ordering for the other particles.
+
+  // The current 12 decay modes do not use two or more neutral kaons. If in the future 
+  // such modes are added, the ordering will be KM, KB, PIM, PI0, KL, PIP, KS, K0, KP
+
+  bool result(false);
+
+  if (isNeutralKaon(left.first) == true && isNeutralKaon(right.first) == false) {
+
+      // Left is a neutral kaon, right is not
+      result = true;
+
+  } else if (isNeutralKaon(left.first) == false && isNeutralKaon(right.first) == true) {
+
+      // Right is a neutral kaon, left is not
+      result = false;
+
+  } else {
+
+      // Just compare PDG integers to achieve ascending order
+      int leftPDGid = EvtPDL::getStdHep(left.first);
+      int rightPDGid = EvtPDL::getStdHep(right.first);
+
+      if (leftPDGid < rightPDGid) {
+	  result = true;
+      }
+
   }
 
-  return false;
+  return result;
+
 }
 
 void EvtDDalitz::init(){
-
-  // check that there are 0 arguments
 
   static EvtId DM=EvtPDL::getId("D-");
   static EvtId DP=EvtPDL::getId("D+");
@@ -87,10 +120,12 @@ void EvtDDalitz::init(){
   static EvtId DSM=EvtPDL::getId("D_s-");
   static EvtId KM=EvtPDL::getId("K-");
   static EvtId KP=EvtPDL::getId("K+");
-//  static EvtId K0=EvtPDL::getId("K0");
-  static EvtId KB=EvtPDL::getId("anti-K0");
-  static EvtId KL=EvtPDL::getId("K_L0");
-  static EvtId KS=EvtPDL::getId("K_S0");
+
+  //static EvtId K0=EvtPDL::getId("K0");
+  //static EvtId KB=EvtPDL::getId("anti-K0");
+  //static EvtId KL=EvtPDL::getId("K_L0");
+  //static EvtId KS=EvtPDL::getId("K_S0");
+
   static EvtId PIM=EvtPDL::getId("pi-");
   static EvtId PIP=EvtPDL::getId("pi+");
   static EvtId PI0=EvtPDL::getId("pi0");
@@ -98,7 +133,7 @@ void EvtDDalitz::init(){
   static double MPI = EvtPDL::getMeanMass(PI0);
   static double MKP = EvtPDL::getMeanMass(KP);
 
-
+  // check that there are 0 arguments and 3 daughters
   checkNArg(0);
   checkNDaug(3);
 
@@ -111,12 +146,13 @@ void EvtDDalitz::init(){
   EvtId parnum=getParentId();
 
   /*
-   * To decide which decay we have, we take list of daughters (or charge
-   * conjugate of daughters for D-, D0B or Ds-), sort these to order
-   * K0/KB/KS/KL, KM, PIM, PI0, PIP, KP while keeping track which daughter
-   * is which and at the end have single if statement picking up decay and
-   * assigning correct order for daughters (same condition used for charm
-   * and anti-charm.
+   * To decide which decay we have, we take the list of daughters (or charge
+   * conjugate of daughters for D-, D0B or Ds-), sort these in the order
+   * KB/K0/KS/KL, KM, PIM, PI0, PIP, KP, keeping track which daughter is which, 
+   * and at the end have a single if statement picking up the decay and assigning 
+   * the correct order for the daughters (same condition used for charm and anti-charm). 
+   * If we have two or more neutral kaons in the daughter list, then the compareIds() 
+   * ordering will simply follow ascending PDG ids: KM, KB, PIM, PI0, KL, PIP, KS, K0, KP
    */
 
   std::vector<std::pair<EvtId, int> > daughters;
@@ -133,8 +169,10 @@ void EvtDDalitz::init(){
     }
   }
 
-  // Sort daughters, they will end in order K0/KB/KS/KL, KM, PIM, PI0, PIP, KP
+  // Sort daughters, they will end up in the order KB/K0/KS/KL, KM, PIM, PI0, PIP, KP
+  // for the current 12 decay modes
   std::sort(daughters.begin(), daughters.end(), compareIds);
+
 /*
   std::cout << "DDALITZ sorting: ";
   for (int i=0; i<3; ++i ) {
@@ -145,8 +183,12 @@ void EvtDDalitz::init(){
 
   _flag=0;
 
+  // D0 or anti-D0 modes. We only need to check the particle modes, since anti-particle
+  // modes have their ordered daughter ids charged-conjugated above
+
   if ( parnum == D0 || parnum == D0B) {
-    //look for K- pi+ pi0
+
+    // Look for D0 to K- pi+ pi0
     if (daughters[0].first == KM && daughters[1].first == PI0 &&
         daughters[2].first == PIP) {
       _flag = 4;
@@ -155,9 +197,8 @@ void EvtDDalitz::init(){
       _d3 = daughters[1].second;
     }
 
-    //look for KB pi+ pi-
-    if ((daughters[0].first == KB || daughters[0].first == KL ||
-         daughters[0].first == KS) &&
+    // Look for D0 to KB pi- pi+
+    if (isNeutralKaon(daughters[0].first) == true &&
         daughters[1].first == PIM && daughters[2].first == PIP) {
       _flag = 3;
       _d1 = daughters[0].second;
@@ -165,9 +206,8 @@ void EvtDDalitz::init(){
       _d3 = daughters[2].second;
     }
 
-    //look for KB K+ K-
-    if ((daughters[0].first == KB || daughters[0].first == KL ||
-         daughters[0].first == KS) &&
+    // Look for D0 to KB K+ K-
+    if (isNeutralKaon(daughters[0].first) == true &&
         daughters[1].first == KM && daughters[2].first == KP) {
       _flag = 5;
       _d1 = daughters[0].second;
@@ -175,7 +215,7 @@ void EvtDDalitz::init(){
       _d3 = daughters[1].second;
     }
 
-    //look for pi- pi+ pi0
+    // Look for D0 to pi- pi+ pi0
     if (daughters[0].first == PIM && daughters[1].first == PI0 &&
         daughters[2].first == PIP) {
       _flag = 12;
@@ -185,10 +225,10 @@ void EvtDDalitz::init(){
     }
   }
 
+  // D+ (or D-) modes
   if ( parnum == DP || parnum == DM ) {
-    //look for KB pi+ pi0
-    if ((daughters[0].first == KB || daughters[0].first == KL ||
-         daughters[0].first == KS) &&
+      // Look for D+ to KB pi+ pi0
+      if (isNeutralKaon(daughters[0].first) == true &&
         daughters[1].first == PI0 && daughters[2].first == PIP) {
       _flag = 2;
       _d1 = daughters[0].second;
@@ -196,7 +236,7 @@ void EvtDDalitz::init(){
       _d3 = daughters[1].second;
     }
 
-    //look for K- pi+ pi+
+    // Look for D+ to K- pi+ pi+
     if (daughters[0].first == KM && daughters[1].first == PIP &&
         daughters[2].first == PIP) {
       _flag = 1;
@@ -205,7 +245,7 @@ void EvtDDalitz::init(){
       _d3 = daughters[2].second;
     }
 
-    //look for K- K+ pi+
+    // Look for D+ to K- K+ pi+
     if (daughters[0].first == KM && daughters[1].first == PIP &&
         daughters[2].first == KP) {
       _flag = 7;
@@ -214,7 +254,7 @@ void EvtDDalitz::init(){
       _d3 = daughters[1].second;
     }
 
-    //look for K+ pi+ pi-
+    // Look for D+ to pi- pi+ K+
     if (daughters[0].first == PIM && daughters[1].first == PIP &&
         daughters[2].first == KP) {
       _flag = 8;
@@ -223,7 +263,7 @@ void EvtDDalitz::init(){
       _d3 = daughters[2].second;
     }
 
-    //look for pi+ pi+ pi-
+    // Look for D+ to pi- pi+ pi+
     if (daughters[0].first == PIM && daughters[1].first == PIP &&
         daughters[2].first == PIP) {
       _flag = 10;
@@ -233,8 +273,10 @@ void EvtDDalitz::init(){
     }
   }
 
+  // Ds+ (or Ds-) modes
   if ( parnum == DSP || parnum == DSM) {
-    //look for K- K+ pi+
+
+    // Look for Ds+ to K- K+ pi+
     if (daughters[0].first == KM && daughters[1].first == PIP &&
         daughters[2].first == KP) {
       _flag = 6;
@@ -243,7 +285,7 @@ void EvtDDalitz::init(){
       _d3 = daughters[1].second;
     }
 
-    //look for K+ pi+ pi-
+    // Look for Ds+ to pi- pi+ K+
     if (daughters[0].first == PIM && daughters[1].first == PIP &&
         daughters[2].first == KP) {
       _flag = 9;
@@ -252,7 +294,7 @@ void EvtDDalitz::init(){
       _d3 = daughters[2].second;
     }
 
-    //look for pi+ pi+ pi-
+    // Look for Ds+ to pi- pi+ pi+
     if (daughters[0].first == PIM && daughters[1].first == PIP &&
         daughters[2].first == PIP) {
       _flag = 11;
@@ -340,7 +382,8 @@ void EvtDDalitz::decay( EvtParticle *p){
 
   if ( _flag==1) {
 
-   //  //have a D+ -> K- pi+ pi+ decay, or charge conjugate
+   // D+ -> K- pi+ pi+ decay, or charge conjugate
+
 //     //Anjos etal e691 - Phys Rev D48, 56 (1993) 
     // EvtResonance DplusRes11(p4_p,moms1,moms2,0.78,-60.0,0.0498,0.89610,1);
 //     EvtResonance DplusRes12(p4_p,moms3,moms1,0.78,-60.0,0.0498,0.89610,1);//K*(892)
@@ -391,8 +434,9 @@ void EvtDDalitz::decay( EvtParticle *p){
   }
 
   if(_flag==3) {
-    // D0 -> K0 pi+ pi- + CC                                                                       
-    // If it does not come from a B->DK, decay it as D0 or D0bar separatly                         
+
+    // D0 -> K0bar pi- pi+ & CC                                                                       
+    // If it does not come from a B->DK, decay it as D0 or D0bar separately                         
     // if p4_p is D0, moms1 is K0, moms2 is pi-, moms3 is pi+                                      
     // if p4_p is D0bar, moms1 is K0, moms2 is pi+, moms3 is pi-                                   
 
@@ -451,6 +495,7 @@ void EvtDDalitz::decay( EvtParticle *p){
   
   if(_flag==4) {
 
+    // D0 to K- pi+ pi0
     EvtResonance2 DKpipi0Res1(p4_p,moms2,moms3,1.0  ,0.0   ,0.1507,0.770 ,1); //rho
     EvtResonance2 DKpipi0Res2(p4_p,moms1,moms2,0.39, -0.2  ,0.0505,0.8961,1); //k*0
     EvtResonance2 DKpipi0Res3(p4_p,moms1,moms3,0.44, 163.0 ,0.050 ,0.8915,1); //k*-
@@ -474,8 +519,8 @@ void EvtDDalitz::decay( EvtParticle *p){
  
   if(_flag==5) {
 
-    // D0 -> K0 K+ K- + CC                                                                         
-    // If it does not come from a B->DK, decay it as D0 or D0bar separatly                         
+    // D0 -> K0bar K+ K- & CC                                                                         
+    // If it does not come from a B->DK, decay it as D0 or D0bar separately                         
     // if p4_p is D0, moms1 is K0, moms2 is pi-, moms3 is pi+                                      
     // if p4_p is D0bar, moms1 is K0, moms2 is pi+, moms3 is pi-                                   
 
@@ -534,7 +579,7 @@ void EvtDDalitz::decay( EvtParticle *p){
 
 
 
-  // Ds -> K K pi
+  // Ds+ -> K- K+ pi+
   //Babar, arxiv:1011.4190
   if(_flag==6) {
      EvtResonance2 DsKKpiRes1(p4_p, moms3, moms1, 1.0, 0.0, 0.0455, 0.8944, 1, true); // K*(892)
@@ -548,7 +593,7 @@ void EvtDDalitz::decay( EvtParticle *p){
 
   }
 
-  //D+ -> K K pi
+  //D+ -> K- K+ pi+
   //CLEO PRD 78, 072003 (2008) Fit A
   if(_flag==7) {
     EvtResonance2 DpKKpiRes1(p4_p, moms3, moms1, 1.0, 0.0, 0.0503, 0.8960, 1, true); // K*(892)
@@ -563,7 +608,7 @@ void EvtDDalitz::decay( EvtParticle *p){
       + DpKKpiRes4.resAmpl() + DpKKpiRes5.resAmpl() + DpKKpiRes6.resAmpl();
   }
   
-//D+ -> K pi pi WS (DCS)
+  //D+ -> pi- pi+ K+ WS (DCS)
   //FOCUS PLB 601 10 (2004) ; amplitudes there are individually normalized (although not explicit in the paper)
   // thus the magnitudes appearing below come from dividing the ones appearing in the paper by the sqrt of the
   // integral over the DP of the corresponding squared amplitude. Writing as pi- pi+ K+ so pipi resonances are (12)
@@ -577,7 +622,7 @@ void EvtDDalitz::decay( EvtParticle *p){
       + DpKpipiDCSRes4.resAmpl();
   }
 
-  //Ds+ -> K pi pi WS (CS)
+  //Ds+ -> pi- pi+ K+ WS (CS)
   //FOCUS PLB 601 10 (2004) ; amplitudes there are individually normalized (although not explicit in the paper)
   // thus the magnitudes appearing below come from dividing the ones appearing in the paper by the sqrt of the
   // integral over the DP of the corresponding squared amplitude. Writing as pi- pi+ K+ so pipi resonances are (12)
@@ -644,7 +689,7 @@ void EvtDDalitz::decay( EvtParticle *p){
         +  (DspipipiRes51.resAmpl() - DspipipiRes52.resAmpl());  //spin1
   } 
   
-  //D0 -> pi+pi-pi0
+  //D0 -> pi- pi+ pi0
   //PRL 99, 251801 (2007)
   //arXiv:hep-ex/0703037
   if(_flag==12) {
@@ -684,16 +729,16 @@ EvtComplex EvtDDalitz::amplDtoK0PiPi(EvtVector4R p4_p,  EvtVector4R moms1,
 
     //K*(892)-
     EvtResonance2 DK2piRes1(p4_p,moms1,moms2,1.418,-190.0,0.0508,0.89166,1);
-    //K0*(1430)
+    //K0*(1430)-
     EvtResonance2 DK2piRes2(p4_p,moms1,moms2,1.818,-337.0,0.294 ,1.412  ,0);
-    //K2*(1430)
+    //K2*(1430)-
     EvtResonance2 DK2piRes3(p4_p,moms1,moms2,0.909,  -5.0,0.0985,1.4256 ,2);
-    //K*(1680)
+    //K*(1680)-
     EvtResonance2 DK2piRes4(p4_p,moms1,moms2,5.091,-166.0,0.322 ,1.717  ,1);
-    //DCS K*(892)
+    //DCS K*(892)+
     EvtResonance2 DK2piRes5(p4_p,moms1,moms3,0.100, -19.0,0.0508,0.89166,1);
     
-    //Rho
+    //Rho0
     EvtResonance2 DK2piRes6(p4_p,moms3,moms2,0.909,-340.0,0.1502,0.7693,1);
     //Omega
     EvtResonance2 DK2piRes7(p4_p,moms3,moms2,.0336,-226.0,0.00844,0.78257,1);
