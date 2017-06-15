@@ -314,12 +314,14 @@ void EvtDDalitz::init(){
     assert(0);
   }
 
-/*
-  std::cout << "DDALITZ ordering: " << _flag << " ";
-  std::cout << EvtPDL::getStdHep(getDaug(_d1)) << " ";
-  std::cout << EvtPDL::getStdHep(getDaug(_d2)) << " ";
-  std::cout << EvtPDL::getStdHep(getDaug(_d3)) << std::endl;
-*/
+  /*
+  EvtGenReport(EVTGEN_INFO,"EvtGen") << "DDALITZ ordering for " << parnum.getName() 
+				     << " with mode = " << _flag << ": "
+				     << getDaug(_d1).getName() << " "
+				     << getDaug(_d2).getName() << " "
+				     << getDaug(_d3).getName() << std::endl;
+  */
+
 }
 
 void EvtDDalitz::initProbMax() {
