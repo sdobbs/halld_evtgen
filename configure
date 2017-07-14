@@ -139,7 +139,12 @@ check_extlibs () {
     fi
 
     TAUOLALIBLIST="-lTauolaCxxInterface -lTauolaFortran"
-    PYTHIALIBLIST="-lpythia8 -llhapdfdummy"
+
+    PYTHIALIBLIST="-lpythia8"
+    # For PYTHIA 8.1x and below, check to see if we need lhapdfdummy
+    if [ -f ${PYTHIADIR}/lib/liblhapdfdummy.so ]; then
+	PYTHIALIBLIST="-lpythia8 -llhapdfdummy"
+    fi
 
 }
 

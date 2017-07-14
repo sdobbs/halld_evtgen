@@ -4,6 +4,16 @@
 //
 //===========================================================================
 
+14th July 2017 John Back
+    Only create external generator objects if they don't already exist in
+    EvtExternalGenFactory. Modified configure script to work with Pythia 8.2x
+
+5th July 2017 Michal Kreps
+    Register the VTOSLL model.
+
+14th June 2017 John Back
+    Add isNeutralKaon() boolean function and corrected comments in EvtDDalitz.
+
 8th May 2017 Michal Kreps
     Fix bug in EvtbTosllVectorAmp to recognise Bs --> K*bar mu mu decay as
     b --> d ll transition. 

@@ -30,19 +30,18 @@
 
 using std::cout;
 using std::endl;
-using std::string;
 
 int main(int argc, char** argv) {
 
-  string decayFileName("../DECAY_2010.DEC");
+  std::string decayFileName("../DECAY_2010.DEC");
   if (argc > 1) {decayFileName = argv[1];}
   cout<<"Decay file name is "<<decayFileName<<endl;
 
-  string rootFileName("evtgenTest.root");
+  std::string rootFileName("evtgenTest.root");
   if (argc > 2) {rootFileName = argv[2];}
   cout<<"Root file name is "<<rootFileName<<endl;
 
-  string parentName("Upsilon(4S)");
+  std::string parentName("Upsilon(4S)");
   if (argc > 3) {parentName = argv[3];}
   cout<<"Parent name is "<<parentName<<endl;
 

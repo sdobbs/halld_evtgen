@@ -3988,8 +3988,8 @@ void runTwoBody(int nevent, EvtGen &myGenerator, std::string decFile,
 //	    histograms.push_back(new TH1F(TString("h")+tmp,TString("cos theta")+tmp,50,-1.0,1.0));
         std::ostringstream strm;
         strm  << (nhist+1);
-        histograms.push_back( new TH1F(TString("h") + strm.str(),
-                                       TString("cos theta") + strm.str(),
+        histograms.push_back( new TH1F(TString("h") + strm.str().c_str(),
+                                       TString("cos theta") + strm.str().c_str(),
                                        50,-1.0,1.0) );
 	  }
 	  histograms[nhist++]->Fill(ctheta);
@@ -4005,8 +4005,8 @@ void runTwoBody(int nevent, EvtGen &myGenerator, std::string decFile,
 //	      histograms.push_back(new TH1F(TString("h")+tmp,TString("cos thetan")+tmp,50,-1.0,1.0));
           std::ostringstream strm;
           strm  << (nhist+1);
-          histograms.push_back( new TH1F(TString("h") + strm.str(),
-                                         TString("cos theta") + strm.str(),
+          histograms.push_back( new TH1F(TString("h") + strm.str().c_str(),
+                                         TString("cos theta") + strm.str().c_str(),
                                          50,-1.0,1.0) );
 	    }
 	    histograms[nhist++]->Fill(costhetan);
@@ -4023,8 +4023,8 @@ void runTwoBody(int nevent, EvtGen &myGenerator, std::string decFile,
 //	      histograms.push_back(new TH1F(TString("h")+tmp,TString("cos thetan")+tmp,50,-1.0,1.0));
           std::ostringstream strm;
           strm  << (nhist+1);
-          histograms.push_back( new TH1F(TString("h") + strm.str(),
-                                         TString("cos theta") + strm.str(),
+          histograms.push_back( new TH1F(TString("h") + strm.str().c_str(),
+                                         TString("cos theta") + strm.str().c_str(),
                                          50,-1.0,1.0) );
 	    }
 	    histograms[nhist++]->Fill(costhetan);
