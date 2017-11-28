@@ -82,12 +82,16 @@ genRootDecayChain::genRootDecayChain(const string& decayFileName,
     _storeMtmXYZ(storeMtmXYZ),
     _theFile(0),
     _theTree(0),
+    _probHist(0),
     _theCanvas(0)
 {
 
     _theFile = new TFile(rootFileName.c_str(), "recreate");
     _theTree = new TTree("Data", "Data");
     _theTree->SetDirectory(_theFile);
+    _probHist = new TH1D("probHist", "probHist", 100, 0.0, 0.0);
+    _probHist->SetXTitle("Prob/MaxProb");
+    _probHist->SetDirectory(_theFile);
 
     gROOT->SetStyle("Plain");
     gStyle->SetOptStat(0);
@@ -154,6 +158,7 @@ void genRootDecayChain::writeTree() {
 
     _theFile->cd();
     _theTree->Write();
+    _probHist->Write();
 
 }
 
@@ -245,6 +250,10 @@ void genRootDecayChain::generateEvents() {
 	    this->storeDaughterInfo(daug);
 
 	} // daughter loop
+
+	// Store probability/max probability
+	double* dProb = theParent->decayProb();
+	if (dProb) {_probHist->Fill(*dProb);}
 
 	theParent->deleteTree();
 
