@@ -4,6 +4,10 @@
 //
 //===========================================================================
 
+29th November 2017 John Back
+    Modified EvtSVP, EvtVVP and EvtTVP models to handle both radiative and
+    two-lepton decays, courtesy of Aleksei Luchinskii (LHCb).
+
 14th July 2017 John Back
     Only create external generator objects if they don't already exist in
     EvtExternalGenFactory. Modified configure script to work with Pythia 8.2x
