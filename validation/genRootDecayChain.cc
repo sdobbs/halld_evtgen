@@ -180,8 +180,9 @@ void genRootDecayChain::generateEvents() {
     // For our validation purposes, we just want to read in one decay file
 
 #ifdef EVTGEN_EXTERNAL
-    bool useEvtGenRandom(false);
-    EvtExternalGenList genList(true, "", "gamma", useEvtGenRandom);
+    bool convertPythiaCodes(false);
+    bool useEvtGenRandom(true);
+    EvtExternalGenList genList(convertPythiaCodes, "", "gamma", useEvtGenRandom);
     radCorrEngine = genList.getPhotosModel();
     extraModels = genList.getListOfModels();
 #endif

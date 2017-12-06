@@ -4,6 +4,12 @@
 //
 //===========================================================================
 
+6th December 2017 John Back
+    Modified the examples to use DECAY.DEC (see 25th April 2016) instead of
+    DECAY_2010.DEC. Changed EvtExternalGenList to assume Pythia8 codes are
+    used in decay files by default, which is the case for DECAY.DEC. Also
+    updated the setupEvtGen.sh script to work with Pythia 8.2x versions.
+
 29th November 2017 John Back
     Modified EvtSVP, EvtVVP and EvtTVP models to handle both radiative and
     two-lepton decays, courtesy of Aleksei Luchinskii (LHCb).

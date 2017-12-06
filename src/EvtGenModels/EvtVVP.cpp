@@ -72,7 +72,7 @@ void EvtVVP::initProbMax()
 {
 
   if (getNDaug() == 2) {
-    setProbMax(1.6);
+    setProbMax(2.0);
 
   } else if (getNDaug() == 3) {
     const EvtId daugId = getDaug(1);
