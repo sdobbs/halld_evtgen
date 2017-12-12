@@ -4,6 +4,9 @@
 //
 //===========================================================================
 
+12th December 2017 John Back
+    Changed Pythia validation example decay files to use Pythia8 codes.
+
 6th December 2017 John Back
     Modified the examples to use DECAY.DEC (see 25th April 2016) instead of
     DECAY_2010.DEC. Changed EvtExternalGenList to assume Pythia8 codes are
