@@ -12,12 +12,13 @@
 # wget -O setupEvtGen.sh "http://evtgen.hepforge.org/git?p=evtgen.git;a=blob_plain;f=setupEvtGen.sh;hb=HEAD"
 
 # Version or tag number. No extra spaces on this line!
-VERSION=R01-06-00
-# Pythia version number, e.g. 8230 corresponds to version 8.230. No extra spaces
-PYTHIAV=8230
-PYTHIAPKG="pythia"$PYTHIAV
+VERSION=R01-07-00
+# Pythia version number with no decimal points, e.g. 8230 corresponds to version 8.230. This
+# follows the naming convention of Pythia install tar files. Again, no extra spaces allowed
+PYTHIAVER=8230
+PYTHIAPKG="pythia"$PYTHIAVER
 PYTHIATAR=$PYTHIAPKG".tgz"
-echo Pythia version set to $PYTHIAV, package tar name $PYTHIATAR
+echo Pythia version set to $PYTHIAVER, package tar name $PYTHIATAR
 
 mkdir -p EvtGen
 cd EvtGen
@@ -66,7 +67,7 @@ make install
 
 echo Installing pythia8 in $INSTALL_BASE/external/$PYTHIAPKG
 cd ../$PYTHIAPKG
-if [ "$PYTHIAV" -lt "8200" ]
+if [ "$PYTHIAVER" -lt "8200" ]
 then
   ./configure --with-hepmc=$INSTALL_BASE/external/HepMC --with-hepmcversion=2.06.09 --enable-shared
 else
@@ -93,7 +94,7 @@ echo Setup done.
 echo To complete, add the following command to your .bashrc file or run it in your terminal before running any programs that use the EvtGen library:
 echo LD_LIBRARY_PATH=$INSTALL_BASE/external/HepMC/lib:$INSTALL_BASE/external/$PYTHIAPKG/lib:$INSTALL_BASE/external/PHOTOS/lib:$INSTALL_BASE/external/TAUOLA/lib:$INSTALL_BASE/evtgen/lib:\$LD_LIBRARY_PATH
 echo Also set the Pythia8 data path:
-if [ "$PYTHIAV " -lt "8200" ]
+if [ "$PYTHIAVER" -lt "8200" ]
 then
   echo PYTHIA8DATA=$INSTALL_BASE/external/$PYTHIAPKG/xmldoc
 else
