@@ -5,7 +5,7 @@
 //===========================================================================
 
 R01-07-00-------------------------------------------------------------------
-13th December 2016 John Back
+13th December 2017 John Back
     New tag incorporating all changes below. Recommended external packages
     are HepMC 2.06.09, pythia 8.230, Photos++ 3.61 and Tauola++ 1.1.6c,
     as used in the setupEvtGen.sh script.
