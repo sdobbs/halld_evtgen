@@ -14,7 +14,8 @@
 //
 // Modification history:
 //
-//    DJL     April 20, 1998         Module created
+//    AVL     Jul 6, 2012             Module created
+//    AVL     Feb 5, 2018            D0, D*0 modes added
 //
 //------------------------------------------------------------------------
 
@@ -28,7 +29,6 @@ class EvtId;
 class EvtBCVFF : public EvtSemiLeptonicFF {
 
 public:
-
   EvtBCVFF(int idV, int fit);
   void getvectorff( EvtId parent, EvtId daught,
                        double t, double mass, double *a1f,
@@ -50,9 +50,8 @@ public:
 		   double*, double*, double*, double*, double*, double*);
 
 private:
-
   int idVector, whichfit;
-
+  double MBc, MD0, Mpsi, Mpsi2S, kappa, Mchi;
 };
 
 #endif

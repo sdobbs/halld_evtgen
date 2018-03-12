@@ -38,7 +38,8 @@ class EvtSemiLeptonicAmp{
 			EvtSemiLeptonicFF *FormFactors  ) = 0;
 
   double CalcMaxProb( EvtId parent, EvtId meson, EvtId lepton,
-		      EvtId nudaug, EvtSemiLeptonicFF *FormFactors );
+		      EvtId nudaug, EvtSemiLeptonicFF *FormFactors,
+		      int nQ2Bins = 25);
 
 
 };

@@ -36,7 +36,8 @@
 
 double EvtSemiLeptonicAmp::CalcMaxProb( EvtId parent, EvtId meson, 
 					EvtId lepton, EvtId nudaug,
-                     EvtSemiLeptonicFF *FormFactors ) {
+					EvtSemiLeptonicFF *FormFactors,
+					int nQ2Bins) {
 
   //This routine takes the arguements parent, meson, and lepton
   //number, and a form factor model, and returns a maximum
@@ -123,10 +124,10 @@ double EvtSemiLeptonicAmp::CalcMaxProb( EvtId parent, EvtId meson,
     q2min = mass[1]*mass[1];
     q2max = (m-mass[0])*(m-mass[0]);
     
-    //loop over q2
+    //loop over q2 (default = 25 bins)
 
-    for (i=0;i<25;i++) {
-      q2 = q2min + ((i+0.5)*(q2max-q2min))/25.0;
+    for (i=0;i<nQ2Bins;i++) {
+      q2 = q2min + ((i+0.5)*(q2max-q2min))/nQ2Bins;
       
       erho = ( m*m + mass[0]*mass[0] - q2 )/(2.0*m);
       

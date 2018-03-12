@@ -50,6 +50,7 @@ public:
 
 private:
   int idTensor, whichfit;
+  double MBc;
 
 };
 

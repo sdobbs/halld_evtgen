@@ -10,11 +10,12 @@
 //
 // Module: EvtBcVMuNu.cc
 //
-// Description: Routine to implement semileptonic B->psi lnu decays 
+// Description: Routine to implement semileptonic Bc -> vector l nu decays
 //
 // Modification history:
 //
-//    AVL     July 6, 2012        Module created
+//    AVL     Jul 6, 2012             Module created
+//    AVL     Feb 5, 2018            D0, D*0 modes added
 //
 //------------------------------------------------------------------------
 // 
@@ -37,7 +38,6 @@ using namespace std;
 
 
 EvtBcVMuNu::~EvtBcVMuNu() {
-//   cout<<"EvtBcVMuNu::destructor getProbMax(-1) = "<<getProbMax(-1)<<endl;
 }
 
 std::string EvtBcVMuNu::getName(){
@@ -46,24 +46,18 @@ std::string EvtBcVMuNu::getName(){
 
 
 EvtDecayBase* EvtBcVMuNu::clone(){
-//   cout<<" === EvtBcVMuNu::clone() ============"<<endl;
   return new EvtBcVMuNu;
 
 }
 
 void EvtBcVMuNu::decay( EvtParticle *p ){
-//  cout<<" === EvtBcVMuNu::decay() ============"<<endl;
 
   p->initializePhaseSpace(getNDaug(),getDaugs());
   calcamp->CalcAmp(p,_amp2,ffmodel);
-//  cout<<"EvtBcVMuNu::decay() getProbMax(-1) = "<<getProbMax(-1)<<endl;
 }
 
 
 void EvtBcVMuNu::init(){
-//   cout<<" === EvtBcVMuNu::init() ============"<<endl;
- 
-  
   checkNArg(1);
   checkNDaug(3);
 
@@ -78,7 +72,7 @@ void EvtBcVMuNu::init(){
 
   idVector = getDaug(0).getId();
   whichfit = int(getArg(0)+0.1);
-  cout << "EvtBcVMuNu: whichfit = " << whichfit << "  idVector = " << idVector << endl;
+
   ffmodel = new EvtBCVFF(idVector,whichfit);
 
   calcamp = new EvtSemiLeptonicVectorAmp; 
@@ -86,15 +80,19 @@ void EvtBcVMuNu::init(){
 }
 
 void EvtBcVMuNu::initProbMax() {
-//  cout<<" === EvtBcVMuNu::initProbMax() ============"<<endl;
-  if (whichfit == 0) setProbMax(1700.);
-  else if (idVector == EvtPDL::getId("J/psi").getId() && whichfit == 1) setProbMax(40000.0); // > 26.6k for mu, 20.0k for tau
-  else if (idVector == EvtPDL::getId("J/psi").getId() && whichfit == 2) setProbMax(15000.); // > 12.8k for mu, 9.7k for tau
-  else if (idVector == EvtPDL::getId("psi(2S)").getId() && whichfit == 1) setProbMax(700.); // > 600 for mu, 350 for tau
-  else if (idVector == EvtPDL::getId("psi(2S)").getId() && whichfit == 2) setProbMax(300.); // > 216 for mu, 43 for tau
-  else if (idVector == EvtPDL::getId("chi_c1").getId() && whichfit == 3) setProbMax(2000.0); // > 2000 for mu, 940 for tau
-  else {
-    cout<<"EvtBcVMuNu: Not realized yet"<<endl;
-    ::abort();
+
+  EvtId parId = getParentId();
+  EvtId mesonId = getDaug(0);
+  EvtId lepId = getDaug(1);
+  EvtId nuId = getDaug(2);
+
+  int nQ2Bins = 200;
+  double maxProb = calcamp->CalcMaxProb(parId, mesonId, lepId, nuId, ffmodel, nQ2Bins);
+
+  if (verbose()) {
+    EvtGenReport(EVTGEN_INFO,"EvtBcVMuNu") << "Max prob = " << maxProb << endl;
   }
+
+  setProbMax(maxProb);
+
 }

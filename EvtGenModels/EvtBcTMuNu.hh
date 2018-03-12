@@ -45,8 +45,6 @@ public:
   void init();
 
   virtual void initProbMax();
-  void PrintMaxProbs();
-
 
 private:
   EvtSemiLeptonicFF *ffmodel;

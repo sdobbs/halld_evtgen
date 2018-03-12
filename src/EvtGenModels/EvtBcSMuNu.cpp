@@ -10,11 +10,12 @@
 //
 // Module: EvtBcSMuNu.cc
 //
-// Description: Routine to implement semileptonic B->psi lnu decays 
+// Description: Routine to implement semileptonic Bc -> scalar l nu decays
 //
 // Modification history:
 //
-//    AVL     July 6, 2012        Module created
+//    AVL     Jul 6, 2012             Module created
+//    AVL     Feb 5, 2018            D0, D*0 modes added
 //
 //------------------------------------------------------------------------
 // 
@@ -37,7 +38,6 @@ using namespace std;
 
 
 EvtBcSMuNu::~EvtBcSMuNu() {
-//   cout<<"EvtBcSMuNu::destructor getProbMax(-1) = "<<getProbMax(-1)<<endl;
 }
 
 std::string EvtBcSMuNu::getName(){
@@ -46,24 +46,17 @@ std::string EvtBcSMuNu::getName(){
 
 
 EvtDecayBase* EvtBcSMuNu::clone(){
-//   cout<<" === EvtBcSMuNu::clone() ============"<<endl;
   return new EvtBcSMuNu;
 
 }
 
 void EvtBcSMuNu::decay( EvtParticle *p ){
-//  cout<<" === EvtBcSMuNu::decay() ============"<<endl;
-
   p->initializePhaseSpace(getNDaug(),getDaugs());
   calcamp->CalcAmp(p,_amp2,ffmodel);
-//  cout<<"EvtBcSMuNu::decay() getProbMax(-1) = "<<getProbMax(-1)<<endl;
 }
 
 
 void EvtBcSMuNu::init(){
-//   cout<<" === EvtBcSMuNu::init() ============"<<endl;
- 
-  
   checkNArg(1);
   checkNDaug(3);
 
@@ -78,7 +71,7 @@ void EvtBcSMuNu::init(){
 
   idScalar = getDaug(0).getId();
   whichfit = int(getArg(0)+0.1);
-  cout << "EvtBcSMuNu: whichfit =" << whichfit << "  idScalar =" << idScalar << endl;
+
   ffmodel = new EvtBCSFF(idScalar,whichfit);
   
   calcamp = new EvtSemiLeptonicScalarAmp; 
@@ -86,36 +79,20 @@ void EvtBcSMuNu::init(){
 }
 
 void EvtBcSMuNu::initProbMax() {
-  
-//   PrintMaxProbs();
 
-  //  cout<<" === EvtBcSMuNu::initProbMax() ============"<<endl;
-  if (whichfit == 0) setProbMax(0.0); // NEED TO FIX
-  else if (idScalar == EvtPDL::getId("chi_c0").getId() && whichfit == 3) setProbMax(3000.0); // NEED TO FIX
-  else {
-    cout<<"EvtBcSMuNu: Not realized yet"<<endl;
-    ::abort();
+  EvtId parId = getParentId();
+  EvtId mesonId = getDaug(0);
+  EvtId lepId = getDaug(1);
+  EvtId nuId = getDaug(2);
+
+  int nQ2Bins = 200;
+  double maxProb = calcamp->CalcMaxProb(parId, mesonId, lepId, nuId, ffmodel, nQ2Bins);
+
+  if (verbose()) {
+    EvtGenReport(EVTGEN_INFO,"EvtBcSMuNu") << "Max prob = " << maxProb << endl;
   }
-}
 
-void EvtBcSMuNu::PrintMaxProbs()
-{
-  EvtId BcID = EvtPDL::getId("B_c+");
-  EvtId Chic0ID = EvtPDL::getId("chi_c0");
-  EvtId MuID = EvtPDL::getId("mu+");
-  EvtId TauID = EvtPDL::getId("tau+");
-  EvtId NuMuID = EvtPDL::getId("nu_mu");
-  EvtId NuTauID = EvtPDL::getId("nu_tau");
+  setProbMax(maxProb);
   
-  EvtBCSFF* testmodel;
-  double mu_maxprob, tau_maxprob;
 
-  // CHIC0
-  testmodel = new EvtBCSFF(Chic0ID.getId(),3);
-  mu_maxprob = calcamp->CalcMaxProb(BcID,Chic0ID,MuID,NuMuID,testmodel);
-  tau_maxprob = calcamp->CalcMaxProb(BcID,Chic0ID,TauID,NuTauID,testmodel);
-  cout << "B_c => chi_c0(1P) l nu transition w/ Wang:\n";
-  cout << " --> Mu max prob should be: " << mu_maxprob << endl;
-  cout << " --> Tau max prob should be: " << tau_maxprob << endl;
-  delete testmodel;
 }

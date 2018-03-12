@@ -14,7 +14,8 @@
 //
 // Modification history:
 //
-//    DJL     April 20, 1998         Module created
+//    AVL     Jul 6, 2012             Module created
+//    AVL     Feb 5, 2018            D0, D*0 modes added
 //
 //------------------------------------------------------------------------
 
@@ -23,6 +24,7 @@
 
 #include <fstream>
 #include <stdio.h>
+
 
 #include "EvtGenBase/EvtDecayAmp.hh"
 #include "EvtGenBase/EvtSemiLeptonicFF.hh"

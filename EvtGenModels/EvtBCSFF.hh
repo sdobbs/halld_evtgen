@@ -14,8 +14,8 @@
 //
 // Modification history:
 //
-//    DJL     April 20, 1998         Module created
-//
+//    AVL     Jul 6, 2012             Module created
+//    AVL     Feb 5, 2018            D0, D*0 modes added
 //------------------------------------------------------------------------
 
 #ifndef EVTBCSFF_HH
@@ -50,7 +50,7 @@ public:
 
 private:
   int idScalar, whichfit;
-
+  double MBc, MD0;
 };
 
 #endif

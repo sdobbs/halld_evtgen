@@ -10,7 +10,7 @@
 //
 // Module: EvtBCTFF.cc
 //
-// Description: form factors for Bc->Slnu 
+// Description: form factors for Bc->Tlnu
 //
 // Modification history:
 //
@@ -35,7 +35,7 @@ EvtBCTFF::EvtBCTFF(int idT, int fit) {
 
   idTensor = idT;
   whichfit = fit;
-  //cout<<"==== EvtBCTFF:: idTensor="<<idTensor<<" whichfit="<<whichfit<<endl;
+  MBc = EvtPDL::getMeanMass(EvtPDL::getId("B_c+"));
   return;
 }
 
@@ -47,7 +47,7 @@ void EvtBCTFF::getscalarff(EvtId, EvtId, double, double,
 
 }
 
-void EvtBCTFF::getvectorff(EvtId,EvtId, double t, double,
+void EvtBCTFF::getvectorff(EvtId,EvtId, double, double,
                            double *, double *, double *, double *) {
 
   EvtGenReport(EVTGEN_ERROR,"EvtGen") << "Not implemented :getvectorff in EvtBCTFF.\n";  
@@ -71,9 +71,7 @@ void EvtBCTFF::gettensorff(EvtId /*p*/, EvtId /*d*/, double t, double /*mass*/,
 
   if (idTensor == EvtPDL::getId("chi_c2").getId() ) { // Bc -> chi_c1
     if (whichfit == 3) { // FF from Wang et al 10.1103/PhysRevD.79.114018
-      double Mbc = 6.277; // Experimental value
-      //double Mchi = 3.51066; // Experimental value
-      double ratio = q2 / (Mbc*Mbc);
+      double ratio = q2 / (MBc*MBc);
       
       double hf_0 = 0.022;
       double hf_c1 = 2.58;
@@ -97,11 +95,11 @@ void EvtBCTFF::gettensorff(EvtId /*p*/, EvtId /*d*/, double t, double /*mass*/,
       *bmf = bmf_0*exp(bmf_c1*ratio+bmf_c2*ratio*ratio);
       return;
     } else {
-      EvtGenReport(EVTGEN_ERROR,"EvtGen") << "Must choose 0 (a1f = 1) or 3 (Wang).\n";  
+      EvtGenReport(EVTGEN_ERROR,"EvtGen") << "Must choose 0 (a1f = 1) or 3 (Wang).\n";
       ::abort();
     }
   } else {
-    EvtGenReport(EVTGEN_ERROR,"EvtGen") << "chi_c1 is the only (pseudo)vector decay implemented in EvtBCTFF.\n";  
+    EvtGenReport(EVTGEN_ERROR,"EvtGen") << "chi_c2 is the only (pseudo)vector decay implemented in EvtBCTFF.\n";
     ::abort();    
   }
 }
@@ -109,7 +107,7 @@ void EvtBCTFF::gettensorff(EvtId /*p*/, EvtId /*d*/, double t, double /*mass*/,
 void EvtBCTFF::getbaryonff(EvtId, EvtId, double, double,
                            double*, double*, double*, double*) {
   
-  EvtGenReport(EVTGEN_ERROR,"EvtGen") << "Not implemented :getbaryonff in EvtBCTFF.\n";  
+  EvtGenReport(EVTGEN_ERROR,"EvtGen") << "Not implemented :getbaryonff in EvtBCTFF.\n";
   ::abort();
 
 }

@@ -10,14 +10,16 @@
 //
 // Module: EvtBCSFF.cc
 //
-// Description: form factors for Bc->Slnu 
+// Description: form factors for Bc->Slnu
 //
 // Modification history:
 //
-//    AVL Jul 6, Module created
+//    AVL     Jul 6, 2012             Module created
+//    AVL     Feb 5, 2018            D0, D*0 modes added
 //
 //------------------------------------------------------------------------
 // 
+#include "EvtGenBase/EvtPatches.hh"
 #include "EvtGenBase/EvtPatches.hh"
 #include "EvtGenBase/EvtReport.hh"
 #include "EvtGenModels/EvtBCSFF.hh"
@@ -35,7 +37,8 @@ EvtBCSFF::EvtBCSFF(int idS, int fit) {
 
   idScalar = idS;
   whichfit = fit;
-  //cout<<"==== EvtBCSFF:: idScalar="<<idScalar<<" whichfit="<<whichfit<<endl;
+  MBc = EvtPDL::getMeanMass(EvtPDL::getId("B_c+"));
+  MD0 = EvtPDL::getMeanMass(EvtPDL::getId("D0"));
   return;
 }
 
@@ -52,9 +55,7 @@ void EvtBCSFF::getscalarff(EvtId /*p*/, EvtId /*d*/, double t, double /*mass*/,
 
   if (idScalar == EvtPDL::getId("chi_c0").getId() ) { // Bc -> chi_c0
     if (whichfit == 3) { // FF from Wang et al 10.1103/PhysRevD.79.114018
-      double Mbc = 6.277; // Experimental value
-      //double Mchi = 3.41475; // Experimental value
-      double ratio = q2 / (Mbc*Mbc);
+      double ratio = q2 / (MBc*MBc);
       
       double fpf_0 = 0.47;
       double fpf_c1 = 2.03;
@@ -69,14 +70,38 @@ void EvtBCSFF::getscalarff(EvtId /*p*/, EvtId /*d*/, double t, double /*mass*/,
       return;
 
     } else {
-      EvtGenReport(EVTGEN_ERROR,"EvtGen") << "Must choose 0 (fpf = 1) or 3 (Wang).\n";  
+      EvtGenReport(EVTGEN_ERROR,"EvtBCSFF") << "Must choose 0 (fpf = 1) or 3 (Wang).\n";
       ::abort();
     }
+  } else if (idScalar == EvtPDL::getId("D0").getId() || idScalar == EvtPDL::getId("anti-D0").getId()) { // Bc -> D0
+    if (whichfit == 1) {// FF from Kiselev:2002vz, tables III, IV
+      double q2invmass = q2 / (MBc * MBc - MD0 * MD0);
+      double den = 1 - q2 / (5.0 * 5.0);
+      if (fabs(den) < 1e-10) {
+	*fpf = 0;
+	*f0f = 0;
+      } else {
+	double fPlus = 0.32 / den;
+	double fMinus = -0.34 / den;
+	*fpf = fPlus;
+	*f0f = q2invmass * fMinus + fPlus;
+      }
+    } else if (whichfit == 2) {// FF from Ebert:2003cn, Fig 9
+      double ratio=q2/MBc/MBc;
+      double const fPlus_0 = 0.143, fPlus_a = 0.7, fPlus_b = 2.13;
+      double const f0_0 = 0.136, f0_a = 1.63, f0_b = -0.139;
+      *fpf = fPlus_0/ (1 - fPlus_a * ratio - fPlus_b * ratio * ratio);
+      *f0f = f0_0/ (1 - f0_a * ratio - f0_b * ratio * ratio);
+      return;
+    } else {
+      EvtGenReport(EVTGEN_ERROR,"EvtBCSFF") << "Should choose 1 (Kiselev:2002vz) or 2 (Ebert:2003cn).\n";
+    }
   } else {
-    EvtGenReport(EVTGEN_ERROR,"EvtGen") << "Only chi_c0 implemented in EvtBCSFF.\n";  
+    EvtGenReport(EVTGEN_ERROR,"EvtBCSFF") << "Only chi_c0 and D0/anti-D0 implemented.\n";
     ::abort();
   }
 }
+
 
 void EvtBCSFF::getvectorff(EvtId, EvtId, double, double,
                            double*, double*, double*, double*) {
@@ -86,7 +111,7 @@ void EvtBCSFF::getvectorff(EvtId, EvtId, double, double,
 
 }
 
-void EvtBCSFF::gettensorff(EvtId /*p*/, EvtId /*d*/, double t, double /*mass*/,
+void EvtBCSFF::gettensorff(EvtId /*p*/, EvtId /*d*/, double /*t*/, double /*mass*/,
                               double*, double*, double*, double*) {
   
 

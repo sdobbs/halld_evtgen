@@ -14,7 +14,8 @@
 //
 // Modification history:
 //
-//    DJL     April 20, 1998         Module created
+//    AVL     Jul 6, 2012             Module created
+//    AVL     Feb 5, 2018            D0, D*0 modes added
 //
 //------------------------------------------------------------------------
 
@@ -45,8 +46,6 @@ public:
   void init();
 
   virtual void initProbMax();
-  void PrintMaxProbs();
-
 
 private:
   EvtSemiLeptonicFF *ffmodel;

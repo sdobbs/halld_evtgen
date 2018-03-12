@@ -4,6 +4,14 @@
 //
 //===========================================================================
 
+12th March 2018 John Back
+     Updated EvtBcXMuNu models (X = Scalar, Vector, Tensor) to generate
+     Bc to D0(star) mu nu decays, with associated form factors in EvtBCXFF, 
+     courtesy of Aleksei Luchinskii (LHCb). Also generalised the calculation 
+     of their maximum probabilities by reusing the CalcMaxProb method in 
+     EvtSemiLeptonicAmp, which now allows for different Q^2 binning 
+     (default remains at 25 bins).
+
 R01-07-00-------------------------------------------------------------------
 13th December 2017 John Back
     New tag incorporating all changes below. Recommended external packages
