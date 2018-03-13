@@ -43,6 +43,7 @@ public:
   EvtPythiaEngine(std::string xmlDir = "./xmldoc", 
 		  bool convertPhysCodes = false,
 		  bool useEvtGenRandom = true);
+
   virtual ~EvtPythiaEngine();
 
   virtual bool doDecay(EvtParticle* theMother);
@@ -70,9 +71,6 @@ private:
   Pythia8::Pythia* _genericPythiaGen;
   Pythia8::Pythia* _aliasPythiaGen;
   Pythia8::Pythia* _thePythiaGenerator;
-
-  Pythia8::ParticleData _genericPartData, _aliasPartData;  
-  Pythia8::ParticleData _theParticleData;
 
   std::vector<int> _daugPDGVector;
   std::vector<EvtVector4R> _daugP4Vector;

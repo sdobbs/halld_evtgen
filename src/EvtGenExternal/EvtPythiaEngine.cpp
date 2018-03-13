@@ -32,6 +32,7 @@
 #include "Pythia8/Event.h"
 #include "Pythia8/ParticleData.h"
 
+#include <cmath>
 #include <iostream>
 #include <sstream>
 
@@ -50,11 +51,9 @@ EvtPythiaEngine::EvtPythiaEngine(std::string xmlDir, bool convertPhysCodes,
 
   EvtGenReport(EVTGEN_INFO,"EvtGen")<<"Creating generic Pythia generator"<<endl;
   _genericPythiaGen = new Pythia8::Pythia(xmlDir);
-  _genericPartData = _genericPythiaGen->particleData;
 
   EvtGenReport(EVTGEN_INFO,"EvtGen")<<"Creating alias Pythia generator"<<endl;
   _aliasPythiaGen  = new Pythia8::Pythia(xmlDir);
-  _aliasPartData = _aliasPythiaGen->particleData;
 
   _thePythiaGenerator = 0;
   _daugPDGVector.clear(); _daugP4Vector.clear();
@@ -117,6 +116,14 @@ void EvtPythiaEngine::initialise() {
   _genericPythiaGen->readString("ProcessLevel:all = off");
   _aliasPythiaGen->readString("ProcessLevel:all = off");
 
+  // Also turn off printing of particle properties decay information
+  _genericPythiaGen->readString("Init:showChangedParticleData = off");
+  _aliasPythiaGen->readString("Init:showChangedParticleData = off");
+
+  // Can also turn off printing of other changed parameters
+  //_genericPythiaGen->readString("Init:showChangedSettings = off");
+  //_aliasPythiaGen->readString("Init:showChangedSettings = off");
+ 
   // Apply any other physics (or special particle) requirements/cuts etc..
   this->updatePhysicsParameters();
 
@@ -171,8 +178,6 @@ bool EvtPythiaEngine::doDecay(EvtParticle* theParticle) {
   // Choose the generator depending if we have an aliased (parent) particle or not
   _thePythiaGenerator = _genericPythiaGen;
   if (isAlias == 1) {_thePythiaGenerator = _aliasPythiaGen;}
-
-  //_thePythiaGenerator->settings.listChanged();
 
   // Need to use the reference to the Pythia8::Event object,
   // otherwise it will just return a new empty, default event object.
@@ -408,14 +413,9 @@ void EvtPythiaEngine::createDaughterEvtParticles(EvtParticle* theParent) {
 
 void EvtPythiaEngine::updateParticleLists() {
 
-  // Use the EvtGen decay table (decay/user.dec) to update particle entries 
-  // for Pythia. Pythia 8 should use the latest PDG codes, so if the evt.pdl
-  // file is up to date, just let Pythia 8 find the particle properties
-  // knowing the PDG code integer. If we want to use evt.pdl for _all_
-  // particle properties, then we need to make sure that this is up to date,
-  // and modify the code in this class to read that data and use it...
-  // Using the PDG code only also avoids the need to convert EvtGen particle names
-  // to Pythia particle names.
+  // Use the EvtGen decay table (decay/user.dec) to update Pythia particle
+  // decay modes. Also, make sure the generic and alias Pythia generators
+  // use the same particle data entries as defined by EvtGen (evt.pdl).
 
   // Loop over all entries in the EvtPDL particle data table.
   // Aliases are added at the end with id numbers equal to the
@@ -432,75 +432,75 @@ void EvtPythiaEngine::updateParticleLists() {
     EvtId particleId = EvtPDL::getEntry(iPDL);
     int aliasInt = particleId.getAlias();
 
+    // Pythia and EvtGen should use the same PDG codes for particles
     int PDGCode = EvtPDL::getStdHep(particleId);
     
-    // Update mass, lifetime, ...
-    double mass = EvtPDL::getMass(particleId);
+    // Update pole mass, width, lifetime and mass range
+    double mass = EvtPDL::getMeanMass(particleId);
     double width = EvtPDL::getWidth(particleId);
     double lifetime = EvtPDL::getctau(particleId);
     double mmin = EvtPDL::getMinMass(particleId);
     double mmax = EvtPDL::getMaxMass(particleId);
 
-    // Particle data pointers
-    Pythia8::ParticleDataEntry * entry_generic =
-      _genericPartData.particleDataEntryPtr(PDGCode);
-    Pythia8::ParticleDataEntry * entry_alias =
-      _aliasPartData.particleDataEntryPtr(PDGCode);
+    // Particle data pointers. The generic and alias Pythia generator pointers have
+    // their own Pythia8::ParticleData particleData public data members which contain
+    // the particle properties table. We can extract and change individual particle
+    // entries using the particleDataEntryPtr() function within ParticleData.
+    // However, we must be careful when accessing the particleData table. We must do
+    // this directly, since assigning it to another Pythia8::ParticleData object via copying
+    // or assignment will give it a different memory address and it will no longer refer to
+    // the original particleData information from the generator pointer.
 
-    if (entry_generic != 0) {
+    Pythia8::ParticleDataEntry* entry_generic =
+      _genericPythiaGen->particleData.particleDataEntryPtr(PDGCode);
+    Pythia8::ParticleDataEntry* entry_alias =
+      _aliasPythiaGen->particleData.particleDataEntryPtr(PDGCode);
+
+    // Ignore null or "void" (Pythia id = 0) entries
+    if (entry_generic != 0 && entry_generic->id() != 0) {
 
       entry_generic->setM0(mass);
       entry_generic->setMWidth(width);
       entry_generic->setTau0(lifetime);
 
-      if (width != 0.0) {
+      if (std::fabs(width) > 0.0) {
         entry_generic->setMMin(mmin);
         entry_generic->setMMax(mmax);
       }
 
-    } else {
-      EvtGenReport(EVTGEN_INFO,"EvtGen") << "PythiaEngine list update, particle with PDG code " 
-					 << PDGCode << " is not known to Pythia8" << endl;
     }
 
-    if (entry_alias != 0) {
+    // Ignore null or "void" (Pythia id = 0) entries
+    if (entry_alias != 0 && entry_alias->id() != 0) {
 
       entry_alias->setM0(mass);
       entry_alias->setMWidth(width);
       entry_alias->setTau0(lifetime);
 
-      if (width != 0.0) {
+      if (std::fabs(width) > 0.0) {
         entry_alias->setMMin(mmin);
         entry_alias->setMMax(mmax);
       }
 
-    } else {
-      EvtGenReport(EVTGEN_INFO,"EvtGen") << "PythiaEngine list update, alias particle with PDG code " 
-					 << PDGCode << " is not known to Pythia8" << endl;
     }
     
     // Check which particles have a Pythia decay defined.
     // Get the list of all possible decays for the particle, using the alias integer.
     // If the particle is not actually an alias, aliasInt = idInt.
 
-    // Should change isJetSet to isPythia eventually.
     bool hasPythiaDecays = EvtDecayTable::getInstance()->hasPythia(aliasInt);
 
     if (hasPythiaDecays) {
 
       int isAlias = particleId.isAlias();
 
-      // Decide what generator to use depending on ether we have 
-      // an alias particle or not
+      // Decide what generator to use depending on whether we have
+      // an aliased particle or not
       _thePythiaGenerator = _genericPythiaGen;
-      _theParticleData = _genericPartData;
-      if (isAlias == 1) {
-	_thePythiaGenerator = _aliasPythiaGen;
-	_theParticleData = _aliasPartData;
-      }
+      if (isAlias == 1) {_thePythiaGenerator = _aliasPythiaGen;}
 
       // Find the Pythia particle name given the standard PDG code integer
-      std::string dataName = _theParticleData.name(PDGCode);
+      std::string dataName = _thePythiaGenerator->particleData.name(PDGCode);
       bool alreadyStored(false);
       if (_addedPDGCodes.find(abs(PDGCode)) != _addedPDGCodes.end()) {alreadyStored = true;}
 
@@ -532,7 +532,7 @@ void EvtPythiaEngine::updatePythiaDecayTable(EvtId& particleId, int aliasInt, in
   
   // Update the particle data table in Pythia.
   // The tables store information about the allowed decay modes
-  // whre the PDGId for all particles must be positive; anti-particles are stored
+  // where the PDGId for all particles must be positive; anti-particles are stored
   // with the corresponding particle entry.
   // Since we do not want to implement CP violation here, just use the same branching
   // fractions for particle and anti-particle modes.
