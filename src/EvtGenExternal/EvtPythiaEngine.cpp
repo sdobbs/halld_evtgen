@@ -457,7 +457,7 @@ void EvtPythiaEngine::updateParticleLists() {
       _aliasPythiaGen->particleData.particleDataEntryPtr(PDGCode);
 
     // Ignore null or "void" (Pythia id = 0) entries
-    if (entry_generic != 0 && entry_generic->id() != 0) {
+    if (entry_generic != 0 && this->validPDGCode(PDGCode)) {
 
       entry_generic->setM0(mass);
       entry_generic->setMWidth(width);
@@ -471,7 +471,7 @@ void EvtPythiaEngine::updateParticleLists() {
     }
 
     // Ignore null or "void" (Pythia id = 0) entries
-    if (entry_alias != 0 && entry_alias->id() != 0) {
+    if (entry_alias != 0 && this->validPDGCode(PDGCode)) {
 
       entry_alias->setM0(mass);
       entry_alias->setMWidth(width);
@@ -525,6 +525,28 @@ void EvtPythiaEngine::updateParticleLists() {
 
   //EvtGenReport(EVTGEN_INFO,"EvtGen")<<"Writing out changed alias Pythia decay list"<<endl;
   //_aliasPythiaGen->particleData.listChanged();
+
+}
+
+bool EvtPythiaEngine::validPDGCode(int PDGCode) {
+
+  // Exclude certain PDG codes: void = 0, nu'_tau (nu_L) = 18 and
+  // special values = 81 to 100, which are reserved for internal generator use
+  // (pseudoparticles), according to PDG guidelines
+
+  bool isValid(true);
+
+  int absPDGCode = abs(PDGCode);
+
+  if (absPDGCode == 0 || absPDGCode == 18) {
+    // Void and nu_L or nu'_tau
+    isValid = false;
+  } else if (absPDGCode >= 81 && absPDGCode <= 100) {
+    // Pseudoparticles
+    isValid = false;
+  }
+
+  return isValid;
 
 }
 

@@ -58,6 +58,7 @@ private:
   void updatePhysicsParameters();
 
   void createPythiaParticle(EvtId& particleId, int PDGCode);
+  bool validPDGCode(int PDGCode);
   void updatePythiaDecayTable(EvtId& particleId, int aliasInt, int PDGCode);
   void storeDaughterInfo(EvtParticle* theParticle, int startInt);
 
