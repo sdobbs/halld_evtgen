@@ -53,7 +53,7 @@ EvtPythiaEngine::EvtPythiaEngine(std::string xmlDir, bool convertPhysCodes,
   _genericPythiaGen = new Pythia8::Pythia(xmlDir);
 
   EvtGenReport(EVTGEN_INFO,"EvtGen")<<"Creating alias Pythia generator"<<endl;
-  _aliasPythiaGen  = new Pythia8::Pythia(xmlDir);
+  _aliasPythiaGen  = new Pythia8::Pythia(xmlDir, false);
 
   _thePythiaGenerator = 0;
   _daugPDGVector.clear(); _daugP4Vector.clear();
@@ -116,13 +116,9 @@ void EvtPythiaEngine::initialise() {
   _genericPythiaGen->readString("ProcessLevel:all = off");
   _aliasPythiaGen->readString("ProcessLevel:all = off");
 
-  // Also turn off printing of particle properties decay information
-  _genericPythiaGen->readString("Init:showChangedParticleData = off");
-  _aliasPythiaGen->readString("Init:showChangedParticleData = off");
-
-  // Can also turn off printing of other changed parameters
-  //_genericPythiaGen->readString("Init:showChangedSettings = off");
-  //_aliasPythiaGen->readString("Init:showChangedSettings = off");
+  // Turn off Pythia warnings, e.g. changes to particle properties
+  _genericPythiaGen->readString("Print:quiet = on");
+  _aliasPythiaGen->readString("Print:quiet = on");
  
   // Apply any other physics (or special particle) requirements/cuts etc..
   this->updatePhysicsParameters();
@@ -456,7 +452,8 @@ void EvtPythiaEngine::updateParticleLists() {
     Pythia8::ParticleDataEntry* entry_alias =
       _aliasPythiaGen->particleData.particleDataEntryPtr(PDGCode);
 
-    // Ignore null or "void" (Pythia id = 0) entries
+    // Check that the PDG code is not zero/null and exclude other
+    // special cases, e.g. those reserved for internal generator use
     if (entry_generic != 0 && this->validPDGCode(PDGCode)) {
 
       entry_generic->setM0(mass);
@@ -470,7 +467,8 @@ void EvtPythiaEngine::updateParticleLists() {
 
     }
 
-    // Ignore null or "void" (Pythia id = 0) entries
+    // Check that the PDG code is not zero/null and exclude other
+    // special cases, e.g. those reserved for internal generator use
     if (entry_alias != 0 && this->validPDGCode(PDGCode)) {
 
       entry_alias->setM0(mass);
@@ -530,9 +528,9 @@ void EvtPythiaEngine::updateParticleLists() {
 
 bool EvtPythiaEngine::validPDGCode(int PDGCode) {
 
-  // Exclude certain PDG codes: void = 0, nu'_tau (nu_L) = 18 and
-  // special values = 81 to 100, which are reserved for internal generator use
-  // (pseudoparticles), according to PDG guidelines
+  // Exclude certain PDG codes: void = 0 and special values = 81 to 100, which are reserved
+  // for internal generator use (pseudoparticles) according to PDG guidelines. Also exclude
+  // nu'_tau (nu_L) = 18, which has different masses: Pythia8 = 400 GeV, EvtGen = 0 GeV.
 
   bool isValid(true);
 
