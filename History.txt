@@ -4,6 +4,9 @@
 //
 //===========================================================================
 
+5th October 2018 John Back
+	Updated setupEvtGen.sh to work with the new HepForge Phabricator site.
+
 13th March 2018 John Back
     Updated EvtPythiaEngine to correctly handle updates of various particle 
     properties so that Pythia uses the same information as EvtGen (evt.pdl)

@@ -2,14 +2,14 @@
 
 # This script installs EvtGen with all external dependencies. The variable VERSION specifies the
 # tag of EvtGen you want to use. The list of available tags can be found by either going to the url
-# http://evtgen.hepforge.org/git?p=evtgen.git;a=tags
+# https://phab.hepforge.org/source/evtgen/tags/master
 # or issuing the command (without the need to clone the git repository)
-# git ls-remote --tags http://evtgen.hepforge.org/git/evtgen.git | cut -d '/' -f3
+# git ls-remote --tags http://phab.hepforge.org/source/evtgen.git | cut -d '/' -f3
 # Note that some earlier EvtGen versions will not be compatible with all external dependency
 # versions given below, owing to C++ interface differences; see the specific tagged version of
 # the EvtGen/README file for guidance.
-# To obtain this script, use
-# wget -O setupEvtGen.sh "http://evtgen.hepforge.org/git?p=evtgen.git;a=blob_plain;f=setupEvtGen.sh;hb=HEAD"
+# To obtain this script use the "Download File" option on the right of the webpage:
+# https://phab.hepforge.org/source/evtgen/browse/master/setupEvtGen.sh?view=raw
 
 # Version or tag number. No extra spaces on this line!
 VERSION=R01-07-00
@@ -28,9 +28,9 @@ INSTALL_BASE=`pwd`
 echo Will setup EvtGen $VERSION in $INSTALL_BASE
 
 echo Downloading EvtGen from GIT
-git clone -b $VERSION http://evtgen.hepforge.org/git/evtgen.git
+git clone -b $VERSION http://phab.hepforge.org/source/evtgen.git
 # Replace the above line with the following one for the "head" version
-#git clone http://evtgen.hepforge.org/git/evtgen.git
+#git clone http://phab.hepforge.org/source/evtgen.git
 
 osArch=`uname`
 
