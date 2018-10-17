@@ -163,6 +163,24 @@
 
 #include "EvtGenModels/EvtGenericDalitz.hh"
 
+#include "EvtGenModels/EvtBcVHad.hh"
+
+#include "EvtGenModels/Evtbs2llGammaMNT.hh"
+#include "EvtGenModels/Evtbs2llGammaISRFSR.hh"
+
+#include "EvtGenModels/EvtbTosllMS.hh"
+#include "EvtGenModels/EvtbTosllMSExt.hh"
+
+#include "EvtGenModels/EvtbsToLLLL.hh"	
+#include "EvtGenModels/EvtbsToLLLLHyperCP.hh"
+
+#include "EvtGenModels/EvtLb2plnuLCSR.hh"	
+#include "EvtGenModels/EvtLb2plnuLQCD.hh"	
+#include "EvtGenModels/EvtLb2Baryonlnu.hh"
+
+#include "EvtGenModels/EvtFlatSqDalitz.hh"
+#include "EvtGenModels/EvtPhspFlatLifetime.hh"
+
 #include "EvtGenModels/EvtModelReg.hh"
 using std::fstream;
 using std::cout;
@@ -313,5 +331,19 @@ EvtModelReg::EvtModelReg(const std::list<EvtDecayBase*>* extraModels)
     modelist.registerModel(new EvtVtoSll);
 
     modelist.registerModel(new EvtGenericDalitz());
+
+    modelist.registerModel(new EvtBcVHad);
+
+    modelist.registerModel(new Evtbs2llGammaMNT);
+    modelist.registerModel(new Evtbs2llGammaISRFSR);
+    modelist.registerModel(new EvtbTosllMS);
+    modelist.registerModel(new EvtbTosllMSExt);
+
+    modelist.registerModel(new EvtLb2plnuLQCD);
+    modelist.registerModel(new EvtLb2plnuLCSR);
+    modelist.registerModel(new EvtLb2Baryonlnu);
+
+    modelist.registerModel(new EvtFlatSqDalitz);
+    modelist.registerModel(new EvtPhspFlatLifetime);
 
 }
