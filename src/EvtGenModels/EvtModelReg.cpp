@@ -178,6 +178,8 @@
 #include "EvtGenModels/EvtLb2plnuLQCD.hh"	
 #include "EvtGenModels/EvtLb2Baryonlnu.hh"
 
+#include "EvtGenModels/EvtBToDiBaryonlnupQCD.hh"
+
 #include "EvtGenModels/EvtFlatSqDalitz.hh"
 #include "EvtGenModels/EvtPhspFlatLifetime.hh"
 
@@ -342,6 +344,8 @@ EvtModelReg::EvtModelReg(const std::list<EvtDecayBase*>* extraModels)
     modelist.registerModel(new EvtLb2plnuLQCD);
     modelist.registerModel(new EvtLb2plnuLCSR);
     modelist.registerModel(new EvtLb2Baryonlnu);
+
+    modelist.registerModel(new EvtBToDiBaryonlnupQCD);
 
     modelist.registerModel(new EvtFlatSqDalitz);
     modelist.registerModel(new EvtPhspFlatLifetime);

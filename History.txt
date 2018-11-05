@@ -4,6 +4,11 @@
 //
 //===========================================================================
 
+5th November 2018 John Back
+    Added the BToDiBaryonlnupQCD model for generating B to p N* l nu decays,
+    where N can be any (exited) charged baryon (spin 1/2 or 3/2), courtesy of
+    Mark Smith and Ryan Newcombe (LHCb), with added code optimisations.
+
 17th October 2018 John Back
     Added various decay models from LHCb EvtGenExtras package:
     EvtBcVHad ("BC_VHAD"), Evtbs2llGammaMNT ("BSTOGLLMNT"),
