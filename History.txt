@@ -4,6 +4,12 @@
 //
 //===========================================================================
 
+7th December 2018 John Back
+    Added the EvtBLLNuL (BLLNUL) model that generates rare B -> ell ell nu ell 
+    decays, where ell = e or mu, courtesy of Anna Danilina and Nikolai Nikitin 
+    (LHCb). Removed the EvtB2MuMuMuNu (BUTOMMMN) model, since its now replaced 
+    by the more general BLLNuL one.
+
 5th November 2018 John Back
     Added the BToDiBaryonlnupQCD model for generating B to p N* l nu decays,
     where N can be any (exited) charged baryon (spin 1/2 or 3/2), courtesy of
