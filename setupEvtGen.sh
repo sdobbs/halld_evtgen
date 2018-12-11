@@ -12,7 +12,7 @@
 # https://phab.hepforge.org/source/evtgen/browse/master/setupEvtGen.sh?view=raw
 
 # Version or tag number. No extra spaces on this line!
-VERSION=R01-07-00
+VERSION=cmake
 # Pythia version number with no decimal points, e.g. 8230 corresponds to version 8.230. This
 # follows the naming convention of Pythia install tar files. Again, no extra spaces allowed
 PYTHIAVER=8230
@@ -29,7 +29,10 @@ echo Will setup EvtGen $VERSION in $INSTALL_BASE
 
 echo Downloading EvtGen from GIT
 git clone http://phab.hepforge.org/source/evtgen.git evtgen.git
-git checkout -b $VERSION $VERSION
+cd evtgen.git
+#git checkout -b $VERSION $VERSION
+git checkout $VERSION
+cd $INSTALL_BASE
 # Replace the above lines with the following one for the "head" version
 #git clone http://phab.hepforge.org/source/evtgen.git evtgen.git
 
@@ -61,7 +64,8 @@ fi
 
 echo Installing HepMC in $INSTALL_BASE/external/HepMC
 mkdir -p HepMC
-cd HepMC
+mkdir -p HepMC.build
+cd HepMC.build
 cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_BASE/external/HepMC $INSTALL_BASE/external/HepMC-2.06.09 -Dmomentum:STRING=GEV -Dlength:STRING=MM
 make
 make install
@@ -88,8 +92,8 @@ make
 
 echo Building EvtGen
 cd $INSTALL_BASE
-mkdir evtgen.build
-mkdir evtgen
+mkdir -p evtgen.build
+mkdir -p evtgen
 cd evtgen.build
 cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_BASE/evtgen $INSTALL_BASE/evtgen.git -DEVTGEN_PYTHIA=ON -DEVTGEN_PHOTOS=ON -DEVTGEN_TAUOLA=ON
 make
