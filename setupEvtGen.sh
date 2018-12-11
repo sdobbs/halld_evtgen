@@ -28,9 +28,10 @@ INSTALL_BASE=`pwd`
 echo Will setup EvtGen $VERSION in $INSTALL_BASE
 
 echo Downloading EvtGen from GIT
-git clone -b $VERSION http://phab.hepforge.org/source/evtgen.git
-# Replace the above line with the following one for the "head" version
-#git clone http://phab.hepforge.org/source/evtgen.git
+git clone http://phab.hepforge.org/source/evtgen.git evtgen.git
+git checkout -b $VERSION $VERSION
+# Replace the above lines with the following one for the "head" version
+#git clone http://phab.hepforge.org/source/evtgen.git evtgen.git
 
 osArch=`uname`
 
@@ -54,8 +55,8 @@ tar -xzf TAUOLA.1.1.6c.tar.gz
 # Patch TAUOLA and PHOTOS on Darwin (Mac)
 if [ "$osArch" == "Darwin" ]
 then
-  patch -p0 < $INSTALL_BASE/evtgen/platform/tauola_Darwin.patch
-  patch -p0 < $INSTALL_BASE/evtgen/platform/photos_Darwin.patch
+  patch -p0 < $INSTALL_BASE/evtgen.git/platform/tauola_Darwin.patch
+  patch -p0 < $INSTALL_BASE/evtgen.git/platform/photos_Darwin.patch
 fi
 
 echo Installing HepMC in $INSTALL_BASE/external/HepMC
@@ -86,14 +87,17 @@ cd ../TAUOLA
 make
 
 echo Building EvtGen
-cd $INSTALL_BASE/evtgen
-./configure --hepmcdir=$INSTALL_BASE/external/HepMC --photosdir=$INSTALL_BASE/external/PHOTOS --pythiadir=$INSTALL_BASE/external/$PYTHIAPKG --tauoladir=$INSTALL_BASE/external/TAUOLA
+cd $INSTALL_BASE
+mkdir evtgen.build
+mkdir evtgen
+cd evtgen.build
+cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_BASE/evtgen $INSTALL_BASE/evtgen.git -DEVTGEN_PYTHIA=ON -DEVTGEN_PHOTOS=ON -DEVTGEN_TAUOLA=ON
 make
+make install
+cd $INSTALL_BASE/evtgen
 
 echo Setup done.
-echo To complete, add the following command to your .bashrc file or run it in your terminal before running any programs that use the EvtGen library:
-echo LD_LIBRARY_PATH=$INSTALL_BASE/external/HepMC/lib:$INSTALL_BASE/external/$PYTHIAPKG/lib:$INSTALL_BASE/external/PHOTOS/lib:$INSTALL_BASE/external/TAUOLA/lib:$INSTALL_BASE/evtgen/lib:\$LD_LIBRARY_PATH
-echo Also set the Pythia8 data path:
+echo To complete, set the Pythia8 data path:
 if [ "$PYTHIAVER" -lt "8200" ]
 then
   echo PYTHIA8DATA=$INSTALL_BASE/external/$PYTHIAPKG/xmldoc
