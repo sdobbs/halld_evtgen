@@ -23,16 +23,14 @@
 #include "EvtGenBase/EvtIdSet.hh"
 
 #include "EvtGenModels/EvtBLLNuL.hh"
-#include "EvtGenModels/EvtBLLNuLAmp.hh"
 
 EvtBLLNuL::EvtBLLNuL() :
-    calcAmp_(0)
+    calcAmp_()
 {
 }
 
 EvtBLLNuL::~EvtBLLNuL()
 {
-    delete calcAmp_;
 }
 
 std::string EvtBLLNuL::getName() 
@@ -129,9 +127,9 @@ void EvtBLLNuL::init()
 	kSqMin = getArg(1);
     }
 
-    // Define the amplitude calculation pointer with the qSq and kSq cut-offs,
-    // also specifying if the decay mode has flavour symmetry
-    calcAmp_ = new EvtBLLNuLAmp(qSqMin, kSqMin, symmetry);
+    // Define the amplitude qSq and kSq cut-offs, also
+    // specifying if the decay mode has flavour symmetry
+    calcAmp_.setParameters(qSqMin, kSqMin, symmetry);
 }
 
 void EvtBLLNuL::initProbMax() 
@@ -153,6 +151,6 @@ void EvtBLLNuL::decay(EvtParticle *p)
 {    
     p->initializePhaseSpace(getNDaug(), getDaugs());
     
-    calcAmp_->CalcAmp(p, _amp2);
+    calcAmp_.CalcAmp(p, _amp2);
 
 }

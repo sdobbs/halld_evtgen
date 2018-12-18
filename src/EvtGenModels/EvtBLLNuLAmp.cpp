@@ -27,6 +27,39 @@
 
 #include <cmath>
 
+EvtBLLNuLAmp::EvtBLLNuLAmp(double Vub) :
+    qSqMin_(0.0),
+    kSqMin_(0.0),
+    symmetry_(false),
+    BpId_(EvtPDL::getId("B+")),
+    BnId_(EvtPDL::getId("B-")),
+    coupling_(0.0),
+    sqrt2_(sqrt(2.0)),
+    fBu_(0.191), // leptonic constant (GeV)
+    Bstar_(new EvtBLLNuLAmp::ResPole(5.32, 0.00658, 0.183/3.0)),
+    Upsilon_(new EvtBLLNuLAmp::ResPole(9.64, 0.0, 0.0)),
+    resPoles_(),
+    nPoles_(0),
+    zero_(EvtComplex(0.0, 0.0)),
+    unitI_(EvtComplex(0.0, 1.0))
+{
+    double GF = 1.166371e-5; // GeV^{-2}
+    double alphaEM = 1.0/137.0;
+
+    // Normalisation constant, multiplied by 1e4 to increase probability scale
+    coupling_ = 400.0*GF*EvtConst::pi*alphaEM*Vub*1e4/sqrt2_;
+
+    // Define VMD resonance poles using PDG 2016 values with constants from
+    // D.Melikhov, N.Nikitin and K.Toms, Phys. Atom. Nucl. 68, 1842 (2005)
+    EvtBLLNuLAmp::ResPole* rho = new EvtBLLNuLAmp::ResPole(0.77526, 0.1491, 1.0/5.04);
+    resPoles_.push_back(rho);
+    
+    EvtBLLNuLAmp::ResPole* omega = new EvtBLLNuLAmp::ResPole(0.78265, 0.00849, 1.0/17.1);
+    resPoles_.push_back(omega);
+
+    nPoles_ = resPoles_.size();
+}
+
 EvtBLLNuLAmp::EvtBLLNuLAmp(double qSqMin, double kSqMin, bool symmetry, double Vub) :
     qSqMin_(qSqMin),
     kSqMin_(kSqMin),
@@ -45,9 +78,9 @@ EvtBLLNuLAmp::EvtBLLNuLAmp(double qSqMin, double kSqMin, bool symmetry, double V
 {
     double GF = 1.166371e-5; // GeV^{-2}
     double alphaEM = 1.0/137.0;
-    double MyPi = EvtConst::pi;
+
     // Normalisation constant, multiplied by 1e4 to increase probability scale
-    coupling_ = 400.0*GF*MyPi*alphaEM*Vub*1e4/sqrt2_;
+    coupling_ = 400.0*GF*EvtConst::pi*alphaEM*Vub*1e4/sqrt2_;
 
     // Define VMD resonance poles using PDG 2016 values with constants from
     // D.Melikhov, N.Nikitin and K.Toms, Phys. Atom. Nucl. 68, 1842 (2005)
@@ -93,18 +126,6 @@ EvtComplex EvtBLLNuLAmp::ResPole::propagator(double qSq, int numForm) const
     EvtComplex result = num*c_/((qSq - m0Sq_) + Imw_);
     return result;
 
-}
-
-// Store kinematic information that can be passed around functions
-EvtBLLNuLAmp::KinInfo::KinInfo(const EvtVector4R& q, const EvtVector4R& k,
-			       double qSq, double kSq, double MB, int sign) :
-    q_(q),
-    k_(k),
-    qSq_(qSq),
-    kSq_(kSq),
-    MB_(MB),
-    sign_(sign)
-{
 }
 
 // Amplitude calculation
@@ -171,14 +192,12 @@ void EvtBLLNuLAmp::CalcAmp(EvtParticle *parent, EvtAmp& amp) const
     if (parId == BnId_) {sign = -1;}
       
     // Hadronic tensors
-    EvtBLLNuLAmp::KinInfo infoA(q12, k34, q12Sq, k34Sq, MB, sign);
-    EvtTensor4C THadronA = getHadronTensor(infoA);
+    EvtTensor4C THadronA = getHadronTensor(q12, k34, q12Sq, k34Sq, MB, sign);
 
     // When we need to include the symmetric terms
     EvtTensor4C THadronB;
     if (symmetry_) {
-	EvtBLLNuLAmp::KinInfo infoB(q14, k23, q14Sq, k23Sq, MB, sign);
-	THadronB = getHadronTensor(infoB);
+	THadronB = getHadronTensor(q14, k23, q14Sq, k23Sq, MB, sign);
     }
 
     // Leptonic currents: A for normal terms, B for symmetric terms
@@ -288,16 +307,11 @@ void EvtBLLNuLAmp::CalcAmp(EvtParticle *parent, EvtAmp& amp) const
 
 }
 
-EvtTensor4C EvtBLLNuLAmp::getHadronTensor(const EvtBLLNuLAmp::KinInfo& info) const
+EvtTensor4C EvtBLLNuLAmp::getHadronTensor(const EvtVector4R& q, const EvtVector4R& k, 
+					  const double qSq, const double kSq, const double MB, 
+					  const int sign) const
 {
-    // Hadronic tensor calculation.
-    // First retrieve kinematic variables
-    EvtVector4R q = info.getQ();
-    EvtVector4R k = info.getK();
-    double qSq = info.getQSq();
-    double kSq = info.getKSq();
-    double MB = info.getMB();
-    int sign = info.getSign();
+    // Hadronic tensor calculation
     
     EvtTensor4C epskq = dual(EvtGenFunctions::directProd(k, q));
     EvtTensor4C qk = EvtGenFunctions::directProd(q, k);

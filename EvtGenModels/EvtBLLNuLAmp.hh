@@ -32,11 +32,13 @@ class EvtBLLNuLAmp {
 
 public:
 
+    EvtBLLNuLAmp(double Vub = 4.09e-3);
     EvtBLLNuLAmp(double qSqMin, double kSqMin, bool symmetry, double Vub = 4.09e-3);
 
     virtual ~EvtBLLNuLAmp();
 
     void CalcAmp(EvtParticle *parent, EvtAmp& amp) const;
+    void setParameters(double qSqMin, double kSqMin, bool symmetry);
 
     // Resonance poles
     class ResPole {
@@ -61,33 +63,11 @@ public:
 
     };
 
-    // Kinematics
-    class KinInfo {
-    public:
-	KinInfo(const EvtVector4R& q, const EvtVector4R& k,
-		double qSq, double kSq, double MB,
-		int sign);
-	virtual ~KinInfo() {;}
-
-	EvtVector4R getQ() const {return q_;}
-	EvtVector4R getK() const {return k_;}
-	double getQSq() const {return qSq_;}
-	double getKSq() const {return kSq_;}
-	double getMB() const {return MB_;}
-	int getSign() const {return sign_;}
-
-    private:
-	EvtVector4R q_;
-	EvtVector4R k_;
-	double qSq_;
-	double kSq_;
-	double MB_;
-	int sign_;
-    };
-
 protected:
     
-    EvtTensor4C getHadronTensor(const EvtBLLNuLAmp::KinInfo& info) const;
+    EvtTensor4C getHadronTensor(const EvtVector4R& q, const EvtVector4R& k,
+                                const double qSq, const double kSq, const double MB,
+                                const int sign) const;
 
     std::vector<EvtComplex> getVMDTerms(double qSq, double kSq, double MB) const;
 
@@ -128,5 +108,12 @@ private:
     EvtComplex zero_, unitI_;
 
 };
+
+inline void EvtBLLNuLAmp::setParameters(double qSqMin, double kSqMin, bool symmetry)
+{
+    qSqMin_ = qSqMin;
+    kSqMin_ = kSqMin;
+    symmetry_ = symmetry;
+}
 
 #endif

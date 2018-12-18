@@ -19,12 +19,12 @@
 #define EVTBLLNUL_HH
 
 #include "EvtGenBase/EvtDecayAmp.hh"
+#include "EvtGenModels/EvtBLLNuLAmp.hh"
 
 #include <string>
 
 class EvtParticle;
 class EvtbTosllMSFF;  // Form factor class
-class EvtBLLNuLAmp;   // Amplitude class
 
 class EvtBLLNuL: public EvtDecayAmp {
 
@@ -42,7 +42,7 @@ public:
 
 private:
   
-    EvtBLLNuLAmp* calcAmp_;
+    EvtBLLNuLAmp calcAmp_;
 
 };
 
