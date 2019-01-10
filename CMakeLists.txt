@@ -17,11 +17,22 @@ endif()
 cmake_minimum_required(VERSION 3.8.0)
 
 # Project setup
-project(EvtGen
-	VERSION 2.0.0
-	DESCRIPTION "Monte Carlo generator of particle decays, in particular the weak decays of heavy flavour particles such as B mesons."
-	HOMEPAGE_URL "https://evtgen.hepforge.org"
-	)
+if(${CMAKE_VERSION} VERSION_LESS 3.9.0)
+    project(EvtGen
+        VERSION 2.0.0
+        )
+elseif(${CMAKE_VERSION} VERSION_LESS 3.12.0)
+    project(EvtGen
+        VERSION 2.0.0
+        DESCRIPTION "Monte Carlo generator of particle decays, in particular the weak decays of heavy flavour particles such as B mesons."
+        )
+else()
+    project(EvtGen
+        VERSION 2.0.0
+        DESCRIPTION "Monte Carlo generator of particle decays, in particular the weak decays of heavy flavour particles such as B mesons."
+        HOMEPAGE_URL "https://evtgen.hepforge.org"
+        )
+endif()
 
 # Prepend this project's custom module path(s) to CMAKE_MODULE_PATH
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules ${CMAKE_MODULE_PATH})
