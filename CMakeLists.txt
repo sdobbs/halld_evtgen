@@ -45,6 +45,9 @@ include(CompilerFlags)
 option(EVTGEN_PYTHIA "Enable/disable linking with Pythia8" OFF)
 option(EVTGEN_PHOTOS "Enable/disable linking with Photos++" OFF)
 option(EVTGEN_TAUOLA "Enable/disable linking with Tauola++" OFF)
+message(STATUS "EvtGen: Linking with Pythia8  ${EVTGEN_PYTHIA}")
+message(STATUS "EvtGen: Linking with Photos++ ${EVTGEN_PHOTOS}")
+message(STATUS "EvtGen: Linking with Tauola++ ${EVTGEN_TAUOLA}")
 include(ExternalDependencies)
 
 # Now build the library
