@@ -58,7 +58,8 @@ configure_file(DECAY.DEC ${CMAKE_CURRENT_BINARY_DIR}/DECAY.DEC COPYONLY)
 configure_file(DECAY.XML ${CMAKE_CURRENT_BINARY_DIR}/DECAY.XML COPYONLY)
 configure_file(evt.pdl ${CMAKE_CURRENT_BINARY_DIR}/evt.pdl COPYONLY)
 
-# Build the executables in the validation directory
+# Build the executables in the test and validation directories
+add_subdirectory(test)
 add_subdirectory(validation)
 
 # Install the include directories
