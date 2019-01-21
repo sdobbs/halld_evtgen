@@ -61,11 +61,12 @@ void EvtSLDiBaryonAmp::CalcAmp(EvtParticle *parent, EvtAmp& amp) const {
     EvtParticle* neutrino = parent->getDaug(3);
 
     // 4-momenta
+    EvtVector4R p0(parent->mass(), 0.0, 0.0, 0.0);
     EvtVector4R p1 = baryon1->getP4();
     EvtVector4R p2 = baryon2->getP4();
 
     EvtVector4R pSum = p1 + p2;
-    EvtVector4R p = parent->getP4() - pSum;
+    EvtVector4R p = p0 - pSum;
     EvtVector4R pDiff = p2 - p1;
 
     // Particle id's
