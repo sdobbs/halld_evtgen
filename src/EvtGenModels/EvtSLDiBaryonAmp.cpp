@@ -54,9 +54,21 @@ void EvtSLDiBaryonAmp::CalcAmp(EvtParticle *parent, EvtAmp& amp) const {
     static EvtId MUP = EvtPDL::getId("mu+");
     static EvtId TAUP = EvtPDL::getId("tau+");
 
-    // The baryon, charged lepton and neutrino daughters
+    // B charge (x3) to find parity factor and baryon daughter ordering
+    EvtId BId = parent->getId();
+    int qB3 = EvtPDL::chg3(BId);
+
+    // The baryon, charged lepton and neutrino daughters.
+    // Make sure the first baryon has a charge opposite to the B
     EvtParticle* baryon1 = parent->getDaug(0);
     EvtParticle* baryon2 = parent->getDaug(1);
+
+    if (EvtPDL::chg3(baryon1->getId()) == qB3) {
+	// Reverse baryon ordering
+	baryon1 = parent->getDaug(1);
+	baryon2 = parent->getDaug(0);
+    }
+
     EvtParticle* lepton = parent->getDaug(2);
     EvtParticle* neutrino = parent->getDaug(3);
 
@@ -69,10 +81,15 @@ void EvtSLDiBaryonAmp::CalcAmp(EvtParticle *parent, EvtAmp& amp) const {
     EvtVector4R p = p0 - pSum;
     EvtVector4R pDiff = p2 - p1;
 
-    // Particle id's
+    // Particle id's: retrieve 1st baryon again in case order has changed
     EvtId Id1 = baryon1->getId();
     EvtId Id2 = baryon2->getId();
     EvtId l_num = lepton->getId();
+
+    // Parity = 1 for B- mode; amplitude is written assuming we have B-
+    double parity(1.0);
+    // Parity = -1 factor for the vector terms for the B+ decay
+    if (qB3 > 0) {parity = -1.0;}
 
     EvtSpinType::spintype type1 = EvtPDL::getSpinType(Id1);
     EvtSpinType::spintype type2 = EvtPDL::getSpinType(Id2);
@@ -92,15 +109,17 @@ void EvtSLDiBaryonAmp::CalcAmp(EvtParticle *parent, EvtAmp& amp) const {
 
     if (l_num == EM || l_num == MUM || l_num == TAUM) {
 
+	// B-
 	l1 = EvtLeptonVACurrent(lepton->spParent(0), neutrino->spParentNeutrino());
-      
+
 	l2 = EvtLeptonVACurrent(lepton->spParent(1), neutrino->spParentNeutrino());
 
     } else if (l_num == EP || l_num == MUP || l_num == TAUP) {
         
+	// B+
 	l1 = EvtLeptonVACurrent(neutrino->spParentNeutrino(), lepton->spParent(0));
 
-        l2 = EvtLeptonVACurrent(neutrino->spParentNeutrino(), lepton->spParent(1));
+	l2 = EvtLeptonVACurrent(neutrino->spParentNeutrino(), lepton->spParent(1));
 
     } else {
 
@@ -142,14 +161,14 @@ void EvtSLDiBaryonAmp::CalcAmp(EvtParticle *parent, EvtAmp& amp) const {
 	    // Second baryon
 	    for(int j = 0; j < N2; j++) {
 		
-		EvtDiracSpinor v = baryon2->spParent(j); 
+		EvtDiracSpinor v = baryon2->spParent(j);
 		EvtDiracSpinor g5v = EvtGammaMatrix::g5()*v;
 
 		// Calculate and set the 4 complex amplitude components
 		for (int k = 0; k < 4; k++) {
 		
 		    EvtGammaMatrix sigmaSum = sigmaVect[k];
- 
+
 		    // Need two terms owing to the requirements of using the product operators
 		    EvtDiracSpinor vgTermA = (FF.G1*EvtGammaMatrix::g(k) + I*FF.G2*sigmaSum)*g5v;
 		    EvtDiracSpinor vgTermB = (FF.G3*p.get(k) + FF.G4*pSum.get(k) + FF.G5*pDiff.get(k))*g5v;
@@ -164,9 +183,9 @@ void EvtSLDiBaryonAmp::CalcAmp(EvtParticle *parent, EvtAmp& amp) const {
 		    term2.set(k, EvtLeptonSCurrent(u, vfTermA+vfTermB));
 
 		}
-	    
-		// Set the decay amplitude element
-		EvtVector4C term = term1 - term2;
+
+		// Set the V-A decay amplitude element
+		EvtVector4C term = parity*term1 - term2;
 		amp.vertex(i,j,0,l1*term);
 		amp.vertex(i,j,1,l2*term);
 
@@ -196,7 +215,7 @@ void EvtSLDiBaryonAmp::CalcAmp(EvtParticle *parent, EvtAmp& amp) const {
 		// Second baryon is RS-type
 		for (int j = 0; j < N2; j++) {
 		    
-		    EvtRaritaSchwinger vRS = baryon2->spRSParent(j); 
+		    EvtRaritaSchwinger vRS = baryon2->spRSParent(j);
 		    
 		    // Store products of g5 with the spinor components as well as
 		    // EvtDiracSpinors to limit constructor calls inside k loop
@@ -233,8 +252,8 @@ void EvtSLDiBaryonAmp::CalcAmp(EvtParticle *parent, EvtAmp& amp) const {
 			
 		    }
 		    
-		    // Set the decay amplitude element
-		    EvtVector4C term = term1 - term2;
+		    // Set the V-A decay amplitude element
+		    EvtVector4C term = parity*term1 - term2;
 		    amp.vertex(i,j,0,l1*term);
 		    amp.vertex(i,j,1,l2*term);
 		    
@@ -290,8 +309,8 @@ void EvtSLDiBaryonAmp::CalcAmp(EvtParticle *parent, EvtAmp& amp) const {
 
 		    }
 		    
-		    // Set the decay amplitude element
-		    EvtVector4C term = term1 - term2;
+		    // Set the V-A decay amplitude element
+		    EvtVector4C term = parity*term1 - term2;
 		    amp.vertex(i,j,0,l1*term);
 		    amp.vertex(i,j,1,l2*term);
 		    
