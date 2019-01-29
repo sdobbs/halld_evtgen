@@ -82,7 +82,7 @@ int EvtParser::read(const std::string filename){
     line++;
     
     i=0;
-    while((c=fin.get()) != '\n' && i<MAXBUF) {
+    while((c=fin.get()) != '\n' && c != EOF && i<MAXBUF) {
       buf[i]=c;
       i++;
     }
