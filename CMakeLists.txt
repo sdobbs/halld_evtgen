@@ -71,3 +71,23 @@ install(DIRECTORY EvtGenModels DESTINATION ${CMAKE_INSTALL_PREFIX})
 # Install the particle properties and decay tables
 install(FILES DECAY.DEC DECAY.XML evt.pdl DESTINATION ${CMAKE_INSTALL_PREFIX})
 
+# Generate CMake config files, which can be used by other projects
+include(CMakePackageConfigHelpers)
+
+set(INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
+set(LIB_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
+
+configure_package_config_file(cmake/Templates/EvtGenConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/EvtGenConfig.cmake
+    INSTALL_DESTINATION cmake
+    PATH_VARS INCLUDE_INSTALL_DIR LIB_INSTALL_DIR
+    )
+
+write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/EvtGenConfigVersion.cmake
+    COMPATIBILITY AnyNewerVersion
+    )
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/EvtGenConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/EvtGenConfigVersion.cmake
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/cmake
+    )
