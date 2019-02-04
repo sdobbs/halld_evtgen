@@ -12,8 +12,8 @@ endif()
 if( ${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" )
     message(STATUS "EvtGen: Customising warning/optimise/debug flags for each build type")
 
-    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wshadow -Woverloaded-virtual")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsigned-char -Wall -Wextra -Wshadow -Woverloaded-virtual")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsigned-char -Wall -Wextra")
 
     if( ${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" )
         set(CMAKE_CXX_FLAGS_DEBUG          "-Og -g3")
@@ -29,6 +29,9 @@ if( ${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} MATCHES 
 else()
     message(STATUS "EvtGen: No customisation of warning/optimise/debug flags implemented for compiler: ${CMAKE_CXX_COMPILER_ID}")
 endif()
+
+# Make sure our project's include directories always come first
+set(CMAKE_INCLUDE_DIRECTORIES_PROJECT_BEFORE ON)
 
 # Control verbosity of the build
 set(CMAKE_VERBOSE_MAKEFILE OFF)

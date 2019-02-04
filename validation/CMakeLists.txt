@@ -1,16 +1,20 @@
 
 # the validation executables require ROOT for histogramming etc.
 find_package(ROOT REQUIRED)
-include(${ROOT_USE_FILE})
+
+add_library(root_interface INTERFACE IMPORTED)
+target_include_directories(root_interface INTERFACE ${ROOT_INCLUDE_DIRS})
+target_link_libraries(root_interface INTERFACE ${ROOT_LIBRARIES})
 
 # build each of the executables
 foreach( validation_exe compareRootFiles genExampleRootFiles genRootDecayChain testCPVDecays )
     add_executable(${validation_exe} ${validation_exe}.cc)
-    target_link_libraries(${validation_exe} PRIVATE EvtGen ${ROOT_LIBRARIES})
+    target_link_libraries(${validation_exe} PRIVATE EvtGen)
     if( ${EVTGEN_PYTHIA} OR ${EVTGEN_PHOTOS} OR ${EVTGEN_TAUOLA} )
         target_compile_definitions(${validation_exe} PRIVATE EVTGEN_EXTERNAL)
         target_link_libraries(${validation_exe} PRIVATE EvtGenExternal)
     endif()
+    target_link_libraries(${validation_exe} PRIVATE root_interface)
 endforeach()
 
 # install the executables

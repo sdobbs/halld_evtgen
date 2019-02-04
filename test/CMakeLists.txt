@@ -1,16 +1,20 @@
 
 # the test executables require ROOT for histogramming etc.
 find_package(ROOT REQUIRED)
-include(${ROOT_USE_FILE})
+
+add_library(root_interface INTERFACE IMPORTED)
+target_include_directories(root_interface INTERFACE ${ROOT_INCLUDE_DIRS})
+target_link_libraries(root_interface INTERFACE ${ROOT_LIBRARIES})
 
 # build each of the executables
 foreach( test_exe evt_dalitz evtgenlhc_test1 example1 exampleWriteHepMC )
     add_executable(${test_exe} ${test_exe}.cc)
-    target_link_libraries(${test_exe} PRIVATE EvtGen ${ROOT_LIBRARIES})
+    target_link_libraries(${test_exe} PRIVATE EvtGen)
     if( ${EVTGEN_PYTHIA} OR ${EVTGEN_PHOTOS} OR ${EVTGEN_TAUOLA} )
         target_compile_definitions(${test_exe} PRIVATE EVTGEN_EXTERNAL)
         target_link_libraries(${test_exe} PRIVATE EvtGenExternal)
     endif()
+    target_link_libraries(${test_exe} PRIVATE root_interface)
 endforeach()
 
 # install the executables
