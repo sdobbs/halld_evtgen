@@ -38,16 +38,17 @@ endif()
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules ${CMAKE_MODULE_PATH})
 # Include needed modules to perform any custom setup
 # Install paths
-include(InstallPaths)
+include(GNUInstallDirs)
 # Compilation/linking flags and related settings
 include(CompilerFlags)
 # EvtGen external dependencies
 option(EVTGEN_PYTHIA "Enable/disable linking with Pythia8" OFF)
 option(EVTGEN_PHOTOS "Enable/disable linking with Photos++" OFF)
 option(EVTGEN_TAUOLA "Enable/disable linking with Tauola++" OFF)
-message(STATUS "EvtGen: Linking with Pythia8  ${EVTGEN_PYTHIA}")
-message(STATUS "EvtGen: Linking with Photos++ ${EVTGEN_PHOTOS}")
-message(STATUS "EvtGen: Linking with Tauola++ ${EVTGEN_TAUOLA}")
+message(STATUS "EvtGen: Linking with HepMC2")
+message(STATUS "EvtGen: Optional linking with Pythia8  ${EVTGEN_PYTHIA}")
+message(STATUS "EvtGen: Optional linking with Photos++ ${EVTGEN_PHOTOS}")
+message(STATUS "EvtGen: Optional linking with Tauola++ ${EVTGEN_TAUOLA}")
 include(ExternalDependencies)
 
 # Now build the library
@@ -63,10 +64,10 @@ add_subdirectory(test)
 add_subdirectory(validation)
 
 # Install the include directories
-install(DIRECTORY EvtGen DESTINATION ${CMAKE_INSTALL_PREFIX})
-install(DIRECTORY EvtGenBase DESTINATION ${CMAKE_INSTALL_PREFIX})
-install(DIRECTORY EvtGenExternal DESTINATION ${CMAKE_INSTALL_PREFIX})
-install(DIRECTORY EvtGenModels DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(DIRECTORY EvtGen DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(DIRECTORY EvtGenBase DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(DIRECTORY EvtGenExternal DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(DIRECTORY EvtGenModels DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # Install the particle properties and decay tables
 install(FILES DECAY.DEC DECAY.XML evt.pdl DESTINATION ${CMAKE_INSTALL_PREFIX})
@@ -74,8 +75,8 @@ install(FILES DECAY.DEC DECAY.XML evt.pdl DESTINATION ${CMAKE_INSTALL_PREFIX})
 # Generate CMake config files, which can be used by other projects
 include(CMakePackageConfigHelpers)
 
-set(INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
-set(LIB_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
+set(INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_INCLUDEDIR})
+set(LIB_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR})
 
 configure_package_config_file(cmake/Templates/EvtGenConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/EvtGenConfig.cmake
@@ -89,5 +90,11 @@ write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/EvtGenConfigVersion
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/EvtGenConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/EvtGenConfigVersion.cmake
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/cmake
+    )
+
+install(
+    EXPORT "EvtGenTargets"
+    NAMESPACE "EvtGen::"
     DESTINATION ${CMAKE_INSTALL_PREFIX}/cmake
     )
