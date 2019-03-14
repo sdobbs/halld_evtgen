@@ -28,7 +28,7 @@ INSTALL_BASE=`pwd`
 echo Will setup EvtGen $VERSION in $INSTALL_BASE
 
 echo Downloading EvtGen from GIT
-git clone http://phab.hepforge.org/source/evtgen.git evtgen.git
+git clone https://phab.hepforge.org/source/evtgen.git evtgen.git
 cd evtgen.git
 #git checkout -b $VERSION $VERSION
 git checkout $VERSION
@@ -42,15 +42,15 @@ echo Downloading external dependencies
 mkdir -p external
 cd external
 
-# Recommended versions of the external packages. HepMC is mandatory. 
+# Recommended versions of the external packages. HepMC is mandatory.
 # Later versions should be OK as well, assuming their C++ interfaces do not change
-curl -O http://lcgapp.cern.ch/project/simu/HepMC/download/HepMC-2.06.09.tar.gz
+curl -O http://hepmc.web.cern.ch/hepmc/releases/hepmc2.06.09.tgz
 curl -O http://home.thep.lu.se/~torbjorn/pythia8/$PYTHIATAR
 curl -O http://photospp.web.cern.ch/photospp/resources/PHOTOS.3.61/PHOTOS.3.61.tar.gz
 curl -O http://tauolapp.web.cern.ch/tauolapp/resources/TAUOLA.1.1.6c/TAUOLA.1.1.6c.tar.gz
 
 echo Extracting external dependencies
-tar -xzf HepMC-2.06.09.tar.gz 
+tar -xzf hepmc2.06.09.tgz
 tar -xzf $PYTHIATAR
 tar -xzf PHOTOS.3.61.tar.gz
 tar -xzf TAUOLA.1.1.6c.tar.gz
@@ -66,7 +66,7 @@ echo Installing HepMC in $INSTALL_BASE/external/HepMC
 mkdir -p HepMC
 mkdir -p HepMC.build
 cd HepMC.build
-cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_BASE/external/HepMC $INSTALL_BASE/external/HepMC-2.06.09 -Dmomentum:STRING=GEV -Dlength:STRING=MM
+cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_BASE/external/HepMC $INSTALL_BASE/external/hepmc2.06.09 -Dmomentum:STRING=GEV -Dlength:STRING=MM
 make
 make install
 
