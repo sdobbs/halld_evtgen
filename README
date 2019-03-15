@@ -115,32 +115,35 @@ cmake ../evtgen.git <options>
 
 within the EvtGen build directory, using the following options:
 
-  -DCMAKE_INSTALL_PREFIX=<location> : Location in which to install EvtGen (optional but
-                                      highly recommended)
+  -DCMAKE_INSTALL_PREFIX=<location> : Location in which to install EvtGen (highly recommended)
 
-  -DHEPMC2_ROOT_DIR=<location>      : Location of HepMC install directory (optional)
-                                      While HepMC is mandatory, depending on your
-				      environment the installation may be detected
+  -DHEPMC2_ROOT_DIR=<location>      : Location of HepMC install directory
+				      While linking with HepMC is mandatory, depending on
+				      your environment the installation may be detected
 				      automatically.  Failing this, you can specify the
 				      location via this option.
 
-  -DEVTGEN_PYTHIA=ON                : Enable linking with Pythia 8 (optional)
-  -DPYTHIA8_ROOT_DIR=<location>     : Location of Pythia8 install directory (optional)
+  -DEVTGEN_PYTHIA=ON                : Enable linking with Pythia 8
+  -DPYTHIA8_ROOT_DIR=<location>     : Location of Pythia8 install directory
                                       As with HepMC this may be automatically detected
 				      depending on your build environment, otherwise the
 				      location can be specified via this option.
 
-  -DEVTGEN_PHOTOS=ON                : Enable linking with Photos++ (optional)
-  -DPHOTOSPP_ROOT_DIR=<location>    : Location of Photos++ install directory (optional)
+  -DEVTGEN_PHOTOS=ON                : Enable linking with Photos++
+  -DPHOTOSPP_ROOT_DIR=<location>    : Location of Photos++ install directory
                                       As with HepMC this may be automatically detected
 				      depending on your build environment, otherwise the
 				      location can be specified via this option.
 
-  -DEVTGEN_TAUOLA=ON                : Enable linking with Tauola++ (optional)
-  -DTAUOLAPP_ROOT_DIR=<location>    : Location of Tauola++ install directory (optional)
+  -DEVTGEN_TAUOLA=ON                : Enable linking with Tauola++
+  -DTAUOLAPP_ROOT_DIR=<location>    : Location of Tauola++ install directory
                                       As with HepMC this may be automatically detected
 				      depending on your build environment, otherwise the
 				      location can be specified via this option.
+
+  -DEVTGEN_BUILD_TESTS=ON           : Enable building executables in 'test' directory
+
+  -DEVTGEN_BUILD_VALIDATIONS=ON     : Enable building executables in 'validation' directory
 
 Then compile and (optionally, although highly recommended) install the EvtGen code using
 

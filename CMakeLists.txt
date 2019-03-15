@@ -60,14 +60,22 @@ configure_file(DECAY.XML ${CMAKE_CURRENT_BINARY_DIR}/DECAY.XML COPYONLY)
 configure_file(evt.pdl ${CMAKE_CURRENT_BINARY_DIR}/evt.pdl COPYONLY)
 
 # Build the executables in the test and validation directories
-add_subdirectory(test)
-add_subdirectory(validation)
+option(EVTGEN_BUILD_TESTS       "Enable/disable building of executables in 'test' directory"       OFF)
+option(EVTGEN_BUILD_VALIDATIONS "Enable/disable building of executables in 'validation' directory" OFF)
+message(STATUS "EvtGen: Building of executables in 'test' directory ${EVTGEN_BUILD_TESTS}")
+message(STATUS "EvtGen: Building of executables in 'validation' directory ${EVTGEN_BUILD_VALIDATIONS}")
+if(${EVTGEN_BUILD_TESTS})
+    add_subdirectory(test)
+endif()
+if(${EVTGEN_BUILD_VALIDATIONS})
+    add_subdirectory(validation)
+endif()
 
 # Install the include directories
-install(DIRECTORY EvtGen DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-install(DIRECTORY EvtGenBase DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(DIRECTORY EvtGen         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(DIRECTORY EvtGenBase     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 install(DIRECTORY EvtGenExternal DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-install(DIRECTORY EvtGenModels DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(DIRECTORY EvtGenModels   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # Install the particle properties and decay tables
 install(FILES DECAY.DEC DECAY.XML evt.pdl DESTINATION ${CMAKE_INSTALL_PREFIX})
