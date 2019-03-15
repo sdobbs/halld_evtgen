@@ -92,7 +92,9 @@ BUILDING THE CODE
 To build the EvtGen code, first make sure that there is a valid (C++) version
 of HepMC avilable:
 
-HepMC    http://lcgapp.cern.ch/project/simu/HepMC/
+HepMC    http://hepmc.web.cern.ch//hepmc/
+
+HepMC is used to store particle information.
 
 Optionally, it is possible to use other external generators, such as Pythia8
 (for Pythia decays in the DECAY.DEC file, for example), Photos (for
@@ -104,79 +106,75 @@ Photos   http://photospp.web.cern.ch/photospp/
 
 Tauola   http://tauolapp.web.cern.ch/tauolapp/
 
-All of these packages have instructions for building them, usually by
-running their "configure" script. HepMC is used to store particle information.
+All of these packages have instructions for building them.
 
-Once these packages are available, set up the EvtGen release by running
+Once these packages are available, build the EvtGen release by creating a build directory
+alongside the EvtGen source directory (assumed here to be called evtgen.git) and running:
 
-./configure
+cmake ../evtgen.git <options>
 
-within the EvtGen base directory, using the following options:
+within the EvtGen build directory, using the following options:
 
-  --hepmcdir  = location of HepMC build directory (mandatory)
-  --photosdir = location of Photos base directory (optional)
-  --pythiadir = location of Pythia base directory (optional)
-  --tauoladir = location of Tauola base directory (optional)
+  -DCMAKE_INSTALL_PREFIX=<location> : Location in which to install EvtGen (highly recommended)
 
-When successful, this will create a "config.mk" file that specifies the locations 
-of the include and library directories of these additional external generators.
+  -DHEPMC2_ROOT_DIR=<location>      : Location of HepMC install directory
+				      While linking with HepMC is mandatory, depending on
+				      your environment the installation may be detected
+				      automatically.  Failing this, you can specify the
+				      location via this option.
 
-Then compile the EvtGen code using
+  -DEVTGEN_PYTHIA=ON                : Enable linking with Pythia 8
+  -DPYTHIA8_ROOT_DIR=<location>     : Location of Pythia8 install directory
+                                      As with HepMC this may be automatically detected
+				      depending on your build environment, otherwise the
+				      location can be specified via this option.
+
+  -DEVTGEN_PHOTOS=ON                : Enable linking with Photos++
+  -DPHOTOSPP_ROOT_DIR=<location>    : Location of Photos++ install directory
+                                      As with HepMC this may be automatically detected
+				      depending on your build environment, otherwise the
+				      location can be specified via this option.
+
+  -DEVTGEN_TAUOLA=ON                : Enable linking with Tauola++
+  -DTAUOLAPP_ROOT_DIR=<location>    : Location of Tauola++ install directory
+                                      As with HepMC this may be automatically detected
+				      depending on your build environment, otherwise the
+				      location can be specified via this option.
+
+  -DEVTGEN_BUILD_TESTS=ON           : Enable building executables in 'test' directory
+
+  -DEVTGEN_BUILD_VALIDATIONS=ON     : Enable building executables in 'validation' directory
+
+Then compile and (optionally, although highly recommended) install the EvtGen code using
 
 make
+make install
 
 This should create the libraries lib/libEvtGen.so and lib/libEvtGenExternal.so,
-as well as the archives lib/archive/libEvtGen.a and lib/archive/libEvtGenExternal.a.
-The "EvtGenExternal" library will not be created if no external generators
-are specified in the configuration script.
+as well as the archives lib/archive/libEvtGen.a and lib/archive/libEvtGenExternal.a
+(the "EvtGenExternal" library/archive will not be created if linking is not enabled for
+any of the external generators).
 
+A series of validation and test executables are also created (discussed below).  The
+CMakeLists.txt file in these two directories can be used as a template for building any
+user executables.
 
-Note that gfortran is needed to compile the code (mainly for Photos/Tauola).
-The alternative (not recommended) compilers g77 (f77) can be used instead 
-by changing the FC variable in the configure script.
-
-
-To create an EvtGen executable, the following libraries need to be included
-in the link path, owing to the dependence on the above external packages and 
-Fortran code (for some EvtGenModels and for Photos/Tauola):
-
-BASEDIR   = <EvtGen directory>
-HEPMCDIR  = <base directory of HepMC>
-PHOTOSDIR = <base directory of C++ Photos>
-TAUOLADIR = <base directory of C++ Tauola>
-PYTHIADIR = <base directory of Pythia8>
-
-LIBS = -L${BASEDIR}/lib -L${HEPMCDIR}/lib -L${PHOTOSDIR}/lib \
-       -L${TAUOLADIR}/lib -L${PYTHIADIR}/lib -lgfortran \
-       -lHepMC -lPhotosCxxInterface -lPhotosFortran -lTauolaCxxInterface -lTauolaFortran \
-       -lpythia8 -llhapdfdummy -lEvtGen -lEvtGenExternal
-
-Three example programs using EvtGen can be seen in the test sub-directory along 
-with the required Makefile. If there are errors about missing shared libraries,
-and they have been built correctly, then the LD_LIBRARY_PATH needs to be set-up
-to include them:
-
-setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:<location of HepMC library directory>
-setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:<location of Pythia 8 library directory>
-setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:<location of Tauola library directory>
-setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:<location of Photos library directory>
-setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:<location of EvtGen library directory>
+The build/install will also create CMake config files that allow the library targets to be
+easily imported into other projects.
 
 To use Pythia 8, the environment variable PYTHIA8DATA needs to be set to the location
 of the corresponding xml documentation directory, which also contains the default values 
-for particle decays and models.
-
-setenv PYTHIA8DATA <location of Pythia 8 base directory>/xmldoc
+for particle decays and models: <location of Pythia 8 base directory>/xmldoc
 
 
 Code validation
 ===============
 
 The validation sub-directory contains code validation test cases for Pythia, Tauola 
-and B mixing models. Run the "configure" script here, which should create a file 
-called extraConfig.mk, and build the examples using "make". Note that some extra 
-configuration may be necessary to set the location of the ROOT libraries, which are 
-only used to create ntuples and plots for the validation examples.
+and B mixing models.
+
+Note that these executables also depend on ROOT, which is only used to create ntuples and
+plots for the validation examples.
 
 The script genAllDecayExamples.sh runs other scripts that generate a range of decay 
 modes using the genExampleRootFiles.cc program. The script compareAllDecays.sh runs 
@@ -187,12 +185,14 @@ genExampleRootFiles.cc program.
 
 The testCPVDecays.cc program runs a test for the B mixing decay model.
 
+
 Examples
 ========
 
 Some examples are provided in the test sub-directory. 
 
-To run these, first build EvtGen, then run "configure", then type "make" in the 
-test directory. Note that these tests require ROOT to be installed. 
+Note that these executables also depend on ROOT, which is only used to create ntuples and
+plots for the validation examples.
+
 Running the script "./do_tests" will run a series of EvtGen examples. 
 Example decay files are in the test/exampleFiles sub-directory.
