@@ -1,12 +1,12 @@
 
-set(HEPMC2_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../external/HepMC" CACHE STRING "Location of HepMC 2 installation")
+set(HEPMC2_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../external/HepMC" CACHE PATH "Location of HepMC 2 installation")
 if(DEFINED ENV{PYTHIAVER})
-    set(PYTHIA8_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../external/pythia$ENV{PYTHIAVER}" CACHE STRING "Location of Pythia8 installation")
+    set(PYTHIA8_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../external/pythia$ENV{PYTHIAVER}" CACHE PATH "Location of Pythia8 installation")
 else()
-    set(PYTHIA8_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../external/pythia8230" CACHE STRING "Location of Pythia8 installation")
+    set(PYTHIA8_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../external/pythia8230" CACHE PATH "Location of Pythia8 installation")
 endif()
-set(PHOTOSPP_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../external/PHOTOS" CACHE STRING "Location of Photos++ installation")
-set(TAUOLAPP_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../external/TAUOLA" CACHE STRING "Location of Tauola++ installation")
+set(PHOTOSPP_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../external/PHOTOS" CACHE PATH "Location of Photos++ installation")
+set(TAUOLAPP_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../external/TAUOLA" CACHE PATH "Location of Tauola++ installation")
 
 find_package(HepMC2 REQUIRED)
 if(${EVTGEN_PYTHIA})
