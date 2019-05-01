@@ -71,6 +71,7 @@
 #include "TFile.h"
 #include "TApplication.h"
 #include "TROOT.h"
+#include "TString.h"
 
 using std::vector;
 
@@ -695,8 +696,8 @@ void runJpsiPolarization(int nevent, EvtGen &myGenerator) {
 }
                                                                               
                                                                              
-void runMassCheck(int nevent, EvtGen &myGenerator, 
-              int partnum) {
+void runMassCheck(int nevent, EvtGen & /*myGenerator*/,
+		  int partnum) {
                                                                              
    int count;
    static EvtId myPart=EvtPDL::evtIdFromStdHep(partnum);
@@ -3125,7 +3126,7 @@ void runJPsiKstar(int nevent, EvtGen &myGenerator, int modeInt) {
     
     root_part->deleteTree();  
     
-  }while (count++<10000);
+  }while (count++<nevent);
   
   outmix.close();
   EvtGenReport(EVTGEN_INFO,"EvtGen") << "SUCCESS\n";
@@ -4144,7 +4145,7 @@ void runA1Pi(int nevent, EvtGen &myGenerator) {
     
     root_part->deleteTree();  
     
-  }while (count++<1000);
+  }while (count++<nevent);
   
   outmix.close();
   EvtGenReport(EVTGEN_INFO,"EvtGen") << "SUCCESS\n";
@@ -4649,7 +4650,7 @@ int countInclusive(std::string name, EvtParticle *root_part,TH1F* mom, TH1F* mas
 
 int countInclusiveSubTree(std::string name, EvtParticle *root_part, 
 			  EvtIdSet setIds,
-			  TH1F* mom) {
+			  TH1F* /*mom*/) {
 
   int temp=0;
   EvtParticle *p=root_part;
@@ -4719,7 +4720,7 @@ void runBMix(int nevent,EvtGen &myGenerator,std::string userFile,std::string roo
     static EvtId UPS4=EvtPDL::getId(std::string("Upsilon(4S)"));
 
     std::ofstream outmix;
-    TString outFileName(rootFile);
+    TString outFileName(rootFile.c_str());
     outFileName.ReplaceAll(".root", ".dat");
     outmix.open(outFileName.Data());
 
@@ -4863,7 +4864,7 @@ void runPiPiPi(int nevent, EvtGen &myGenerator) {
 
       root_part->deleteTree();  
 
-    }while (count++<10000);
+    }while (count++<nevent);
   
     outmix.close();
     EvtGenReport(EVTGEN_INFO,"EvtGen") << "SUCCESS\n";
@@ -5016,7 +5017,7 @@ void runPiPiPiPi(int nevent, EvtGen &myGenerator) {
 
       EvtGenReport(EVTGEN_INFO,"EvtGen") << "count:"<<count<<std::endl;
 
-    }while (count++<1000);
+    }while (count++<nevent);
 
     outmix.close();
   EvtGenReport(EVTGEN_INFO,"EvtGen") << "SUCCESS\n";
@@ -5099,7 +5100,7 @@ void runA2Pi(int nevent, EvtGen &myGenerator) {
 
       root_part->deleteTree();  
 
-    }while (count++<1000);
+    }while (count++<nevent);
   
     outmix.close();
 
@@ -5308,7 +5309,7 @@ void runPiPiCPT(int nevent, EvtGen &myGenerator) {
 
       root_part->deleteTree();  
 
-    }while (count++<10000);
+    }while (count++<nevent);
   
     outmix.close();
   EvtGenReport(EVTGEN_INFO,"EvtGen") << "SUCCESS\n";
@@ -5367,7 +5368,7 @@ void runJpsiKs(int nevent, EvtGen &myGenerator) {
 
       root_part->deleteTree();  
 
-    }while (count++<10000);
+    }while (count++<nevent);
   
     outmix.close();
   EvtGenReport(EVTGEN_INFO,"EvtGen") << "SUCCESS\n";
@@ -5623,7 +5624,7 @@ void runMix(int nevent, EvtGen &myGenerator) {
     
       root_part->deleteTree();  
 
-    }while (count++<10000);
+    }while (count++<nevent);
 
     outmix.close();
     EvtGenReport(EVTGEN_INFO,"EvtGen") << "SUCCESS\n";

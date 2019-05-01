@@ -46,7 +46,7 @@ bool filter(HepMC::GenEvent* event)
   return (hasLepton && (!hasCharm)); 
 }
 
-int main(int argc, char** argv) {
+int main(int /*argc*/, char** /*argv*/) {
 
   EvtParticle* parent(0);
 
