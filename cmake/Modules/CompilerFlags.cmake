@@ -34,12 +34,13 @@ endif()
 set(CMAKE_INCLUDE_DIRECTORIES_PROJECT_BEFORE ON)
 
 # Control verbosity of the build
-set(CMAKE_VERBOSE_MAKEFILE OFF)
+set(CMAKE_VERBOSE_MAKEFILE OFF CACHE BOOL "Control verbosity of generated Makefiles")
 
 # C++ standard settings
 set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 14 CACHE STRING "C++ standard")
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+message(STATUS "EvtGen: Using C++${CMAKE_CXX_STANDARD} standard")
 
 # Special linker flags for MacOSX
 if (APPLE)
