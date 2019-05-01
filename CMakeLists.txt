@@ -14,14 +14,10 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
 endif()
 
 # Also require a minimum version of CMake
-cmake_minimum_required(VERSION 3.8.0)
+cmake_minimum_required(VERSION 3.11.0)
 
 # Project setup
-if(${CMAKE_VERSION} VERSION_LESS 3.9.0)
-    project(EvtGen
-        VERSION 2.0.0
-        )
-elseif(${CMAKE_VERSION} VERSION_LESS 3.12.0)
+if(${CMAKE_VERSION} VERSION_LESS 3.12.0)
     project(EvtGen
         VERSION 2.0.0
         DESCRIPTION "Monte Carlo generator of particle decays, in particular the weak decays of heavy flavour particles such as B mesons."
