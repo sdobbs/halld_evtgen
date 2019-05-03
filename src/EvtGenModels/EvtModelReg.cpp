@@ -333,6 +333,7 @@ EvtModelReg::EvtModelReg(const std::list<EvtDecayBase*>* extraModels)
     modelist.registerModel(new EvtKStopizmumu);
     modelist.registerModel(new EvtVtoSll);
 
+    modelist.registerModel(new EvtBsMuMuKK);
     modelist.registerModel(new EvtGenericDalitz());
 
     modelist.registerModel(new EvtBcVHad);
