@@ -161,6 +161,7 @@
 #include "EvtGenModels/EvtKStopizmumu.hh"
 #include "EvtGenModels/EvtVtoSll.hh"
 
+#include "EvtGenModels/EvtBsMuMuKK.hh"
 #include "EvtGenModels/EvtGenericDalitz.hh"
 
 #include "EvtGenModels/EvtBcVHad.hh"

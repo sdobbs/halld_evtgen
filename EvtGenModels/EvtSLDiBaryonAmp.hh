@@ -15,6 +15,7 @@
 // Modification history:
 //
 //    Mark Smith July 18, 2017 Created
+//    John B     Oct 2018      Code simplification
 //
 //------------------------------------------------------------------------
 
@@ -22,25 +23,39 @@
 #define EVTSLDIBARYONAMP_HH
 
 #include "EvtGenBase/EvtAmp.hh"
+#include "EvtGenBase/EvtDiracSpinor.hh"
+#include "EvtGenBase/EvtId.hh"
+#include "EvtGenModels/EvtBToDiBaryonlnupQCDFF.hh"
+#include "EvtGenBase/EvtVector4R.hh"
+#include "EvtGenBase/EvtVector4C.hh"
+
 #include <vector>
 
 class EvtParticle;
-class EvtBToDiBaryonlnupQCDFF;
 
 class EvtSLDiBaryonAmp {
 
 public:
 
-    EvtSLDiBaryonAmp(EvtBToDiBaryonlnupQCDFF*);
+    EvtSLDiBaryonAmp(const EvtBToDiBaryonlnupQCDFF&);
 
-    virtual ~EvtSLDiBaryonAmp() {;}
-    
     void CalcAmp(EvtParticle *parent, EvtAmp& amp) const;
+
+protected:
+
+    int checkDibaryonParity(const EvtId& id1, const EvtId& id2,
+			    const int J1, const int J2) const;
+
+    int getBaryonParity(const EvtId& id) const;
+
+    std::vector<EvtVector4C> getHadronicCurrents(const EvtDiracSpinor& u, const EvtDiracSpinor& v,
+						 const EvtVector4R& p, const EvtVector4R& gMtmTerms,
+						 const EvtVector4R& fMtmTerms) const;
 
 private:
 
-    EvtBToDiBaryonlnupQCDFF* ffModel;
-
+    EvtBToDiBaryonlnupQCDFF ffModel_;
+    
 };
 
 #endif

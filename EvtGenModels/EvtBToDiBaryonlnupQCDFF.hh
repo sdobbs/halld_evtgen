@@ -16,7 +16,8 @@
 // Modification history:
 //
 //    Mark Smith     July 17, 2017     Module created
-//    
+//    John B         Oct 2018          Added FormFactors class
+//
 //------------------------------------------------------------------------
 
 #ifndef EVTBTODIBARYONLNUPQCDFF_HH
@@ -45,13 +46,13 @@ public:
     EvtBToDiBaryonlnupQCDFF(std::vector<double>& DParameters);
 
     void getDiracFF(EvtParticle* parent, double dibaryonMass,
-		    EvtBToDiBaryonlnupQCDFF::FormFactors& FF);
+		    EvtBToDiBaryonlnupQCDFF::FormFactors& FF) const;
     
     void getRaritaFF(EvtParticle* parent, double dibaryonMass,
-		     EvtBToDiBaryonlnupQCDFF::FormFactors& FF);
+		     EvtBToDiBaryonlnupQCDFF::FormFactors& FF) const;
 
     void getFF(EvtParticle* parent, double dibaryonMass,
-	       EvtBToDiBaryonlnupQCDFF::FormFactors& FF);
+	       EvtBToDiBaryonlnupQCDFF::FormFactors& FF) const;
 
 private:
 

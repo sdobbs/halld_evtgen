@@ -18,6 +18,7 @@
 // Modification history:
 //
 //    Mark Smith     July 17, 2017     Module created
+//    John B         Oct 2018          Code simplification
 //
 //------------------------------------------------------------------------
 
@@ -47,8 +48,8 @@ public:
 
 private:
 
-    EvtBToDiBaryonlnupQCDFF* ffModel;
-    EvtSLDiBaryonAmp* calcAmp;
+    EvtBToDiBaryonlnupQCDFF* ffModel_;
+    EvtSLDiBaryonAmp* calcAmp_;
 
 };
 

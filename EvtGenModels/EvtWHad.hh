@@ -1,63 +1,74 @@
 //--------------------------------------------------------------------------
 //
 // Environment:
-//      This software is part of the EvtGen package developed jointly
-//      for the BaBar and CLEO collaborations.  If you use all or part
+//      This software is part of the EvtGen package. If you use all or part
 //      of it, please give an appropriate acknowledgement.
 //
 // Copyright Information: See EvtGen/COPYRIGHT
-//      Copyright (C) 1998      Caltech, UCSB
 //
-// Module: EvtWHad.cc
+// Module: EvtWHad.hh
 //
 // Description: Routine to calculate W -> (n pi) + (m K) current
 //			according to [Kuhn, Was, Acta.Phys.Polon B39 (2008) 147]
 //
 // Modification history:
-//	AVL	20 Jan, 2013	Module created
+//	A V Luchinsky  	20 Jan, 2013	Module created
 //
 //------------------------------------------------------------------------
-// 
-
 
 #ifndef EvtWHad_HH
 #define EvtWHad_HH
 
-#include "EvtGenBase/EvtPatches.hh"
-#include "EvtGenBase/EvtVector4R.hh"
+#include "EvtGenBase/EvtComplex.hh"
 #include "EvtGenBase/EvtVector4C.hh"
-#include "EvtGenBase/EvtTensor4C.hh"
+#include "EvtGenBase/EvtVector4R.hh"
 
-#include <iostream>
-#include <iomanip>
-#include <fstream>
-#include <ctype.h>
-#include <stdlib.h>
-#include <string.h>
-#include "EvtGenBase/EvtParticle.hh"
-#include "EvtGenBase/EvtPDL.hh"
-#include "EvtGenBase/EvtGenKine.hh"
-#include "EvtGenModels/EvtTauHadnu.hh"
-#include "EvtGenBase/EvtDiracSpinor.hh"
-#include "EvtGenBase/EvtReport.hh"
-#include "EvtGenBase/EvtIdSet.hh"
-#include "EvtGenBase/EvtParser.hh"
-
+#include <vector>
 
 class EvtWHad {
+
 public:
-  EvtVector4C WCurrent(EvtVector4R q1);
-  EvtVector4C WCurrent(EvtVector4R q1, EvtVector4R q2);
-  EvtVector4C WCurrent(EvtVector4R q1, EvtVector4R q2, EvtVector4R q3);
-  EvtVector4C WCurrent(EvtVector4R q1, EvtVector4R q2, EvtVector4R q3, EvtVector4R q4, EvtVector4R q5);
-  EvtVector4C WCurrent_KKP(EvtVector4R pKplus, EvtVector4R pKminus, EvtVector4R pPiPlus);
-  EvtVector4C WCurrent_KPP(EvtVector4R pKplus, EvtVector4R pPiPlus, EvtVector4R pPiMinus);
+
+    EvtWHad();
+
+    EvtVector4C WCurrent(const EvtVector4R& q1) const;
+
+    EvtVector4C WCurrent(const EvtVector4R& q1, const EvtVector4R& q2) const;
+
+    EvtVector4C WCurrent(const EvtVector4R& q1, const EvtVector4R& q2, const EvtVector4R& q3) const;
+
+    EvtVector4C WCurrent(const EvtVector4R& q1, const EvtVector4R& q2, const EvtVector4R& q3,
+			 const EvtVector4R& q4, const EvtVector4R& q5) const;
+
+    EvtVector4C WCurrent_KKP(const EvtVector4R& pKplus, const EvtVector4R& pKminus,
+			     const EvtVector4R& pPiPlus) const;
+
+    EvtVector4C WCurrent_KPP(const EvtVector4R& pKplus, const EvtVector4R& pPiPlus,
+			     const EvtVector4R& pPiMinus) const;
+
+    EvtVector4C WCurrent_KSK(const EvtVector4R& pKS, const EvtVector4R& pKplus) const;
+
 protected:
-  EvtVector4C JB(EvtVector4R q1, EvtVector4R q2, EvtVector4R q3, EvtVector4R q4, EvtVector4R q5); 
-  EvtComplex BWa( EvtVector4R q);
-  EvtComplex BWf( EvtVector4R q);
-  EvtComplex BWr( EvtVector4R q);
-  double pi3G(double Q2);
+
+    EvtVector4C JB(const EvtVector4R& q1, const EvtVector4R& q2, const EvtVector4R& q3, 
+		   const EvtVector4R& q4, const EvtVector4R& q5) const;
+
+    EvtComplex BWa(const EvtVector4R& q) const;
+
+    EvtComplex BWf(const EvtVector4R& q) const;
+
+    EvtComplex BWr(const EvtVector4R& q) const;
+
+    EvtComplex BWKK(double s, int i) const;
+
+    double pi3G(double Q2) const;
+
+    EvtComplex pcm(double s) const;
+
+private:
+
+    std::vector<double> mRho_, gamma0_, cK_;
+
 };
 
 #endif
