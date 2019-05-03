@@ -56,7 +56,16 @@ void EvtCBTo3piMPP::init(){
   checkSpinDaughter(0,EvtSpinType::SCALAR);
   checkSpinDaughter(1,EvtSpinType::SCALAR);
   checkSpinDaughter(2,EvtSpinType::SCALAR);
+ 
+  EvtVector4R p4[3];
+  double alpha = getArg(0);
 
+  int iset(10000);  
+  double realA, imgA, realbarA, imgbarA;
+
+  generator.Evt3piMPP(alpha, iset, p4[0], p4[1], p4[2], 
+		      realA, imgA, realbarA, imgbarA);
+ 
 }
 
 void EvtCBTo3piMPP::initProbMax(){
@@ -81,18 +90,7 @@ void EvtCBTo3piMPP::decay( EvtParticle *p ){
   EvtVector4R p4[3];
   double alpha = getArg(0);
 
-  int iset;
-
-  static int first=1;
-
-  if (first==1) {
-    iset=10000;
-    first=0;
-  }
-  else{
-    iset=0;
-  }
-
+  int iset(0);
   double realA,imgA,realbarA,imgbarA;
 
   generator.Evt3piMPP(alpha, iset, p4[0], p4[1], p4[2], 

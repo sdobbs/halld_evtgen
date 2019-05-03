@@ -90,8 +90,10 @@ std::vector<std::string> convertPythia6Command(Command command) {
         switch(atoi(value.c_str())) {
           case 9:
             commandStrings.push_back("BoseEinstein:Eta = on");
+	    [[fallthrough]];
           case 7:
             commandStrings.push_back("BoseEinstein:Kaon = on");
+	    [[fallthrough]];
           case 3:
             commandStrings.push_back("BoseEinstein:Pion = on");
             break;

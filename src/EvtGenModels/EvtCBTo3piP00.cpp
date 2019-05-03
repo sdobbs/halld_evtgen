@@ -56,6 +56,15 @@ void EvtCBTo3piP00::init(){
   checkSpinDaughter(1,EvtSpinType::SCALAR);
   checkSpinDaughter(2,EvtSpinType::SCALAR);
 
+  int iset(10000);
+  double alpha = getArg(0);
+  EvtVector4R pin, p4pi1, p4Gamma11, p4Gamma12;
+  EvtVector4R p4Gamma21, p4Gamma22;
+  double realA, imgA, realbarA, imgbarA;
+  generator.Evt3piP00(alpha, iset, pin, p4Gamma11, p4Gamma12,
+                      p4Gamma21, p4Gamma22, realA, imgA, realbarA,
+                      imgbarA);
+
 }
 
 
@@ -83,16 +92,7 @@ void EvtCBTo3piP00::decay( EvtParticle *p ){
 
   EvtVector4R p4[3];
   double alpha = getArg(0);
-  int iset;
-  static int first=1;
-
-  if (first==1) {
-    iset=10000;
-    first=0;
-  }
-  else{
-    iset=0;
-  }
+  int iset(0);
 
   EvtVector4R p4pi1,p4Gamma11,p4Gamma12;
   EvtVector4R p4Gamma21,p4Gamma22;

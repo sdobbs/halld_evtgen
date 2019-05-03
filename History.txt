@@ -14,6 +14,8 @@
     Add new decay model EvtBsMuMuKK (BS_MUMUKK) for Bs to J/psi (mu+mu-) K+K-,
     courtesy of Veronika Chobanova, Jeremy Dalseno, Diego Martinez Santos and
     Marcos Romero Lamas (LHCb).
+    Fix infinite loop during initialisation of the EvtBTo3hCP model via
+    EvtCBTo3piP00 and EvtCBTo3piMPP, courtesy of Peter Richardson (Durham).
 
 15th March 2019 Tom Latham
     Implement cmake build system, replacing the old config method.

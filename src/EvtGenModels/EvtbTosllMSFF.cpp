@@ -47,6 +47,7 @@ double EvtbTosllMSFF::equation9_10(double ff0, double M2, double q2,
              {
                case 9:
                  ff=1./(1.-q2/M2);
+		 [[fallthrough]];
                case 10:
                  ff=ff*ff0/(1.-sigma1*q2/M2+sigma2*pow(q2,2)/pow(M2,2));
                  break;

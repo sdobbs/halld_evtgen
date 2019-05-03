@@ -992,8 +992,8 @@ void EvtV2VpVmForLambdaB2LambdaV::init()
       if (Vtype==VID::OMEGA) EvtGenReport(EVTGEN_DEBUG,fname.c_str())<<" Decay mode successfully initialized : omega -> pi+ pi-"<<std::endl;
       if (Vtype==VID::RHO_OMEGA_MIXING) {
 	  EvtGenReport(EVTGEN_DEBUG,fname.c_str())<<" Decay mode successfully initialized : rho-omega mixing -> pi+ pi-"<<std::endl; 
-	  break;
       }
+      break;
 
     default :
       EvtGenReport(EVTGEN_ERROR,fname.c_str()) << "No decay mode chosen ! "<<std::endl;
