@@ -18,6 +18,9 @@
 15th March 2019 Tom Latham
     Implement cmake build system, replacing the old config method.
 
+29th Jan 2019 Michal Kreps
+    Allow reading decay files which are missing end-of-line before end-of-file.
+
 7th December 2018 John Back
     Added the EvtBLLNuL (BLLNUL) model that generates rare B -> ell ell nu ell 
     decays, where ell = e or mu, courtesy of Anna Danilina and Nikolai Nikitin 
