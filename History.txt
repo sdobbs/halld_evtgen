@@ -4,6 +4,16 @@
 //
 //===========================================================================
 
+3rd July 2019 John Back
+    Added the EvtLambdacPHH decay model for Lc -> p K pi decays with K*(890), 
+    Delta++(1232) and Lambda(1520) resonances, based on the Fermilab E791
+    analysis hep-ex/9912003v1, courtesy of Elisabeth Niel and Patrick Robbe 
+    (LHCb). Modified EvtResonance2 to accept other barrier factor radii.
+
+3rd July 2019 Michal Kreps
+    Make sure minimum mass for resonances with non-zero widths is larger than
+    1e-4 GeV in EvtRelBreitWignerBarrierFact.
+
 3rd May 2019 John Back
     Corrected EvtSLDiBaryonAmp bugs/issues in the BToDiBaryonlnupQCD model: 
     parity, amplitude terms and B momentum reference frame variables.    

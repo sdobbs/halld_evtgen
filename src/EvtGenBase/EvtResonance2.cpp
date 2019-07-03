@@ -10,24 +10,21 @@
 //
 // Module: EvtResonance2.cc
 //
-// Description: resonance-defining class 
+// Description: resonance-defining class
 //
 // Modification history:
 //
 //    NK        September 4, 1997      Module created
 //
 //------------------------------------------------------------------------
-// 
+//
 #include "EvtGenBase/EvtPatches.hh"
-#include <math.h>
-#include "EvtGenBase/EvtVector4R.hh"
-#include "EvtGenBase/EvtKine.hh"
+
 #include "EvtGenBase/EvtComplex.hh"
+#include "EvtGenBase/EvtConst.hh"
 #include "EvtGenBase/EvtResonance2.hh"
 #include "EvtGenBase/EvtReport.hh"
-#include "EvtGenBase/EvtConst.hh"
-
-EvtResonance2::~EvtResonance2(){}
+#include <cmath>
 
 EvtResonance2& EvtResonance2::operator = ( const EvtResonance2  &n)
 {
@@ -41,20 +38,24 @@ EvtResonance2& EvtResonance2::operator = ( const EvtResonance2  &n)
   _spin = n._spin;
   _bwm = n._bwm;
   _invmass_angdenom = n._invmass_angdenom;
-   return  *this;
+  _barrier1 = n._barrier1;
+  _barrier2 = n._barrier2;
+  return  *this;
 }
 
- 
+
 EvtResonance2::EvtResonance2(const EvtVector4R& p4_p, const EvtVector4R& p4_d1,
-			     const  EvtVector4R& p4_d2, double ampl, 
-			     double theta, double gamma, double bwm, int spin,
-			     bool invmass_angdenom): 
-  _p4_p(p4_p),_p4_d1(p4_d1), _p4_d2(p4_d2),_ampl(ampl), _theta(theta), 
-  _gamma(gamma), _bwm(bwm), _spin(spin), _invmass_angdenom(invmass_angdenom) {}
+			     const  EvtVector4R& p4_d2, double ampl,
+			     double theta, double gamma, double bwm,  int spin,
+			     bool invmass_angdenom , double barrier1, double barrier2):
+  _p4_p(p4_p),_p4_d1(p4_d1), _p4_d2(p4_d2),_ampl(ampl), _theta(theta),
+  _gamma(gamma), _bwm(bwm), _barrier1(barrier1), _barrier2(barrier2), _spin(spin), _invmass_angdenom(invmass_angdenom)
+{
+}
 
 
-EvtComplex EvtResonance2::resAmpl() {
- 
+EvtComplex EvtResonance2::resAmpl() const {
+
   double pi180inv = 1.0/EvtConst::radToDegrees;
 
   EvtComplex ampl;
@@ -67,8 +68,8 @@ EvtComplex EvtResonance2::resAmpl() {
   //the missing particle (not listed in the arguments) makes
   //with part2 in the rest frame of both
   //listed particles (12)
- 
-  //angle 3 makes with 2 in rest frame of 12 (CS3)  
+
+  //angle 3 makes with 2 in rest frame of 12 (CS3)
   //double cos_phi_0 = EvtDecayAngle(_p4_p, _p4_d1+_p4_d2, _p4_d1);
   //angle 3 makes with 1 in 12 is, of course, -cos_phi_0
 
@@ -77,11 +78,11 @@ EvtComplex EvtResonance2::resAmpl() {
   double mAB=(_p4_d1+_p4_d2).mass();
   double mBC=(_p4_d2+p4_d3).mass();
   double mAC=(_p4_d1+p4_d3).mass();
-  double mA=_p4_d1.mass(); 
-  double mB=_p4_d2.mass(); 
+  double mA=_p4_d1.mass();
+  double mB=_p4_d2.mass();
   double mD=_p4_p.mass();
   double mC=p4_d3.mass();
-  
+
   double mR=_bwm;
   double gammaR=_gamma;
   double mdenom = _invmass_angdenom ? mAB : mR;
@@ -96,8 +97,6 @@ EvtComplex EvtResonance2::resAmpl() {
   double pDAB=sqrt( (((mD*mD-mAB*mAB-mC*mC)*(mD*mD-mAB*mAB-mC*mC)/4.0) -
 		   mAB*mAB*mC*mC)/(mD*mD));
 
-
-
   double fR=1;
   double fD=1;
   int power=0;
@@ -108,19 +107,19 @@ EvtComplex EvtResonance2::resAmpl() {
     power=1;
     break;
   case 1:
-    fR=sqrt(1.0+1.5*1.5*pR*pR)/sqrt(1.0+1.5*1.5*pAB*pAB);
-    fD=sqrt(1.0+5.0*5.0*pD*pD)/sqrt(1.0+5.0*5.0*pDAB*pDAB);
+    fR=sqrt(1.0+_barrier1*_barrier1*pR*pR)/sqrt(1.0+_barrier1*_barrier1*pAB*pAB);
+    fD=sqrt(1.0+_barrier2*_barrier2*pD*pD)/sqrt(1.0+_barrier2*_barrier2*pDAB*pDAB);
     power=3;
     break;
   case 2:
-    fR = sqrt( (9+3*pow((1.5*pR),2)+pow((1.5*pR),4))/(9+3*pow((1.5*pAB),2)+pow((1.5*pAB),4)) );
-    fD = sqrt( (9+3*pow((5.0*pD),2)+pow((5.0*pD),4))/(9+3*pow((5.0*pDAB),2)+pow((5.0*pDAB),4)) );
+    fR = sqrt( (9+3*pow((_barrier1*pR),2)+pow((_barrier1*pR),4))/(9+3*pow((_barrier1*pAB),2)+pow((_barrier1*pAB),4)) );
+    fD = sqrt( (9+3*pow((_barrier2*pD),2)+pow((_barrier2*pD),4))/(9+3*pow((_barrier2*pDAB),2)+pow((_barrier2*pDAB),4)) );
     power=5;
     break;
   default:
-    EvtGenReport(EVTGEN_INFO,"EvtGen") << "Incorrect spin in EvtResonance22.cc\n";
+    EvtGenReport(EVTGEN_INFO,"EvtGen") << "Incorrect spin in EvtResonance2.cc\n";
   }
-  
+
   double gammaAB= gammaR*pow(pAB/pR,power)*(mR/mAB)*fR*fR;
   switch (_spin) {
   case 0:
@@ -137,15 +136,12 @@ EvtComplex EvtResonance2::resAmpl() {
       fR*fD/(mR*mR-mAB*mAB-EvtComplex(0.0,mR*gammaAB))*
       (pow((mBC*mBC-mAC*mAC+(mD*mD-mC*mC)*(mA*mA-mB*mB)/(mdenom*mdenom)),2)-
        (1.0/3.0)*(mAB*mAB-2*mD*mD-2*mC*mC+pow((mD*mD- mC*mC)/mdenom, 2))*
-       (mAB*mAB-2*mA*mA-2*mB*mB+pow((mA*mA-mB*mB)/mdenom,2))); 
+       (mAB*mAB-2*mA*mA-2*mB*mB+pow((mA*mA-mB*mB)/mdenom,2)));
   break;
 
   default:
-    EvtGenReport(EVTGEN_INFO,"EvtGen") << "Incorrect spin in EvtResonance22.cc\n";
+    EvtGenReport(EVTGEN_INFO,"EvtGen") << "Incorrect spin in EvtResonance2.cc\n";
   }
 
   return ampl;
 }
-
-
-

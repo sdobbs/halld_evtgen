@@ -23,62 +23,49 @@
 
 #include "EvtGenBase/EvtVector4R.hh"
 
-class EvtComplex;
-
-
-
 class EvtResonance2 {
 public:
 
     //operator
     EvtResonance2& operator = (const EvtResonance2 &);
-    
-    //constructor with all information about the resonance
-    // invmass_angdenom chooses whether to use the resonance mass (false)
-    // or the daughter invariant mass (true) for the denominators in
-    // angular distributions
 
-    EvtResonance2(const EvtVector4R& p4_p, const EvtVector4R& p4_d1, 
-		  const EvtVector4R& p4_d2, 
-		  double ampl = 0.0, double theta = 0.0, double gamma = 0.0, 
-		  double bwm = 0.0, int spin = 0, bool invmass_angdenom = false);
-
-    //destructor
-    virtual ~EvtResonance2();
+    // Constructor
+    EvtResonance2(const EvtVector4R& p4_p, const EvtVector4R& p4_d1,
+		  const EvtVector4R& p4_d2, double ampl = 1.0, double theta = 0.0, 
+		  double gamma = 0.0, double bwm = 0.0, int spin = 0, bool invmass_angdenom = false,
+		  double  barrier1 = 1.5, double  barrier2 = 5.0);
 
     //accessors
     //return 4-momenta of the particles involved
-    inline const EvtVector4R& p4_p() { return _p4_p; }
-    inline const EvtVector4R& p4_d1() { return _p4_d1; }
-    inline const EvtVector4R& p4_d2() { return _p4_d2; }  
-    
+    inline const EvtVector4R& p4_p() const { return _p4_p; }
+    inline const EvtVector4R& p4_d1() const { return _p4_d1; }
+    inline const EvtVector4R& p4_d2() const { return _p4_d2; }
 
     //return amplitude
-    inline double amplitude() { return _ampl; }  
+    inline double amplitude() const { return _ampl; }
 
     //return theta
-    inline double theta() { return _theta; } 
+    inline double theta() const { return _theta; }
 
     //return gamma
-    inline double gamma() { return _gamma; } 
+    inline double gamma() const { return _gamma; }
 
     //return bwm
-    inline double bwm() { return _bwm; } 
-    
+    inline double bwm() const { return _bwm; }
+
     //return spin
-    inline int spin() { return _spin; } 
+    inline int spin() const { return _spin; }
 
     //calculate amplitude for this resonance
-    EvtComplex resAmpl();
-   
-  private:
+    EvtComplex resAmpl() const;
+
+private:
 
     EvtVector4R _p4_p, _p4_d1, _p4_d2;
-    double _ampl, _theta, _gamma, _bwm;
+    double _ampl, _theta, _gamma, _bwm, _barrier1, _barrier2;
     int _spin;
     bool _invmass_angdenom;
 
-}; 
+};
 
 #endif
-
